@@ -1,3 +1,11 @@
+---
+layout: home
+title:  "Home"
+section: "home"
+---
+
+hello world
+
 ```tut:invisible
 import io.taig.lokal._; import imports._
 ```
