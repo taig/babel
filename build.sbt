@@ -19,15 +19,15 @@ lazy val lokalJVM = lokal.jvm
 lazy val lokalJS = lokal.js
 
 lazy val documentation = project
-    .enablePlugins( MicrositesPlugin )
+    .enablePlugins( BuildInfoPlugin, MicrositesPlugin )
     .settings( Settings.common ++ Settings.noPublish )
     .settings(
-        micrositeName := "Lokal",
         micrositeAuthor := "Niklas Klein",
         micrositeGithubOwner := "Taig",
         micrositeGithubRepo := "lokal",
-        micrositeTwitterCreator := "@tttaig",
+        micrositeGithubToken := Option( System.getenv( "GITHUB_TOKEN" ) ),
         micrositeHighlightTheme := "atom-one-light",
+        micrositeName := "Lokal",
         micrositePalette := Map(
             "brand-primary" -> "#3e4959",
             "brand-secondary" -> "#3e4959",
@@ -37,6 +37,7 @@ lazy val documentation = project
             "gray-light" -> "#e3e2e3",
             "gray-lighter" -> "#f4f3f4",
             "white-color" -> "#f3f3f3"
-        )
+        ),
+        micrositeTwitterCreator := "@tttaig"
     )
     .dependsOn( lokalJVM )

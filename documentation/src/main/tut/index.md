@@ -8,7 +8,19 @@ section: "home"
 [![codecov](https://codecov.io/gh/Taig/lokal/branch/master/graph/badge.svg)](https://codecov.io/gh/Taig/lokal)
 [![Maven Central](https://img.shields.io/maven-central/v/io.taig/lokal_2.12.svg)](https://index.scala-lang.org/taig/lokal)
 
-hello world
+# Lokal
+
+Lorem Ipsum
+
+# Installation
+
+_Lokal_ is available for Scala `2.12`, `2.11` and `2.10` via Maven Central.
+
+```scala
+libraryDependencies += "$organization" %% "lokal" % "$version"
+```
+
+# Getting started
 
 ```tut:invisible
 import io.taig.lokal._; import imports._
