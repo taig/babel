@@ -5,11 +5,13 @@ lazy val root = project.in( file( "." ) )
 lazy val lokal = crossProject.in( file( "." ) )
     .settings( Settings.common )
     .settings(
+        description := "i18n & l10n for (isomorphic) Scala applications",
         libraryDependencies ++=
             "org.typelevel" %%% "cats-core" % "0.9.0" ::
             "org.scalatest" %%% "scalatest" % "3.0.3" % "test" ::
             Nil,
-        name := "lokal"
+        name := "lokal",
+        startYear := Some( 2017 )
     )
 
 lazy val lokalJVM = lokal.jvm
@@ -21,7 +23,6 @@ lazy val documentation = project
     .settings( Settings.common ++ Settings.noPublish )
     .settings(
         micrositeName := "Lokal",
-        micrositeDescription := "i18n & l10n for (isomorphic) Scala applications",
         micrositeAuthor := "Niklas Klein",
         micrositeGithubOwner := "Taig",
         micrositeGithubRepo := "lokal",
