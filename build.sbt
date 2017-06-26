@@ -30,7 +30,7 @@ lazy val documentation = project
         micrositeGithubRepo := githubProject.value,
         micrositeGithubToken := Option( System.getenv( "GITHUB_TOKEN" ) ),
         micrositeGitterChannel := false,
-        micrositeHighlightTheme := "atom-one-light",
+        micrositeHighlightTheme := "atom-one-dark",
         micrositeName := ( name in coreJVM ).value,
         micrositePalette := Map(
             "brand-primary" -> "#3e4959",
@@ -46,7 +46,7 @@ lazy val documentation = project
     )
     .settings(
         buildInfoObject := "Build",
-        buildInfoPackage := s"${organization.value}.${( name in coreJVM ).value}",
+        buildInfoPackage := s"${organization.value}.${( normalizedName in coreJVM ).value}",
         buildInfoKeys := Seq[BuildInfoKey](
             crossScalaVersions,
             organization,
