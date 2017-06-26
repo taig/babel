@@ -51,6 +51,7 @@ lazy val documentation = project
         buildInfoPackage := s"${organization.value}.${( normalizedName in coreJVM ).value}",
         buildInfoKeys := Seq[BuildInfoKey](
             crossScalaVersions,
+            normalizedName in coreJVM,
             organization,
             version
         )
