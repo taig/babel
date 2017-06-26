@@ -10,21 +10,25 @@ section: "home"
 
 # Lokal
 
+```tut:invisible
+import io.taig.lokal._; import imports._; import Build._
+```
+
 Lorem Ipsum
 
 # Installation
 
 _Lokal_ is available for Scala `2.12`, `2.11` and `2.10` via Maven Central.
 
-```scala
-libraryDependencies += "$organization" %% "lokal" % "$version"
+```tut:evaluated
+println {
+    s"""
+     |libraryDependencies += "$organization" %% "lokal" % "$version"
+     """.stripMargin.trim
+}
 ```
 
 # Getting started
-
-```tut:invisible
-import io.taig.lokal._; import imports._
-```
 
 ```tut
 val de = de"Hallo"

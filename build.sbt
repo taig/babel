@@ -1,8 +1,8 @@
-lazy val root = project.in( file( "." ) )
+lazy val lokal = project.in( file( "." ) )
     .settings( Settings.common ++ Settings.noPublish )
-    .aggregate( lokalJVM, lokalJS )
+    .aggregate( coreJVM, coreJS )
 
-lazy val lokal = crossProject.in( file( "." ) )
+lazy val core = crossProject.in( file( "." ) )
     .settings( Settings.common )
     .settings(
         description := "i18n & l10n for (isomorphic) Scala applications",
@@ -14,17 +14,19 @@ lazy val lokal = crossProject.in( file( "." ) )
         startYear := Some( 2017 )
     )
 
-lazy val lokalJVM = lokal.jvm
+lazy val coreJVM = core.jvm
 
-lazy val lokalJS = lokal.js
+lazy val coreJS = core.js
 
 lazy val documentation = project
     .enablePlugins( BuildInfoPlugin, MicrositesPlugin )
     .settings( Settings.common ++ Settings.noPublish )
     .settings(
         micrositeAuthor := "Niklas Klein",
+        micrositeBaseUrl := s"/${githubProject.value}",
+        micrositeDescription := ( description in coreJVM ).value,
         micrositeGithubOwner := "Taig",
-        micrositeGithubRepo := "lokal",
+        micrositeGithubRepo := githubProject.value,
         micrositeGithubToken := Option( System.getenv( "GITHUB_TOKEN" ) ),
         micrositeHighlightTheme := "atom-one-light",
         micrositeName := "Lokal",
@@ -40,4 +42,13 @@ lazy val documentation = project
         ),
         micrositeTwitterCreator := "@tttaig"
     )
-    .dependsOn( lokalJVM )
+    .settings(
+        buildInfoObject := "Build",
+        buildInfoPackage := s"${organization.value}.${( name in coreJVM ).value}",
+        buildInfoKeys := Seq[BuildInfoKey](
+            crossScalaVersions,
+            organization,
+            version
+        )
+    )
+    .dependsOn( coreJVM )
