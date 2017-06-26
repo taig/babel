@@ -1,5 +1,5 @@
 import io.taig.sbt.sonatype.SonatypeHouserulesPlugin.autoImport._
-import sbt.Def
+import sbt._
 import sbt.Keys._
 
 object Settings {
@@ -16,6 +16,7 @@ object Settings {
             Scala210 ::
             Nil,
         githubProject := "lokal",
+        homepage := Some( url( "http://taig.io/lokal/" ) ),
         organization := "io.taig",
         scalaVersion := Scala212
     )

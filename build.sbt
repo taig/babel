@@ -10,7 +10,7 @@ lazy val core = crossProject.in( file( "." ) )
             "org.typelevel" %%% "cats-core" % "0.9.0" ::
             "org.scalatest" %%% "scalatest" % "3.0.3" % "test" ::
             Nil,
-        name := "lokal",
+        name := "Lokal",
         startYear := Some( 2017 )
     )
 
@@ -22,6 +22,7 @@ lazy val documentation = project
     .enablePlugins( BuildInfoPlugin, MicrositesPlugin )
     .settings( Settings.common ++ Settings.noPublish )
     .settings(
+        micrositeAnalyticsToken := "UA-64109905-2",
         micrositeAuthor := "Niklas Klein",
         micrositeBaseUrl := s"/${githubProject.value}",
         micrositeDescription := ( description in coreJVM ).value,
@@ -30,7 +31,7 @@ lazy val documentation = project
         micrositeGithubToken := Option( System.getenv( "GITHUB_TOKEN" ) ),
         micrositeGitterChannel := false,
         micrositeHighlightTheme := "atom-one-light",
-        micrositeName := "Lokal",
+        micrositeName := ( name in coreJVM ).value,
         micrositePalette := Map(
             "brand-primary" -> "#3e4959",
             "brand-secondary" -> "#3e4959",
