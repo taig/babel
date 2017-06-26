@@ -28,6 +28,7 @@ lazy val documentation = project
         micrositeGithubOwner := "Taig",
         micrositeGithubRepo := githubProject.value,
         micrositeGithubToken := Option( System.getenv( "GITHUB_TOKEN" ) ),
+        micrositeGitterChannel := false,
         micrositeHighlightTheme := "atom-one-light",
         micrositeName := "Lokal",
         micrositePalette := Map(

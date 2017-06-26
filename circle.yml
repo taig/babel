@@ -22,4 +22,4 @@ test:
     - sbt clean coverage test coverageReport
   post:
     - pip install --user codecov && codecov
-    - ./scripts/publish-microsite.sh
+    - if [[ "${CIRCLE_BRANCH}" != "gh-pages" ]] ; ./scripts/publish-microsite.sh ; fi
