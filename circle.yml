@@ -19,6 +19,11 @@ general:
   artifacts:
     - target/scala-2.12/coverage-report
 
+deployment:
+  release:
+    tag: /[0-9]+\.[0-9]+\.[0-9]+/
+    owner: Taig
+
 test:
   override:
     - sbt clean coverage test coverageReport
