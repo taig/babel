@@ -25,7 +25,7 @@ lazy val documentation = project
         micrositeAnalyticsToken := "UA-64109905-2",
         micrositeAuthor := "Niklas Klein",
         micrositeBaseUrl := s"/${githubProject.value}",
-        micrositeCssDirectory := ( resourceDirectory in Compile ).value / "stylesheet",
+        micrositeCssDirectory := sourceDirectory.value / "stylesheet",
         micrositeDescription := ( description in coreJVM ).value,
         micrositeGithubOwner := "Taig",
         micrositeGithubRepo := githubProject.value,
@@ -43,7 +43,8 @@ lazy val documentation = project
             "gray-lighter" -> "#f4f3f4",
             "white-color" -> "#f3f3f3"
         ),
-        micrositeTwitterCreator := "@tttaig"
+        micrositeTwitterCreator := "@tttaig",
+        tutSourceDirectory := sourceDirectory.value
     )
     .settings(
         buildInfoObject := "Build",

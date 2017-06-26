@@ -29,4 +29,4 @@ test:
     - sbt clean coverage test coverageReport
   post:
     - pip install --user codecov && codecov
-    - if [[ "$CIRCLE_BRANCH" != "gh-pages" ]]; then ./scripts/publish-microsite.sh; fi
+    - if [[ "$CIRCLE_BRANCH" == "master" && "$CIRCLE_TAG" != "" ]]; then ./scripts/publish-microsite.sh; fi
