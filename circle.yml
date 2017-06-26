@@ -2,18 +2,20 @@ machine:
   java:
     version: oraclejdk8
   environment:
+    SBT_VERSION: 0.13.15
     SBT_GHPAGES_COMMIT_MESSAGE: "Update site [ci skip]"
 
 dependencies:
   cache_directories:
     - /opt/circleci/.rvm/gems
     - ~/.coursier
+    - ~/.ivy2
     - ~/.sbt
   pre:
-    - wget -q https://dl.bintray.com/sbt/debian/sbt-0.13.15.deb && sudo dpkg -i sbt-0.13.15.deb
+    - wget -q https://dl.bintray.com/sbt/debian/sbt-"$SBT_VERSION".deb && sudo dpkg -i sbt-"$SBT_VERSION".deb
     - gem install jekyll
   override:
-    - sbt ";coverage;test:update;documentation:update"
+    - sbt ";coverage;+test:update;+documentation/compile"
 
 general:
   artifacts:
@@ -26,7 +28,7 @@ deployment:
 
 test:
   override:
-    - sbt coverage test coverageReport
+    - sbt ";coverage;+test;coverageReport"
   post:
     - pip install --user codecov && codecov
-    - if [[ "$CIRCLE_BRANCH" == "master" && "$CIRCLE_TAG" != "" ]]; then ./scripts/publish-microsite.sh; fi
+    - if [ -n "$CIRCLE_TAG" ]; then ./scripts/publish-microsite.sh; fi

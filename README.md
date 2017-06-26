@@ -1,5 +1,5 @@
-# Lokal (WIP)
+# Lokal
 
 > i18n & l10n for (isomorphic) Scala applications
 
-[Documentation](http://???)
+[Documentation](http://taig.io/lokal)
