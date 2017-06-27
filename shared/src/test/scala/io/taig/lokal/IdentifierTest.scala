@@ -1,5 +1,6 @@
 package io.taig.lokal
 
+import cats.implicits._
 import org.scalatest.{ FlatSpec, Matchers }
 
 class IdentifierTest extends FlatSpec with Matchers {
@@ -24,5 +25,9 @@ class IdentifierTest extends FlatSpec with Matchers {
     it should "have a String representation" in {
         Identifier.de.toString shouldBe "de"
         Identifier.de_DE.toString shouldBe "de-DE"
+    }
+
+    it should "have a Show instance" in {
+        Identifier.de_DE.show shouldBe Identifier.de_DE.toString
     }
 }

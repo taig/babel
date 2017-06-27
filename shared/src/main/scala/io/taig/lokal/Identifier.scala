@@ -1,5 +1,7 @@
 package io.taig.lokal
 
+import cats.Show
+
 case class Identifier( language: Language, country: Option[Country] ) {
     def compare( identifier: Identifier ): Identifier.Comparison =
         if ( this == identifier ) Identifier.Comparison.Exact
@@ -23,6 +25,8 @@ object Identifier extends Identifiers {
         case object Weak extends Comparison
         case object None extends Comparison
     }
+
+    implicit val show: Show[Identifier] = Show.fromToString
 
     def parse( identifier: String ): Option[Identifier] =
         identifier.split( "-" ) match {

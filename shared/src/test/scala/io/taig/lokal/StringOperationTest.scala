@@ -3,7 +3,7 @@ package io.taig.lokal
 import io.taig.lokal.imports._
 import org.scalatest.{ FlatSpec, Matchers }
 
-class StringTest extends FlatSpec with Matchers {
+class StringOperationTest extends FlatSpec with Matchers {
     it should "support interpolation with arbitrary types" in {
         de_DE"Hallo ${42}".value shouldBe "Hallo 42"
         de_DE"Hallo ${"Welt"}".value shouldBe "Hallo Welt"

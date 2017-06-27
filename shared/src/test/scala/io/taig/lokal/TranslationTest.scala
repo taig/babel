@@ -1,5 +1,6 @@
 package io.taig.lokal
 
+import cats.implicits._
 import cats.data.NonEmptyList
 import io.taig.lokal.imports._
 import org.scalatest.{ FlatSpec, Matchers }
@@ -8,6 +9,11 @@ class TranslationTest extends FlatSpec with Matchers {
     it should "have a String representation" in {
         ( de_DE"Hallo" & en"Hello" ).toString shouldBe
             """de-DE"Hallo" & en"Hello""""
+    }
+
+    it should "have a Show instance" in {
+        ( de_DE"Hallo" & en"Hello" ).show shouldBe
+            ( de_DE"Hallo" & en"Hello" ).toString
     }
 
     "&" should "allow to append a Localization" in {

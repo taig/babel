@@ -1,5 +1,6 @@
 package io.taig.lokal
 
+import cats.Show
 import cats.data.NonEmptyList
 
 case class Translation[A]( values: NonEmptyList[Localization[A]] )
@@ -22,4 +23,8 @@ case class Translation[A]( values: NonEmptyList[Localization[A]] )
         Translation( NonEmptyList( values.head, values.tail :+ localization ) )
 
     override def toString: String = values.toList.mkString( " & " )
+}
+
+object Translation {
+    implicit def show[A]: Show[Translation[A]] = Show.fromToString
 }
