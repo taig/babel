@@ -12,9 +12,16 @@ lazy val core = crossProject.in( file( "." ) )
             Nil,
         name := "Lokal",
         sourceGenerators in Compile += Def.task {
-            val file = ( sourceManaged in Compile ).value / "Countries.scala"
-            val pkg = s"${organization.value}.${normalizedName.value}"
-            IO.write( file, SourceGenerator.countriesTrait( pkg ) )
+            val source =
+                s"""|package ${organization.value}.${normalizedName.value}
+                    |
+                    |${SourceGenerator.countriesTrait}
+                    |
+                    |${SourceGenerator.languagesTrait}
+                 """.stripMargin
+
+            val file = ( sourceManaged in Compile ).value / "Definitions.scala"
+            IO.write( file, source )
             Seq( file )
         }.taskValue,
         startYear := Some( 2017 )
