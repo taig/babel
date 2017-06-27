@@ -18,6 +18,8 @@ lazy val core = crossProject.in( file( "." ) )
                     |${SourceGenerator.countriesTrait}
                     |
                     |${SourceGenerator.languagesTrait}
+                    |
+                    |${SourceGenerator.identifiersTrait}
                  """.stripMargin
 
             val file = ( sourceManaged in Compile ).value / "Definitions.scala"
