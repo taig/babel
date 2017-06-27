@@ -20,7 +20,8 @@ lazy val core = crossProject.in( file( "." ) )
                     |${SourceGenerator.languagesTrait}
                     |
                     |${SourceGenerator.identifiersTrait}
-                 """.stripMargin
+                    |
+                    |${SourceGenerator.stringOperationsTrait}""".stripMargin
 
             val file = ( sourceManaged in Compile ).value / "Definitions.scala"
             IO.write( file, source )

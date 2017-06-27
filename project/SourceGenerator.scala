@@ -47,7 +47,9 @@ object SourceGenerator {
             |}""".stripMargin
     
     def countryVal( code: String, name: String ): String =
-        s"""|    // $name
+        s"""|    /**
+            |     * $name
+            |     */
             |    val $code = Country( "$code" )""".stripMargin
 
     val languagesTrait: String =
@@ -56,7 +58,9 @@ object SourceGenerator {
             |}""".stripMargin
 
     def languageVal( code: String, name: String ): String =
-        s"""|    // $name
+        s"""|    /**
+            |     * $name
+            |     */
             |    val $code = Language( "$code" )""".stripMargin
 
     val identifiersTrait: String =
@@ -64,7 +68,10 @@ object SourceGenerator {
             |${identifiers.map( ( identifierVal _ ).tupled ).mkString( "\n\n" )}
             |}""".stripMargin
 
-    def identifierVal( language: String, countryOption: Option[String] ): String = {
+    def identifierVal(
+        language: String,
+        countryOption: Option[String]
+    ): String = {
         val ( name, country ) = countryOption match {
             case Some( country ) =>
                 ( s"${language}_$country", s"Some( Country.$country )" )
@@ -72,5 +79,25 @@ object SourceGenerator {
         }
 
         s"    val $name = Identifier( Language.$language, $country )"
+    }
+
+    def stringOperationsTrait: String =
+        s"""|trait StringOperations { this: operation.string =>
+            |${identifiers.map( ( stringOperationDef _ ).tupled ).mkString( "\n\n" )}
+            |}""".stripMargin
+
+    def stringOperationDef(
+        language: String,
+        countryOption: Option[String]
+    ): String = {
+        val identifier = countryOption.fold( language ) { country =>
+            s"${language}_$country"
+        }
+
+        s"""|    def $identifier( arguments: Any* ): Localization[String] =
+            |         Localization(
+            |             Identifier.$identifier,
+            |             substitude( Identifier.$identifier, arguments )
+            |         )""".stripMargin
     }
 }
