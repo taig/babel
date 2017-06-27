@@ -43,6 +43,14 @@ lazy val documentation = project
         micrositeBaseUrl := s"/${githubProject.value}",
         micrositeCssDirectory := sourceDirectory.value / "stylesheet",
         micrositeDescription := ( description in coreJVM ).value,
+        micrositeDocumentationUrl := {
+            val o = organization.value
+            val n = ( normalizedName in coreJVM ).value
+            val a = s"${n}_${scalaBinaryVersion.value}"
+            val v = version.value
+            val p = s"$o.$n".split( "\\." ).mkString( "/" )
+            s"https://static.javadoc.io/$o/$a/$v/$p/index.html"
+        },
         micrositeGithubOwner := "Taig",
         micrositeGithubRepo := githubProject.value,
         micrositeGithubToken := Option( System.getenv( "GITHUB_TOKEN" ) ),
