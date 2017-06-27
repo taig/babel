@@ -1,6 +1,8 @@
 package io.taig.lokal
 
 import cats.Show
+import cats.Eq
+import cats.implicits._
 import cats.data.NonEmptyList
 
 case class Translation[A]( values: NonEmptyList[Localization[A]] )
@@ -26,5 +28,7 @@ case class Translation[A]( values: NonEmptyList[Localization[A]] )
 }
 
 object Translation {
+    implicit def eq[A: Eq]: Eq[Translation[A]] = Eq.by( _.values )
+
     implicit def show[A]: Show[Translation[A]] = Show.fromToString
 }

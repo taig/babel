@@ -15,4 +15,14 @@ class LocalizationTest extends FlatSpec with Matchers {
         Localization( Identifier.de_DE, "Hallo" ).show shouldBe
             Localization( Identifier.de_DE, "Hallo" ).toString
     }
+
+    it should "have an Eq instance" in {
+        def convertToEqualizer = ???
+
+        val reference = Localization( Identifier.de_DE, "Hallo" )
+
+        reference === reference shouldBe true
+        reference === reference.copy( value = "Hello" ) shouldBe false
+        reference === reference.copy( identifier = Identifier.de ) shouldBe false
+    }
 }

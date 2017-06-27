@@ -16,6 +16,16 @@ class TranslationTest extends FlatSpec with Matchers {
             ( de_DE"Hallo" & en"Hello" ).toString
     }
 
+    it should "have an Eq instance" in {
+        def convertToEqualizer = ???
+
+        val reference = ( de_DE"Hallo" & en"Hello" )
+
+        reference === reference shouldBe true
+        reference === Translation( reference.values.reverse ) shouldBe false
+        reference === ( reference & de_AT"Serwus" ) shouldBe false
+    }
+
     "&" should "allow to append a Localization" in {
         val de = Localization( Identifier.de, "Hallo" )
         val de2 = Localization( Identifier.de_DE, "Hallo" )

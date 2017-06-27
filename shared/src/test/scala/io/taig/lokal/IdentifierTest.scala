@@ -30,4 +30,11 @@ class IdentifierTest extends FlatSpec with Matchers {
     it should "have a Show instance" in {
         Identifier.de_DE.show shouldBe Identifier.de_DE.toString
     }
+
+    it should "have an Eq instance" in {
+        def convertToEqualizer = ???
+        Identifier.de_DE === Identifier.de_DE shouldBe true
+        Identifier.de === Identifier.de_DE shouldBe false
+        Identifier.de_DE === Identifier.de shouldBe false
+    }
 }
