@@ -11,6 +11,12 @@ lazy val core = crossProject.in( file( "." ) )
             "org.scalatest" %%% "scalatest" % "3.0.3" % "test" ::
             Nil,
         name := "Lokal",
+        sourceGenerators in Compile += Def.task {
+            val file = ( sourceManaged in Compile ).value / "Countries.scala"
+            val pkg = s"${organization.value}.${normalizedName.value}"
+            IO.write( file, SourceGenerator.countriesTrait( pkg ) )
+            Seq( file )
+        }.taskValue,
         startYear := Some( 2017 )
     )
 
