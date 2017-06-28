@@ -1,8 +1,9 @@
 package io.taig.lokal
 
+import cats.implicits._
 import org.scalatest.{ FlatSpec, Matchers }
 
-class IdentifierTest extends FlatSpec with Matchers {
+class IdentifierTest extends Suite {
     it should "allow to compare two Identifiers" in {
         Identifier.de compare Identifier.de shouldBe Identifier.Comparison.Exact
         Identifier.de_DE compare Identifier.de_DE shouldBe Identifier.Comparison.Exact
@@ -24,5 +25,16 @@ class IdentifierTest extends FlatSpec with Matchers {
     it should "have a String representation" in {
         Identifier.de.toString shouldBe "de"
         Identifier.de_DE.toString shouldBe "de-DE"
+    }
+
+    it should "have a Show instance" in {
+        Identifier.de_DE.show shouldBe Identifier.de_DE.toString
+    }
+
+    it should "have an Eq instance" in {
+        def convertToEqualizer = ???
+        Identifier.de_DE === Identifier.de_DE shouldBe true
+        Identifier.de === Identifier.de_DE shouldBe false
+        Identifier.de_DE === Identifier.de shouldBe false
     }
 }

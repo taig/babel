@@ -1,13 +1,29 @@
 package io.taig.lokal
 
+import cats.implicits._
 import cats.data.NonEmptyList
 import io.taig.lokal.imports._
 import org.scalatest.{ FlatSpec, Matchers }
 
-class TranslationTest extends FlatSpec with Matchers {
+class TranslationTest extends Suite {
     it should "have a String representation" in {
         ( de_DE"Hallo" & en"Hello" ).toString shouldBe
             """de-DE"Hallo" & en"Hello""""
+    }
+
+    it should "have a Show instance" in {
+        ( de_DE"Hallo" & en"Hello" ).show shouldBe
+            ( de_DE"Hallo" & en"Hello" ).toString
+    }
+
+    it should "have an Eq instance" in {
+        def convertToEqualizer = ???
+
+        val reference = ( de_DE"Hallo" & en"Hello" )
+
+        reference === reference shouldBe true
+        reference === Translation( reference.values.reverse ) shouldBe false
+        reference === ( reference & de_AT"Serwus" ) shouldBe false
     }
 
     "&" should "allow to append a Localization" in {
