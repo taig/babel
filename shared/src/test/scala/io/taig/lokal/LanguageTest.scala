@@ -3,7 +3,7 @@ package io.taig.lokal
 import cats.implicits._
 import org.scalatest.{ FlatSpec, Matchers }
 
-class LanguageTest extends FlatSpec with Matchers {
+class LanguageTest extends Suite {
     it should "have an Eq instance" in {
         def convertToEqualizer = ???
         Language.de === Language.de shouldBe true

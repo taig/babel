@@ -3,7 +3,7 @@ package io.taig.lokal
 import cats.implicits._
 import org.scalatest.{ FlatSpec, Matchers }
 
-class IdentifierTest extends FlatSpec with Matchers {
+class IdentifierTest extends Suite {
     it should "allow to compare two Identifiers" in {
         Identifier.de compare Identifier.de shouldBe Identifier.Comparison.Exact
         Identifier.de_DE compare Identifier.de_DE shouldBe Identifier.Comparison.Exact

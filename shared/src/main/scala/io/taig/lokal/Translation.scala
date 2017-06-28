@@ -4,6 +4,7 @@ import cats.Show
 import cats.Eq
 import cats.implicits._
 import cats.data.NonEmptyList
+import cats.Semigroup
 
 case class Translation[A]( values: NonEmptyList[Localization[A]] )
         extends AnyVal {
@@ -31,4 +32,13 @@ object Translation {
     implicit def eq[A: Eq]: Eq[Translation[A]] = Eq.by( _.values )
 
     implicit def show[A]: Show[Translation[A]] = Show.fromToString
+
+    implicit def semigroup[A]: Semigroup[Translation[A]] =
+        new Semigroup[Translation[A]] {
+            override def combine(
+                a: Translation[A],
+                b: Translation[A]
+            ): Translation[A] =
+                Translation( a.values combine b.values )
+        }
 }
