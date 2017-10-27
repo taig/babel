@@ -1,19 +1,21 @@
-lazy val lokal = project.in( file( "." ) )
-    .settings( Settings.common ++ Settings.noPublish )
-    .aggregate( coreJVM, coreJS )
+lazy val lokal = project
+  .in(file("."))
+  .settings(Settings.common ++ Settings.noPublish)
+  .aggregate(coreJVM, coreJS)
 
-lazy val core = crossProject.in( file( "." ) )
-    .settings( Settings.common )
-    .settings(
-        description := "i18n & l10n for (isomorphic) Scala applications",
-        libraryDependencies ++=
-            "org.typelevel" %%% "cats-core" % "0.9.0" ::
-            "org.scalatest" %%% "scalatest" % "3.0.4" % "test" ::
-            Nil,
-        name := "Lokal",
-        sourceGenerators in Compile += Def.task {
-            val source =
-                s"""|package ${organization.value}.${normalizedName.value}
+lazy val core = crossProject
+  .in(file("."))
+  .settings(Settings.common)
+  .settings(
+    description := "i18n & l10n for (isomorphic) Scala applications",
+    libraryDependencies ++=
+      "org.typelevel" %%% "cats-core" % "0.9.0" ::
+        "org.scalatest" %%% "scalatest" % "3.0.4" % "test" ::
+        Nil,
+    name := "Lokal",
+    sourceGenerators in Compile += Def.task {
+      val source =
+        s"""|package ${organization.value}.${normalizedName.value}
                     |
                     |${SourceGenerator.countriesTrait}
                     |
@@ -23,12 +25,12 @@ lazy val core = crossProject.in( file( "." ) )
                     |
                     |${SourceGenerator.stringOperationsTrait}""".stripMargin
 
-            val file = ( sourceManaged in Compile ).value / "Definitions.scala"
-            IO.write( file, source )
-            Seq( file )
-        }.taskValue,
-        startYear := Some( 2017 )
-    )
+      val file = (sourceManaged in Compile).value / "Definitions.scala"
+      IO.write(file, source)
+      Seq(file)
+    }.taskValue,
+    startYear := Some(2017)
+  )
 
 lazy val coreJVM = core.jvm
 
@@ -80,4 +82,5 @@ lazy val documentation = project
             version
         )
     )
-    .dependsOn( coreJVM )
+  )
+  .dependsOn(coreJVM)
