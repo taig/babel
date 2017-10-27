@@ -8,7 +8,7 @@ addSbtPlugin( "io.taig" % "sbt-scalariform" % "1.7.1" )
 
 addSbtPlugin( "io.taig" % "sbt-sonatype" % "1.1.1" )
 
-addSbtPlugin( "org.scala-js" % "sbt-scalajs" % "0.6.18" )
+addSbtPlugin( "org.scala-js" % "sbt-scalajs" % "0.6.19" )
 
 addSbtPlugin( "org.scoverage" % "sbt-scoverage" % "1.5.0" )
 
