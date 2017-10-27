@@ -28,6 +28,7 @@ deployment:
 
 test:
   override:
+    - sbt ";scalafmt::test;test:scalafmt::test;sbt:scalafmt::test"
     - sbt -mem 4000 ";coverage;+test;coverageReport;documentation/makeMicrosite"
   post:
     - pip install --user codecov && codecov
