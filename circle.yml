@@ -2,7 +2,7 @@ machine:
   java:
     version: oraclejdk8
   environment:
-    SBT_VERSION: 0.13.15
+    SBT_VERSION: 1.0.3
     SBT_GHPAGES_COMMIT_MESSAGE: "Update site [ci skip]"
 
 dependencies:
@@ -28,7 +28,7 @@ deployment:
 
 test:
   override:
-    - sbt ";coverage;+test;coverageReport;documentation/makeMicrosite"
+    - sbt -mem 4000 ";coverage;+test;coverageReport;documentation/makeMicrosite"
   post:
     - pip install --user codecov && codecov
     - if [ -n "$CIRCLE_TAG" ]; then ./scripts/publish-microsite.sh; fi
