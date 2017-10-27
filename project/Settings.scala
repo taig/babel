@@ -4,7 +4,7 @@ import sbt.Keys._
 import scoverage.ScoverageSbtPlugin.autoImport._
 
 object Settings {
-    val Scala212 = "2.12.2"
+    val Scala212 = "2.12.4"
 
     val Scala211 = "2.11.11"
 
