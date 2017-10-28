@@ -68,6 +68,7 @@ lazy val documentation = project
             "white-color" -> "#f3f3f3"
         ),
         micrositeTwitterCreator := "@tttaig",
+        scalacOptions in Tut -= "-Ywarn-unused-import",
         tutSourceDirectory := sourceDirectory.value
     )
     .settings(
