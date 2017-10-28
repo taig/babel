@@ -1,7 +1,6 @@
 package io.taig.lokal
 
 import cats.implicits._
-import org.scalatest.{ FlatSpec, Matchers }
 
 class LocalizationTest extends Suite {
     it should "have a String representation" in {

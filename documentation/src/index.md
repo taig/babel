@@ -14,7 +14,7 @@ An internationalization (_i18n_) and localization (_l10n_) library for Scala and
 
 # Installation
 
-_Lokal_ is available for Scala `2.12`, `2.11` and `2.10` via Maven Central.
+_Lokal_ is available for Scala `2.12` and `2.11` via Maven Central.
 
 ```tut:invisible
 import io.taig.lokal.Build._
@@ -39,5 +39,7 @@ val de_CH = de_CH"Hoi"
 
 val translations = de & de_AT & de_CH
 
-translations.translate( Identifier.de_DE )
+implicit val myLocalization = LocalizationIdentifier.de_DE
+
+translations.translate
 ```
