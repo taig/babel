@@ -18,7 +18,7 @@ class StringOperationTest extends Suite {
     it should "support interpolation with Translations" in {
         val world = en"World" & de"Welt"
         val greeting = en"Hello $world" & de"Hallo $world"
-        greeting.translate( Identifier.en ) shouldBe "Hello World"
-        greeting.translate( Identifier.de ) shouldBe "Hallo Welt"
+        greeting.translate( LocalizationIdentifier.en ) shouldBe "Hello World"
+        greeting.translate( LocalizationIdentifier.de ) shouldBe "Hallo Welt"
     }
 }

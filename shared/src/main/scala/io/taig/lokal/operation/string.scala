@@ -4,8 +4,8 @@ import io.taig.lokal._
 
 final class string( val context: StringContext ) extends StringOperations {
     protected def substitude(
-        identifier: Identifier,
-        arguments:  Seq[Any]
+                                identifier: LocalizationIdentifier,
+                                arguments:  Seq[Any]
     ): String = {
         val translated = arguments.map {
             case translation @ Translation( _ ) ⇒
