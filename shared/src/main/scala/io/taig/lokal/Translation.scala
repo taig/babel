@@ -8,10 +8,10 @@ import cats.Semigroup
 
 case class Translation[A]( values: NonEmptyList[Localization[A]] )
         extends AnyVal {
-    def translate( identifier: Identifier ): A =
-        find( identifier, Identifier.Comparison.Exact )
-            .orElse( find( identifier, Identifier.Comparison.Almost ) )
-            .orElse( find( identifier, Identifier.Comparison.Weak ) )
+    def translate( implicit i: Identifier ): A =
+        find( i, Identifier.Comparison.Exact )
+            .orElse( find( i, Identifier.Comparison.Almost ) )
+            .orElse( find( i, Identifier.Comparison.Weak ) )
             .getOrElse( values.head )
             .value
 
