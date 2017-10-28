@@ -1,7 +1,6 @@
 package io.taig.lokal
 
 import cats.implicits._
-import org.scalatest.{ FlatSpec, Matchers }
 
 class LanguageTest extends Suite {
     it should "have an Eq instance" in {

@@ -3,7 +3,6 @@ package io.taig.lokal
 import cats.implicits._
 import cats.data.NonEmptyList
 import io.taig.lokal.imports._
-import org.scalatest.{ FlatSpec, Matchers }
 
 class TranslationTest extends Suite {
     it should "have a String representation" in {

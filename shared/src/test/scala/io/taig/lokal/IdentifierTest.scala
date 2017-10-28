@@ -1,7 +1,6 @@
 package io.taig.lokal
 
 import cats.implicits._
-import org.scalatest.{ FlatSpec, Matchers }
 
 class IdentifierTest extends Suite {
     it should "allow to compare two Identifiers" in {

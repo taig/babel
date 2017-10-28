@@ -1,7 +1,6 @@
 package io.taig.lokal
 
 import io.taig.lokal.imports._
-import org.scalatest.{ FlatSpec, Matchers }
 
 class StringOperationTest extends Suite {
     it should "support interpolation with arbitrary types" in {
