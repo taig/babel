@@ -2,7 +2,7 @@ package io.taig.lokal
 
 import cats.implicits._
 
-class IdentifierTest extends Suite {
+class LocalizationIdentifierTest extends Suite {
     it should "allow to compare two Identifiers" in {
         LocalizationIdentifier.de compare LocalizationIdentifier.de shouldBe LocalizationIdentifier.Comparison.Exact
         LocalizationIdentifier.de_DE compare LocalizationIdentifier.de_DE shouldBe LocalizationIdentifier.Comparison.Exact
