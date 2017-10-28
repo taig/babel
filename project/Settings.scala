@@ -25,6 +25,8 @@ object Settings {
         scalacOptions ++=
             "-deprecation" ::
             "-feature" ::
+            "-Xfatal-warnings" ::
+            "-Ywarn-unused-import" ::
             Nil,
         scalaVersion := Scala212
     )
