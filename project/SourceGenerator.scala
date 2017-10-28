@@ -64,7 +64,7 @@ object SourceGenerator {
             |    val $code = Language( "$code" )""".stripMargin
 
     val identifiersTrait: String =
-        s"""|trait Identifiers {
+        s"""|trait LocalizationIdentifiers {
             |${identifiers.map( ( identifierVal _ ).tupled ).mkString( "\n\n" )}
             |}""".stripMargin
 
@@ -78,7 +78,7 @@ object SourceGenerator {
             case None => ( language, "None" )
         }
 
-        s"    val $name = Identifier( Language.$language, $country )"
+        s"    val $name = LocalizationIdentifier( Language.$language, $country )"
     }
 
     def stringOperationsTrait: String =
@@ -96,8 +96,8 @@ object SourceGenerator {
 
         s"""|    def $identifier( arguments: Any* ): Localization[String] =
             |         Localization(
-            |             Identifier.$identifier,
-            |             substitude( Identifier.$identifier, arguments )
+            |             LocalizationIdentifier.$identifier,
+            |             substitude( LocalizationIdentifier.$identifier, arguments )
             |         )""".stripMargin
     }
 }

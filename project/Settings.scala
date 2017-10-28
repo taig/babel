@@ -22,6 +22,10 @@ object Settings {
         githubProject := "lokal",
         homepage := Some( url( "http://taig.io/lokal/" ) ),
         organization := "io.taig",
+        scalacOptions ++=
+            "-deprecation" ::
+            "-feature" ::
+            Nil,
         scalaVersion := Scala212
     )
 

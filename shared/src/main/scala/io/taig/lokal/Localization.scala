@@ -4,7 +4,7 @@ import cats.{ Eq, Show }
 import cats.implicits._
 import cats.data.NonEmptyList
 
-case class Localization[A]( identifier: Identifier, value: A ) {
+case class Localization[A]( identifier: LocalizationIdentifier, value: A ) {
     def &( localization: Localization[A] ): Translation[A] =
         Translation( NonEmptyList.of( this, localization ) )
 

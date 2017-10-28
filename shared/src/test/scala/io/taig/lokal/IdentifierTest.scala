@@ -5,36 +5,36 @@ import org.scalatest.{ FlatSpec, Matchers }
 
 class IdentifierTest extends Suite {
     it should "allow to compare two Identifiers" in {
-        Identifier.de compare Identifier.de shouldBe Identifier.Comparison.Exact
-        Identifier.de_DE compare Identifier.de_DE shouldBe Identifier.Comparison.Exact
-        Identifier.de compare Identifier.de_DE shouldBe Identifier.Comparison.Weak
-        Identifier.de_DE compare Identifier.de shouldBe Identifier.Comparison.Almost
-        Identifier.de compare Identifier.en shouldBe Identifier.Comparison.None
-        Identifier.de_DE compare Identifier.en shouldBe Identifier.Comparison.None
-        Identifier.de compare Identifier.en_US shouldBe Identifier.Comparison.None
-        Identifier.de_DE compare Identifier.en_US shouldBe Identifier.Comparison.None
+        LocalizationIdentifier.de compare LocalizationIdentifier.de shouldBe LocalizationIdentifier.Comparison.Exact
+        LocalizationIdentifier.de_DE compare LocalizationIdentifier.de_DE shouldBe LocalizationIdentifier.Comparison.Exact
+        LocalizationIdentifier.de compare LocalizationIdentifier.de_DE shouldBe LocalizationIdentifier.Comparison.Weak
+        LocalizationIdentifier.de_DE compare LocalizationIdentifier.de shouldBe LocalizationIdentifier.Comparison.Almost
+        LocalizationIdentifier.de compare LocalizationIdentifier.en shouldBe LocalizationIdentifier.Comparison.None
+        LocalizationIdentifier.de_DE compare LocalizationIdentifier.en shouldBe LocalizationIdentifier.Comparison.None
+        LocalizationIdentifier.de compare LocalizationIdentifier.en_US shouldBe LocalizationIdentifier.Comparison.None
+        LocalizationIdentifier.de_DE compare LocalizationIdentifier.en_US shouldBe LocalizationIdentifier.Comparison.None
     }
 
     it should "be able to parse language Identifiers" in {
-        Identifier.parse( "de" ) shouldBe Some( Identifier.de )
-        Identifier.parse( "de-DE" ) shouldBe Some( Identifier.de_DE )
-        Identifier.parse( "de-DE-AT" ) shouldBe None
-        Identifier.parse( "foobar" ) shouldBe None
+        LocalizationIdentifier.parse( "de" ) shouldBe Some( LocalizationIdentifier.de )
+        LocalizationIdentifier.parse( "de-DE" ) shouldBe Some( LocalizationIdentifier.de_DE )
+        LocalizationIdentifier.parse( "de-DE-AT" ) shouldBe None
+        LocalizationIdentifier.parse( "foobar" ) shouldBe None
     }
 
     it should "have a String representation" in {
-        Identifier.de.toString shouldBe "de"
-        Identifier.de_DE.toString shouldBe "de-DE"
+        LocalizationIdentifier.de.toString shouldBe "de"
+        LocalizationIdentifier.de_DE.toString shouldBe "de-DE"
     }
 
     it should "have a Show instance" in {
-        Identifier.de_DE.show shouldBe Identifier.de_DE.toString
+        LocalizationIdentifier.de_DE.show shouldBe LocalizationIdentifier.de_DE.toString
     }
 
     it should "have an Eq instance" in {
         def convertToEqualizer = ???
-        Identifier.de_DE === Identifier.de_DE shouldBe true
-        Identifier.de === Identifier.de_DE shouldBe false
-        Identifier.de_DE === Identifier.de shouldBe false
+        LocalizationIdentifier.de_DE === LocalizationIdentifier.de_DE shouldBe true
+        LocalizationIdentifier.de === LocalizationIdentifier.de_DE shouldBe false
+        LocalizationIdentifier.de_DE === LocalizationIdentifier.de shouldBe false
     }
 }
