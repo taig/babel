@@ -39,5 +39,7 @@ val de_CH = de_CH"Hoi"
 
 val translations = de & de_AT & de_CH
 
-translations.translate( LocalizationIdentifier.de_DE )
+implicit val myLocalization = LocalizationIdentifier.de_DE
+
+translations.translate
 ```
