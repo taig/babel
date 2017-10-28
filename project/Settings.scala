@@ -8,8 +8,6 @@ object Settings {
 
     val Scala211 = "2.11.11"
 
-    val Scala210 = "2.10.6"
-
     val common = Def.settings(
         coverageHighlighting := {
             scalaBinaryVersion.value match {
@@ -20,7 +18,6 @@ object Settings {
         crossScalaVersions :=
             Scala212 ::
             Scala211 ::
-            Scala210 ::
             Nil,
         githubProject := "lokal",
         homepage := Some( url( "http://taig.io/lokal/" ) ),
