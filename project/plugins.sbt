@@ -1,4 +1,4 @@
-addSbtPlugin( "com.47deg"  % "sbt-microsites" % "0.7.4" )
+addSbtPlugin( "com.47deg"  % "sbt-microsites" % "0.7.15" )
 
 addSbtPlugin( "com.eed3si9n" % "sbt-buildinfo" % "0.7.0" )
 
