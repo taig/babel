@@ -6,7 +6,7 @@ addSbtPlugin( "io.get-coursier" % "sbt-coursier" % "1.0.0-RC12" )
 
 addSbtPlugin( "io.taig" % "sbt-sonatype-houserules" % "1.2.0" )
 
-addSbtPlugin( "org.scala-js" % "sbt-scalajs" % "0.6.20" )
+addSbtPlugin( "org.scala-js" % "sbt-scalajs" % "0.6.22" )
 
 addSbtPlugin( "org.scoverage" % "sbt-scoverage" % "1.5.1" )
 
