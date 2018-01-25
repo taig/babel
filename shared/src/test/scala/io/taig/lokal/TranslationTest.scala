@@ -57,7 +57,7 @@ class TranslationTest extends Suite {
         translation.translate( LocalizationIdentifier.de_LU ) shouldBe "Grüß Gott"
     }
 
-    it should "otherwise, if not available, fallback to the first Localization" in {
+    it should "otherwise, if not available, fall back to the first Localization" in {
         val translation = Localization( LocalizationIdentifier.de, "Hallo" ) &
                           Localization( LocalizationIdentifier.de_AT, "Grüß Gott" ) &
                           Localization( LocalizationIdentifier.de_CH, "Hoi" )

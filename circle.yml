@@ -28,7 +28,7 @@ deployment:
 
 test:
   override:
-    - sbt -mem 4000 ";coverage;+test;coverageReport;documentation/makeMicrosite"
+    - sbt -mem 4000 ";coverage;+test;documentation/makeMicrosite;coverageReport"
   post:
     - pip install --user codecov && codecov
     - if [ -n "$CIRCLE_TAG" ]; then ./scripts/publish-microsite.sh; fi
