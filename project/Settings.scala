@@ -6,15 +6,9 @@ import scoverage.ScoverageSbtPlugin.autoImport._
 object Settings {
     val Scala212 = "2.12.4"
 
-    val Scala211 = "2.11.11"
+    val Scala211 = "2.11.12"
 
     val common = Def.settings(
-        coverageHighlighting := {
-            scalaBinaryVersion.value match {
-                case "2.10" => false
-                case _ => true
-            }
-        },
         crossScalaVersions :=
             Scala212 ::
             Scala211 ::
