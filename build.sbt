@@ -41,7 +41,6 @@ lazy val documentation = project
         micrositeAnalyticsToken := "UA-64109905-2",
         micrositeAuthor := "Niklas Klein",
         micrositeBaseUrl := s"/${githubProject.value}",
-        micrositeCssDirectory := sourceDirectory.value / "stylesheet",
         micrositeDescription := ( description in coreJVM ).value,
         micrositeDocumentationUrl := {
             val o = organization.value
