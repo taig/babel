@@ -8,7 +8,7 @@ lazy val core = crossProject.in( file( "." ) )
         description := "i18n & l10n for (isomorphic) Scala applications",
         libraryDependencies ++=
             "org.typelevel" %%% "cats-core" % "1.2.0" ::
-            "org.scalatest" %%% "scalatest" % "3.0.4" % "test" ::
+            "org.scalatest" %%% "scalatest" % "3.0.5" % "test" ::
             Nil,
         name := "Lokal",
         sourceGenerators in Compile += Def.task {
