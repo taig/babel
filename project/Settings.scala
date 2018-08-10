@@ -18,6 +18,7 @@ object Settings {
     scalacOptions ++=
       "-deprecation" ::
         "-feature" ::
+        "-Xexperimental" ::
         "-Xfatal-warnings" ::
         "-Ywarn-unused-import" ::
         Nil,

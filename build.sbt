@@ -12,21 +12,13 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
     description := "i18n & l10n for (isomorphic) Scala applications",
     libraryDependencies ++=
       "org.typelevel" %%% "cats-core" % "1.2.0" ::
+        "io.github.cquiroz" %%% "scala-java-locales" % "0.5.2-cldr31" ::
         "org.scalatest" %%% "scalatest" % "3.0.5" % "test" ::
         Nil,
     name := "Lokal",
     sourceGenerators in Compile += Def.task {
       val source =
-        s"""package ${organization.value}.${normalizedName.value}
-           |
-           |${SourceGenerator.countriesTrait}
-           |
-           |${SourceGenerator.languagesTrait}
-           |
-           |${SourceGenerator.identifiersTrait}
-           |
-           |${SourceGenerator.stringOperationsTrait}""".stripMargin
-
+        SourceGenerator.render(s"${organization.value}.${normalizedName.value}")
       val file = (sourceManaged in Compile).value / "Definitions.scala"
       IO.write(file, source)
       Seq(file)

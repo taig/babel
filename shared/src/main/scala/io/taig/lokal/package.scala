@@ -1,9 +1,7 @@
 package io.taig
 
-package object lokal {
-  @deprecated("Use LocalizationIdentifier", "0.2.2")
-  type Identifier = LocalizationIdentifier
+import java.util.Locale
 
-  @deprecated("Use LocalizationIdentifier", "0.2.2")
-  val Identifier = LocalizationIdentifier
+package object lokal {
+  val WildcardLocale = new Locale("*")
 }
