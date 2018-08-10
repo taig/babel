@@ -1,14 +1,13 @@
 import io.taig.sbt.sonatype.SonatypeHouserulesPlugin.autoImport._
 import sbt._
 import sbt.Keys._
-import scoverage.ScoverageSbtPlugin.autoImport._
 
 object Settings {
     val Scala212 = "2.12.6"
 
     val Scala211 = "2.11.12"
 
-    val common = Def.settings(
+    val common: Seq[Def.Setting[_]] = Def.settings(
         crossScalaVersions :=
             Scala212 ::
             Scala211 ::
@@ -25,7 +24,7 @@ object Settings {
         scalaVersion := Scala212
     )
 
-    val noPublish = Def.settings(
+    val noPublish: Seq[Def.Setting[_]] = Def.settings(
         publish := {},
         publishArtifact := false,
         publishLocal := {}

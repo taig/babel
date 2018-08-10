@@ -7,7 +7,7 @@ lazy val core = crossProject.in( file( "." ) )
     .settings(
         description := "i18n & l10n for (isomorphic) Scala applications",
         libraryDependencies ++=
-            "org.typelevel" %%% "cats-core" % "1.0.1" ::
+            "org.typelevel" %%% "cats-core" % "1.2.0" ::
             "org.scalatest" %%% "scalatest" % "3.0.4" % "test" ::
             Nil,
         name := "Lokal",
