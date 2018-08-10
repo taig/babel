@@ -15,6 +15,7 @@ dependencies:
     - wget -q https://dl.bintray.com/sbt/debian/sbt-"$SBT_VERSION".deb && sudo dpkg -i sbt-"$SBT_VERSION".deb
     - gem install jekyll
   override:
+    - sbt scalafmtTestAll
     - sbt ";coverage;+test:update;+documentation/compile"
 
 general:
