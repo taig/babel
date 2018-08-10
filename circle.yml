@@ -2,7 +2,7 @@ machine:
   java:
     version: oraclejdk8
   environment:
-    SBT_VERSION: 1.1.0
+    SBT_VERSION: 1.2.1
     SBT_GHPAGES_COMMIT_MESSAGE: "Update site [ci skip]"
 
 dependencies:
