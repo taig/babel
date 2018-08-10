@@ -1,8 +1,10 @@
+import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
+
 lazy val lokal = project.in( file( "." ) )
     .settings( Settings.common ++ Settings.noPublish )
     .aggregate( coreJVM, coreJS )
 
-lazy val core = crossProject.in( file( "." ) )
+lazy val core = crossProject(JSPlatform, JVMPlatform).in( file( "." ) )
     .settings( Settings.common )
     .settings(
         description := "i18n & l10n for (isomorphic) Scala applications",
