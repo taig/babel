@@ -1,9 +1,5 @@
 import java.util.Locale
 
-import sbt._
-import sbt.Def.Initialize
-import sbt.Keys._
-
 object SourceGenerator {
   val locales: Array[Locale] = Locale.getAvailableLocales
     .filter { locale =>
@@ -24,10 +20,15 @@ object SourceGenerator {
   def localesObject: String =
     s"""object Locales {
        |  ${locales.map(localeVal).mkString("\n\n  ")}
+       |
+       |  $allVal
        |}""".stripMargin
 
   def localeVal(locale: Locale): String =
     s"""val ${locale.toString} = new Locale("${locale.getLanguage}", "${locale.getCountry}")"""
+  
+  val allVal: String =
+    s"val All: List[Locale] = List(${locales.map(_.toString).mkString(", ")})"
 
   def stringOperationsTrait: String =
     s"""trait LokalStringOperations { this: LokalStringContext =>
