@@ -4,6 +4,7 @@ import java.util.Locale
 
 import cats.implicits._
 import cats.data.NonEmptyList
+import cats.Eq
 import io.taig.lokal.implicits._
 
 case class Translations[A](values: NonEmptyList[Translation[A]])
@@ -27,4 +28,6 @@ object Translations {
 
   def of[A](locale: Locale, value: A): Translations[A] =
     Translations.of(Translation(locale, value))
+
+  implicit def eq[A: Eq]: Eq[Translations[A]] = Eq.by(_.values)
 }
