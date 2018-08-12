@@ -13,8 +13,8 @@ case class Translations[A](values: NonEmptyList[Translation[A]])
     Translations(values concatNel translations.values)
 
   /**
-    * Find the [[io.taig.lokal.Translation]] that matches the given
-    * [[java.util.Locale]] best
+    * Find the [[io.taig.lokal.Translation]] that matches the given `Locale`
+    * best
     *
     * Matches are considered in the following order:
     *
@@ -31,8 +31,8 @@ case class Translations[A](values: NonEmptyList[Translation[A]])
       .orElse(values.find(_.locale === WildcardLocale))
 
   /**
-    * Find the [[io.taig.lokal.Translation]] that matches the given
-    * [[java.util.Locale]] best
+    * Find the [[io.taig.lokal.Translation]] that matches the given `Locale`
+    * best
     *
     * Matches are considered in the following order:
     *
@@ -47,8 +47,8 @@ case class Translations[A](values: NonEmptyList[Translation[A]])
     tryResolve(locale).getOrElse(values.head)
 
   /**
-    * Find the [[io.taig.lokal.Translation]] that matches the given
-    * [[java.util.Locale Locales]] best
+    * Find the [[io.taig.lokal.Translation]] that matches the given `Locales`
+    * best
     *
     * @param locales Accepted Locales, ordered by preference
     */
@@ -56,16 +56,16 @@ case class Translations[A](values: NonEmptyList[Translation[A]])
     locales.collectFirstSome(tryResolve).getOrElse(values.head)
 
   /**
-    * Find the [[io.taig.lokal.Translation]] that matches the given
-    * [[java.util.Locale]] best and return its `value`
+    * Find the [[io.taig.lokal.Translation]] that matches the given `Locale`
+    * best and return its `value`
     *
     * @see resolve
     */
   def translate(locale: Locale): A = resolve(locale).value
 
   /**
-    * Find the [[io.taig.lokal.Translation]] that matches the given
-    * [[java.util.Locale Locales]] best and return its `value`
+    * Find the [[io.taig.lokal.Translation]] that matches the given `Locales`
+    * best and return its `value`
     *
     * @param locales Accepted Locales, ordered by preference
     */
