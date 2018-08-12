@@ -12,14 +12,65 @@ case class Translations[A](values: NonEmptyList[Translation[A]])
   def &(translations: Translations[A]): Translations[A] =
     Translations(values concatNel translations.values)
 
-  def resolve(locale: Locale): Translation[A] =
+  /**
+    * Find the [[io.taig.lokal.Translation]] that matches the given
+    * [[java.util.Locale]] best
+    *
+    * Matches are considered in the following order:
+    *
+    * <ol>
+    *   <li>direct matches with equal language & country</li>
+    *   <li>matches with equal language</li>
+    *   <li>wildcard translation</li>
+    * </ol>
+    */
+  def tryResolve(locale: Locale): Option[Translation[A]] =
     values
       .find(_.locale === locale)
       .orElse(values.find(_.locale.getLanguage === locale.getLanguage))
       .orElse(values.find(_.locale === WildcardLocale))
-      .getOrElse(values.head)
 
+  /**
+    * Find the [[io.taig.lokal.Translation]] that matches the given
+    * [[java.util.Locale]] best
+    *
+    * Matches are considered in the following order:
+    *
+    * <ol>
+    *   <li>direct matches with equal language & country</li>
+    *   <li>matches with equal language</li>
+    *   <li>wildcard translation</li>
+    *   <li>the first available translation</li>
+    * </ol>
+    */
+  def resolve(locale: Locale): Translation[A] =
+    tryResolve(locale).getOrElse(values.head)
+
+  /**
+    * Find the [[io.taig.lokal.Translation]] that matches the given
+    * [[java.util.Locale Locales]] best
+    *
+    * @param locales Accepted Locales, ordered by preference
+    */
+  def resolve(locales: List[Locale]): Translation[A] =
+    locales.collectFirstSome(tryResolve).getOrElse(values.head)
+
+  /**
+    * Find the [[io.taig.lokal.Translation]] that matches the given
+    * [[java.util.Locale]] best and return its `value`
+    *
+    * @see resolve
+    */
   def translate(locale: Locale): A = resolve(locale).value
+
+  /**
+    * Find the [[io.taig.lokal.Translation]] that matches the given
+    * [[java.util.Locale Locales]] best and return its `value`
+    *
+    * @param locales Accepted Locales, ordered by preference
+    */
+  def translate(locales: List[Locale]): A = resolve(locales).value
+
 }
 
 object Translations {
