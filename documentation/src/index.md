@@ -31,7 +31,7 @@ println {
 # Getting started
 
 ```tut:reset
-import io.taig.lokal._; import imports._
+import io.taig.lokal._; import implicits._
 
 val de = de"Hallo"
 val de_AT = de_AT"Grüß Gott"
@@ -39,7 +39,5 @@ val de_CH = de_CH"Hoi"
 
 val translations = de & de_AT & de_CH
 
-implicit val myLocalization = LocalizationIdentifier.de_DE
-
-translations.translate
+translations.translate(Locales.de_DE)
 ```
