@@ -16,7 +16,7 @@ dependencies:
     - gem install jekyll
   override:
     - sbt scalafmtTestAll
-    - sbt ";coverage;+test:update;+documentation/compile"
+    - sbt ";coverage;test:update;+documentation/compile"
 
 general:
   artifacts:
@@ -29,7 +29,7 @@ deployment:
 
 test:
   override:
-    - sbt -mem 4000 ";coverage;+test;documentation/makeMicrosite;coverageReport"
+    - sbt -mem 4000 ";coverage;test;documentation/makeMicrosite;coverageReport"
   post:
     - pip install --user codecov && codecov
     - if [ -n "$CIRCLE_TAG" ]; then ./scripts/publish-microsite.sh; fi
