@@ -1,0 +1,44 @@
+version: 2
+jobs:
+  build:
+    working_directory: /lokal/
+    docker:
+    - image: docker:17.11.0-ce-rc2-git
+    steps:
+    - checkout
+    - setup_remote_docker
+    - restore_cache:
+        keys:
+        - v1-{{ .Branch }}
+        paths:
+        - /caches/lokal.tar
+    - run:
+        name: Load Docker image layer cache
+        command: |
+          set +o pipefail
+          docker load -i /caches/lokal.tar | true
+    - run:
+        name: Build docker images
+        command: |
+          docker build --cache-from=lokal -t lokal .
+    - run:
+        name: Save Docker image layer cache
+        command: |
+          mkdir -p /caches/
+          docker save -o /caches/lokal.tar lokal
+    - save_cache:
+        key: v1-{{ .Branch }}-{{ epoch }}
+        paths:
+        - /caches/lokal.tar
+    - run:
+        name: Run tests
+        command: |
+          docker create -v /lokal/ --name lokal alpine /bin/true
+          docker cp /lokal/ lokal:/
+          docker run \
+            --entrypoint="./scripts/test.sh" \
+            --env CIRCLE_BRANCH=$CIRCLE_BRANCH \
+            --env CODECOV_TOKEN=$CODECOV_TOKEN \
+            --env SBT_GHPAGES_COMMIT_MESSAGE="Update site [ci skip]" \
+            --volumes-from lokal \
+            lokal
