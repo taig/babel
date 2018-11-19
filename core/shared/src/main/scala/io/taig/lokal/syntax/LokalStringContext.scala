@@ -9,17 +9,17 @@ final class LokalStringContext(context: StringContext)
     extends LokalStringOperations {
   private def substitute(locale: Locale, arguments: Seq[Any]): String = {
     val translations = arguments.map {
-      case translations @ Translations(_) ⇒ translations.translate(locale)
-      case default ⇒ default
+      case translation: Translation[_] ⇒ translation(locale).toString
+      case value ⇒ value.toString
     }
 
     context.s(translations: _*)
   }
 
   protected def apply(locale: Locale,
-                      arguments: Seq[Any]): Translations[String] =
-    Translations.of(locale, substitute(locale, arguments))
+                      arguments: Seq[Any]): Translation[Option[String]] =
+    Translation(locale, substitute(locale, arguments))
 
-  def all(arguments: Any*): Translations[String] =
-    apply(WildcardLocale, arguments)
+  def xx(arguments: Any*): Translation[String] =
+    Translation(locale => substitute(locale, arguments))
 }

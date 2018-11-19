@@ -6,7 +6,7 @@ lazy val lokal = project
   .aggregate(coreJVM, coreJS)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
-  .in(file("."))
+  .withoutSuffixFor(JVMPlatform)
   .settings(Settings.common)
   .settings(
     description := "i18n & l10n for (isomorphic) Scala applications",

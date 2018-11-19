@@ -19,26 +19,27 @@ object SourceGenerator {
 
   def localesObject: String =
     s"""object Locales {
-       |  ${locales.map(localeVal).mkString("\n\n  ")}
+       |${locales.map(localeVal).mkString("\n\n")}
        |
-       |  $allVal
+       |$allVal
        |}""".stripMargin
 
   def localeVal(locale: Locale): String =
-    s"""val ${locale.toString} = new Locale("${locale.getLanguage}", "${locale.getCountry}")"""
+    s"""  val ${locale.toString} = new Locale("${locale.getLanguage}", "${locale.getCountry}")"""
 
   val allVal: String =
-    s"val All: List[Locale] = List(${locales.map(_.toString).mkString(", ")})"
+    s"  val All: List[Locale] = List(${locales.map(_.toString).mkString(", ")})"
 
   def stringOperationsTrait: String =
     s"""trait LokalStringOperations { this: LokalStringContext =>
-       |  ${locales.map(stringOperationDef).mkString("\n\n  ")}
+       |${locales.map(stringOperationDef).mkString("\n\n  ")}
        |}""".stripMargin
 
   def stringOperationDef(locale: Locale): String = {
     val identifier = locale.toString
 
-    s"""def $identifier(arguments: Any*): Translations[String] =
+    s"""  @inline
+       |  def $identifier(arguments: Any*): Translation[Option[String]] =
        |    apply(Locales.$identifier, arguments)""".stripMargin
   }
 }
