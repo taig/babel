@@ -3,7 +3,7 @@ package io.taig.lokal
 import java.util.Locale
 
 import cats.implicits._
-import cats.{Eq, FlatMap, Semigroup, Show}
+import cats.{Eq, FlatMap, Semigroup, SemigroupK, Show}
 import io.taig.lokal.implicits._
 
 case class Translation[A](locale: Locale,
@@ -20,9 +20,9 @@ case class Translation[A](locale: Locale,
         .get(locale)
         .orElse(translations.get(new Locale(locale.getLanguage)))
 
-  def locales: List[Locale] = locale +: translations.keys.toList
+  def locales: Set[Locale] = translations.keys.toSet + locale
 
-  def values: List[A] = value +: translations.values.toList
+  def values: Set[A] = translations.values.toSet + value
 
   def toMap: Map[Locale, A] = translations + (locale -> value)
 
@@ -72,7 +72,7 @@ object Translation {
   }
 
   implicit def semigroup[A: Semigroup]: Semigroup[Translation[A]] = { (x, y) =>
-    val locales = x.locales.toSet ++ y.locales.toSet - x.locale
+    val locales = x.locales ++ y.locales - x.locale
 
     val translations = locales.map { locale =>
       locale -> (x(locale) |+| y(locale))
@@ -80,6 +80,15 @@ object Translation {
 
     Translation(x.locale, x.value |+| y(x.locale), translations)
   }
+
+  implicit val semigroupK: SemigroupK[Translation] =
+    new SemigroupK[Translation] {
+      override def combineK[A](x: Translation[A],
+                               y: Translation[A]): Translation[A] = {
+        val translations = (x.toMap ++ y.toMap) - y.locale
+        Translation(y.locale, y.value, translations)
+      }
+    }
 
   implicit def show[A: Show]: Show[Translation[A]] = Show.show { translation =>
     translation.toMap

@@ -1,7 +1,7 @@
 package io.taig.lokal
 
 import cats.kernel.laws.discipline.SemigroupTests
-import cats.laws.discipline.FlatMapTests
+import cats.laws.discipline.{FlatMapTests, SemigroupKTests}
 import cats.tests.CatsSuite
 import org.scalacheck.Arbitrary
 
@@ -11,4 +11,5 @@ class TranslationLawTest extends CatsSuite {
 
   checkAll("Translation.FlatMapLaws", FlatMapTests[Translation].flatMap[Int, Int, String])
   checkAll("Translation.SemigroupLaws", SemigroupTests[Translation[Int]].semigroup)
+  checkAll("Translation.SemigroupKLaws", SemigroupKTests[Translation].semigroupK[Int])
 }
