@@ -7,8 +7,7 @@ import cats.{Eq, Show}
 
 trait LocaleInstances {
   implicit val lokalLocaleEq: Eq[Locale] =
-    (x: Locale, y: Locale) =>
-      x.getLanguage === y.getLanguage && x.getCountry === y.getCountry
+    (x, y) => x.getLanguage === y.getLanguage && x.getCountry === y.getCountry
 
   implicit val lokalLocaleShow: Show[Locale] = { locale =>
     (locale.getLanguage, locale.getCountry) match {

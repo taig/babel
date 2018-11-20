@@ -3,7 +3,7 @@ package io.taig.lokal
 import java.util.Locale
 
 import cats.implicits._
-import cats.{Eq, FlatMap, Show}
+import cats.{Eq, FlatMap, Semigroup, Show}
 import io.taig.lokal.implicits._
 
 case class Translation[A](locale: Locale,
@@ -20,6 +20,10 @@ case class Translation[A](locale: Locale,
         .get(locale)
         .orElse(translations.get(new Locale(locale.getLanguage)))
 
+  def locales: List[Locale] = locale +: translations.keys.toList
+
+  def values: List[A] = value +: translations.values.toList
+
   def toMap: Map[Locale, A] = translations + (locale -> value)
 
   def &(translation: Translation[A]): Translation[A] =
@@ -31,6 +35,9 @@ case class Translation[A](locale: Locale,
                     this.value,
                     this.translations ++ translations + (locale -> value))
     }
+
+  override def toString(): String =
+    this.map(_.toString).show
 }
 
 object Translation {
@@ -49,21 +56,29 @@ object Translation {
 
     // TODO @tailrec
     override def tailRecM[A, B](a: A)(
-        f: A => Translation[Either[A, B]]): Translation[B] = {
-      val fa = f(a)
-      fa match {
+        f: A => Translation[Either[A, B]]): Translation[B] =
+      f(a) match {
         case Translation(locale, Left(a), translations) =>
-          Translation(locale, tailRecM(a)(f).apply(locale), translations.map {
-            case (locale, Left(a))  => locale -> tailRecM(a)(f).apply(locale)
+          Translation(locale, tailRecM(a)(f)(locale), translations.map {
+            case (locale, Left(a))  => locale -> tailRecM(a)(f)(locale)
             case (locale, Right(b)) => locale -> b
           })
         case Translation(locale, Right(b), translations) =>
           Translation(locale, b, translations.map {
-            case (locale, Left(a))  => locale -> tailRecM(a)(f).apply(locale)
+            case (locale, Left(a))  => locale -> tailRecM(a)(f)(locale)
             case (locale, Right(b)) => locale -> b
           })
       }
-    }
+  }
+
+  implicit def semigroup[A: Semigroup]: Semigroup[Translation[A]] = { (x, y) =>
+    val locales = x.locales.toSet ++ y.locales.toSet - x.locale
+
+    val translations = locales.map { locale =>
+      locale -> (x(locale) |+| y(locale))
+    }.toMap
+
+    Translation(x.locale, x.value |+| y(x.locale), translations)
   }
 
   implicit def show[A: Show]: Show[Translation[A]] = Show.show { translation =>
@@ -72,7 +87,5 @@ object Translation {
       .mkString("Translation(", ", ", ")")
   }
 
-  implicit def eq[A: Eq]: Eq[Translation[A]] =
-    (x, y) =>
-      x.locale === y.locale && x.value === y.value && x.translations === y.translations
+  implicit def eq[A: Eq]: Eq[Translation[A]] = _.toMap === _.toMap
 }

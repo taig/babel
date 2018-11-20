@@ -25,7 +25,7 @@ object SourceGenerator {
        |}""".stripMargin
 
   def localeVal(locale: Locale): String =
-    s"""  val ${locale.toString} = new Locale("${locale.getLanguage}", "${locale.getCountry}")"""
+    s"""  val ${locale.toString}: Locale = new Locale("${locale.getLanguage}", "${locale.getCountry}")"""
 
   val allVal: String =
     s"  val All: List[Locale] = List(${locales.map(_.toString).mkString(", ")})"
