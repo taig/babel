@@ -13,7 +13,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
     description := "i18n & l10n for (isomorphic) Scala applications",
     libraryDependencies ++=
       "org.typelevel" %%% "cats-core" % "1.4.0" ::
-        "io.github.cquiroz" %%% "scala-java-locales" % "0.5.5-cldr31" ::
+        "io.github.cquiroz" %%% "scala-java-locales" % "0.3.11-cldr33" ::
         "org.scalatest" %%% "scalatest" % "3.0.5" % "test" ::
         "org.typelevel" %%% "cats-testkit" % "1.4.0" % "test" ::
         Nil,
