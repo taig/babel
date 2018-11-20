@@ -17,9 +17,6 @@ final class LokalStringContext(context: StringContext)
   }
 
   protected def apply(locale: Locale,
-                      arguments: Seq[Any]): Translation[Option[String]] =
+                      arguments: Seq[Any]): Translation[String] =
     Translation(locale, substitute(locale, arguments))
-
-  def xx(arguments: Any*): Translation[String] =
-    Translation(locale => substitute(locale, arguments))
 }

@@ -14,6 +14,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
       "org.typelevel" %%% "cats-core" % "1.4.0" ::
         "io.github.cquiroz" %%% "scala-java-locales" % "0.5.5-cldr31" ::
         "org.scalatest" %%% "scalatest" % "3.0.5" % "test" ::
+      "org.typelevel" %%% "cats-testkit" % "1.4.0" % "test" ::
         Nil,
     name := "Lokal",
     sourceGenerators in Compile += Def.task {

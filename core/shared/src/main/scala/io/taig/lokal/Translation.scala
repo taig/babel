@@ -2,43 +2,77 @@ package io.taig.lokal
 
 import java.util.Locale
 
-import scala.annotation.tailrec
+import cats.implicits._
+import cats.{Eq, FlatMap, Show}
+import io.taig.lokal.implicits._
 
-abstract class Translation[A] extends (Locale => A) {
+case class Translation[A](locale: Locale,
+                          value: A,
+                          translations: Map[Locale, A])
+    extends (Locale => A) {
   override final def apply(locale: Locale): A =
-    Translation.translate(locale, this, this)
+    resolve(locale, toMap).getOrElse(value)
 
-  def &(translation: Translation[Option[A]]): Translation[A] =
-    Translation(locale => translation(locale).getOrElse(apply(locale)))
+  private def resolve(locale: Locale, translations: Map[Locale, A]): Option[A] =
+    if (locale.getCountry() == "") translations.get(locale)
+    else
+      translations
+        .get(locale)
+        .orElse(translations.get(new Locale(locale.getLanguage)))
+
+  def toMap: Map[Locale, A] = translations + (locale -> value)
+
+  def &(translation: Translation[A]): Translation[A] =
+    translation match {
+      case Translation(`locale`, value, translations) =>
+        Translation(locale, value, this.translations ++ translations)
+      case Translation(locale, value, translations) =>
+        Translation(this.locale,
+                    this.value,
+                    this.translations ++ translations + (locale -> value))
+    }
 }
 
 object Translation {
-  final case class Apply[A](translate: Locale => A) extends Translation[A]
+  def apply[A](locale: Locale, value: A): Translation[A] =
+    Translation(locale, value, Map.empty)
 
-  final case class Specific[A](locale: Locale,
-                               value: A,
-                               continue: Translation[A])
-      extends Translation[A]
+  implicit val flatMap: FlatMap[Translation] = new FlatMap[Translation] {
+    override def map[A, B](fa: Translation[A])(f: A => B): Translation[B] =
+      Translation(fa.locale, f(fa.value), fa.translations.mapValues(f))
 
-  final case class Wildcard[A](value: A) extends Translation[A]
+    override def flatMap[A, B](fa: Translation[A])(
+        f: A => Translation[B]): Translation[B] =
+      Translation(fa.locale, f(fa.value)(fa.locale), fa.translations.map {
+        case (locale, value) => (locale, f(value)(locale))
+      })
 
-  @tailrec
-  private def translate[A](locale: Locale,
-                           translation: Translation[A],
-                           root: Translation[A]): A =
-    translation match {
-      case Apply(translate)                             => translate(locale)
-      case Specific(`locale`, value, _)                 => value
-      case Specific(_, _, continue)                     => translate(locale, continue, root)
-      case Wildcard(value) if locale.getCountry() == "" => value
-      case Wildcard(_) =>
-        translate(new Locale(locale.getLanguage()), root, root)
+    // TODO @tailrec
+    override def tailRecM[A, B](a: A)(
+        f: A => Translation[Either[A, B]]): Translation[B] = {
+      val fa = f(a)
+      fa match {
+        case Translation(locale, Left(a), translations) =>
+          Translation(locale, tailRecM(a)(f).apply(locale), translations.map {
+            case (locale, Left(a))  => locale -> tailRecM(a)(f).apply(locale)
+            case (locale, Right(b)) => locale -> b
+          })
+        case Translation(locale, Right(b), translations) =>
+          Translation(locale, b, translations.map {
+            case (locale, Left(a))  => locale -> tailRecM(a)(f).apply(locale)
+            case (locale, Right(b)) => locale -> b
+          })
+      }
     }
+  }
 
-  def apply[A](translate: Locale => A): Translation[A] = Apply(translate)
+  implicit def show[A: Show]: Show[Translation[A]] = Show.show { translation =>
+    translation.toMap
+      .map { case (locale, value) => show"""$locale"$value"""" }
+      .mkString("Translation(", ", ", ")")
+  }
 
-  def apply[A](locale: Locale, value: A): Translation[Option[A]] =
-    Specific(locale, Some(value), lift(None))
-
-  def lift[A](value: A): Translation[A] = Wildcard(value)
+  implicit def eq[A: Eq]: Eq[Translation[A]] =
+    (x, y) =>
+      x.locale === y.locale && x.value === y.value && x.translations === y.translations
 }

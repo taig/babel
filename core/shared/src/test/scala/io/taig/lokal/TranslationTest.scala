@@ -4,10 +4,10 @@ import io.taig.lokal.implicits._
 import org.scalatest.{Matchers, WordSpec}
 
 class TranslationTest extends WordSpec with Matchers {
-  val fallback: Translation[String] = xx"Hello"
-  val germany: Translation[Option[String]] = de"Hallo"
-  val austria: Translation[Option[String]] = de_AT"Grüß Gott"
-  val translations: Translation[String] = fallback & germany & austria
+  val english: Translation[String] = en"Hello"
+  val germany: Translation[String] = de"Hallo"
+  val austria: Translation[String] = de_AT"Grüß Gott"
+  val translations: Translation[String] = english & germany & austria
 
   "translate" should {
     "pick the matching Locale" in {

@@ -39,7 +39,7 @@ object SourceGenerator {
     val identifier = locale.toString
 
     s"""  @inline
-       |  def $identifier(arguments: Any*): Translation[Option[String]] =
+       |  def $identifier(arguments: Any*): Translation[String] =
        |    apply(Locales.$identifier, arguments)""".stripMargin
   }
 }
