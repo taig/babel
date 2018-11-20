@@ -6,7 +6,8 @@ lazy val lokal = project
   .aggregate(coreJVM, coreJS)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
-  .in(file("."))
+  .withoutSuffixFor(JVMPlatform)
+  .crossType(CrossType.Pure)
   .settings(Settings.common)
   .settings(
     description := "i18n & l10n for (isomorphic) Scala applications",
@@ -14,6 +15,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
       "org.typelevel" %%% "cats-core" % "1.4.0" ::
         "io.github.cquiroz" %%% "scala-java-locales" % "0.3.11-cldr33" ::
         "org.scalatest" %%% "scalatest" % "3.0.5" % "test" ::
+        "org.typelevel" %%% "cats-testkit" % "1.4.0" % "test" ::
         Nil,
     name := "Lokal",
     sourceGenerators in Compile += Def.task {

@@ -30,14 +30,29 @@ println {
 
 # Getting started
 
-```tut:reset
-import io.taig.lokal._; import implicits._
+```tut:reset:silent
+import io.taig.lokal._
+import io.taig.lokal.implicits._
 
-val de = de"Hallo"
-val de_AT = de_AT"Grüß Gott"
-val de_CH = de_CH"Hoi"
+val world: Translation[String] = en"World" & de"Welt"
+val greeting: Translation[String] =
+    en"Hello $world" & de"Hallo $world" & de_AT"Grüß Gott $world"
+```
 
-val translations = de & de_AT & de_CH
+Exact matches are always preferred
 
-translations.translate(Locales.de_DE)
+```tut
+greeting(Locales.de_AT)
+```
+
+Language is used as fallback when there is no specific translation for the country
+
+```tut
+greeting(Locales.de_DE)
+```
+
+The first translation is the fallback when the language is not available
+
+```tut
+greeting(Locales.es)
 ```

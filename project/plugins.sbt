@@ -14,6 +14,6 @@ addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.25")
 
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.5.1")
 
-addSbtPlugin("org.tpolecat" % "tut-plugin" % "0.6.7")
+addSbtPlugin("org.tpolecat" % "tut-plugin" % "0.6.9")
 
 libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.2.3"
