@@ -8,5 +8,6 @@ class TranslationLawTest extends CatsSuite {
   implicit def translation[A: Arbitrary]: Arbitrary[Translation[A]] =
     Arbitrary(Generators.translation(implicitly[Arbitrary[A]].arbitrary))
 
-  checkAll("Translation.FlatMapLaws", FlatMapTests[Translation].flatMap[Int, Int, String])
+  checkAll("Translation.FlatMapLaws",
+           FlatMapTests[Translation].flatMap[Int, Int, String])
 }
