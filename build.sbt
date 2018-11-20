@@ -7,6 +7,7 @@ lazy val lokal = project
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .withoutSuffixFor(JVMPlatform)
+  .crossType(CrossType.Pure)
   .settings(Settings.common)
   .settings(
     description := "i18n & l10n for (isomorphic) Scala applications",
