@@ -3,7 +3,7 @@ import sbt._
 import sbt.Keys._
 
 object Settings {
-  val Scala212 = "2.12.7"
+  val Scala212 = "2.12.8"
 
   val Scala211 = "2.11.12"
 
