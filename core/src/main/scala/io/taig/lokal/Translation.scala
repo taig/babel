@@ -15,7 +15,7 @@ case class Translation[A](
     resolve(locale, toMap).getOrElse(value)
 
   private def resolve(locale: Locale, translations: Map[Locale, A]): Option[A] =
-    if (locale.getCountry() == "") translations.get(locale)
+    if (locale.getCountry == "") translations.get(locale)
     else
       translations
         .get(locale)
@@ -52,7 +52,7 @@ object Translation {
       Translation(
         fa.locale,
         f(fa.value),
-        fa.translations.view.mapValues(f).toMap
+        fa.translations.fmap(f)
       )
 
     override def flatMap[A, B](
