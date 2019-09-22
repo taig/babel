@@ -1,0 +1,35 @@
+stages:
+  - docker
+  - test
+  - publish
+
+variables:
+  CONTAINER_REGISTRY: registry.gitlab.com
+  CONTAINER_IMAGE: $CONTAINER_REGISTRY/taig-github/lokal
+  DOCKER_DRIVER: overlay2
+
+docker:
+  stage: docker
+  image: docker
+  services:
+    - docker:dind
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CONTAINER_REGISTRY
+    - docker pull $CONTAINER_IMAGE:latest || true
+    - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA .
+    - docker push $CONTAINER_IMAGE
+
+test:
+  stage: test
+  image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
+  script:
+    - sbt -Dmode=strict +test
+
+publish:
+  stage: publish
+  image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
+  only:
+    - master
+    - tags
+  script:
+    - sbt publishAndRelease
