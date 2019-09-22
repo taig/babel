@@ -10,8 +10,8 @@ final class LokalStringContext(context: StringContext)
     extends LokalStringOperations {
   private def substitute(arguments: Seq[Any]): Seq[Translation[String]] =
     arguments.map {
-      case translation: Translation[_] ⇒ translation.map(_.toString)
-      case value ⇒ Translation(Locales.en, value.toString)
+      case translation: Translation[_] => translation.map(_.toString)
+      case value                       => Translation(Locales.en, value.toString)
     }
 
   private def merge[A](left: List[A], right: List[A]): List[A] = left match {
