@@ -16,16 +16,9 @@ An internationalization (_i18n_) and localization (_l10n_) library for Scala and
 
 _Lokal_ is available for Scala `2.12` and `2.11` via Maven Central.
 
-```tut:invisible
-import io.taig.lokal.Build._
-```
 
-```tut:evaluated
-println {
-    s"""
-     |libraryDependencies += "$organization" %% "$normalizedName" % "$version"
-     """.stripMargin.trim
-}
+```scala
+libraryDependencies += "@ORGANIZATION@" %%% "@MODULE@" % "@VERSION@"
 ```
 
 # Getting started

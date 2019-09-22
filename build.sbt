@@ -26,21 +26,19 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
     }.taskValue
   )
 
-lazy val documentation = project
-  .enablePlugins(BuildInfoPlugin, MicrositesPlugin)
+lazy val website = project
+  .enablePlugins(MicrositesPlugin)
   .settings(Settings.common ++ micrositeSettings)
   .settings(
+    mdocVariables ++= Map(
+      "MODULE" -> (normalizedName in core.jvm).value,
+      "ORGANIZATION" -> organization.value,
+      "VERSION" -> version.value,
+      "SCALA_VERSIONS" -> crossScalaVersions.value.mkString(", "),
+      "SCALAJS_VERSION" -> scalaJSVersion
+    ),
     micrositeAnalyticsToken := "UA-64109905-2",
     micrositeDescription := (core.jvm / description).value,
     micrositeName := (core.jvm / name).value
-  )
-  .settings(
-    buildInfoObject := "Build",
-    buildInfoPackage := s"${organization.value}.${(core.jvm / normalizedName).value}",
-    buildInfoKeys := Seq[BuildInfoKey](
-      core.jvm / normalizedName,
-      organization,
-      version
-    )
   )
   .dependsOn(core.jvm)
