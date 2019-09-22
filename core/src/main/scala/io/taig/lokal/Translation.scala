@@ -11,9 +11,8 @@ final case class Translation[A](
     locale: Locale,
     value: A,
     translations: Map[Locale, A]
-) extends (Locale => A) {
-  override def apply(locale: Locale): A =
-    resolve(locale, toMap).getOrElse(value)
+) {
+  def apply(locale: Locale): A = resolve(locale, toMap).getOrElse(value)
 
   private def resolve(locale: Locale, translations: Map[Locale, A]): Option[A] =
     if (locale.getCountry == "") translations.get(locale)
