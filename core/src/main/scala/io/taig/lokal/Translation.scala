@@ -2,6 +2,7 @@ package io.taig.lokal
 
 import java.util.Locale
 
+import cats.data.NonEmptyMap
 import cats.implicits._
 import cats.{Eq, FlatMap, Semigroup, SemigroupK, Show}
 import io.taig.lokal.implicits._
@@ -27,20 +28,12 @@ final case class Translation[A](
 
   def toMap: Map[Locale, A] = translations + (locale -> value)
 
-  def &(translation: Translation[A]): Translation[A] =
-    translation match {
-      case Translation(`locale`, value, translations) =>
-        Translation(locale, value, this.translations ++ translations)
-      case Translation(locale, value, translations) =>
-        Translation(
-          this.locale,
-          this.value,
-          this.translations ++ translations + (locale -> value)
-        )
-    }
+  def &(translation: Translation[A]): Translation[A] = {
+    val translations = toMap ++ translation.toMap
+    Translation(locale, translations(locale), translations.removed(locale))
+  }
 
-  override def toString(): String =
-    this.map(_.toString).show
+  override def toString(): String = this.map(_.toString).show
 }
 
 object Translation {
