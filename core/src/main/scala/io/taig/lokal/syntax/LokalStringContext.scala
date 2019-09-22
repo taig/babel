@@ -19,9 +19,13 @@ final class LokalStringContext(context: StringContext)
     case Nil          => right
   }
 
-  protected def apply(locale: Locale,
-                      arguments: Seq[Any]): Translation[String] = {
-    merge(context.parts.map(Translation(locale, _)).toList,
-          substitute(arguments).toList).reduce(_ |+| _)
+  protected def apply(
+      locale: Locale,
+      arguments: Seq[Any]
+  ): Translation[String] = {
+    merge(
+      context.parts.map(Translation(locale, _)).toList,
+      substitute(arguments).toList
+    ).reduce(_ |+| _)
   }
 }

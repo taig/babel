@@ -81,5 +81,7 @@ lazy val documentation = project
   .dependsOn(coreJVM)
 
 addCommandAlias("scalafmtAll", ";scalafmt;test:scalafmt;scalafmtSbt")
-addCommandAlias("scalafmtTestAll",
-                ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck")
+addCommandAlias(
+  "scalafmtTestAll",
+  ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck"
+)
