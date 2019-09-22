@@ -6,6 +6,6 @@ addSbtPlugin("io.taig" % "sbt-houserules" % "0.0.8")
 
 addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "0.6.1")
 
-addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.26")
+addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.29")
 
 libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.2.3"
