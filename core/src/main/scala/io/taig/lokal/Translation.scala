@@ -2,9 +2,8 @@ package io.taig.lokal
 
 import java.util.Locale
 
-import cats.data.NonEmptyMap
+import cats._
 import cats.implicits._
-import cats.{Eq, FlatMap, Semigroup, SemigroupK, Show}
 import io.taig.lokal.implicits._
 
 final case class Translation[A](
@@ -31,8 +30,6 @@ final case class Translation[A](
     val translations = toMap ++ translation.toMap
     Translation(locale, translations(locale), translations.removed(locale))
   }
-
-  override def toString(): String = this.map(_.toString).show
 }
 
 object Translation {
@@ -72,32 +69,18 @@ object Translation {
       }
   }
 
-  implicit def semigroup[A: Semigroup]: Semigroup[Translation[A]] = { (x, y) =>
-    val locales = x.locales ++ y.locales - x.locale
-
-    val translations = locales.map { locale =>
-      locale -> (x(locale) |+| y(locale))
-    }.toMap
-
-    Translation(x.locale, x.value |+| y(x.locale), translations)
-  }
-
   implicit val semigroupK: SemigroupK[Translation] =
     new SemigroupK[Translation] {
       override def combineK[A](
           x: Translation[A],
           y: Translation[A]
-      ): Translation[A] = {
-        val translations = (x.toMap ++ y.toMap) - y.locale
-        Translation(y.locale, y.value, translations)
-      }
+      ): Translation[A] = x & y
     }
 
-  implicit def show[A: Show]: Show[Translation[A]] = Show.show { translation =>
-    translation.toMap
+  implicit def show[A: Show]: Show[Translation[A]] =
+    _.toMap
       .map { case (locale, value) => show"""$locale"$value"""" }
       .mkString("Translation(", ", ", ")")
-  }
 
   implicit def eq[A: Eq]: Eq[Translation[A]] = _.toMap === _.toMap
 }

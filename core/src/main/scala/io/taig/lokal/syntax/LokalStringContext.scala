@@ -26,6 +26,6 @@ final class LokalStringContext(context: StringContext)
     merge(
       context.parts.map(Translation(locale, _)).toList,
       substitute(arguments).toList
-    ).reduce(_ |+| _)
+    ).reduce(_ <+> _)
   }
 }
