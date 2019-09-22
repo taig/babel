@@ -6,12 +6,12 @@ import cats.implicits._
 import cats.{Eq, FlatMap, Semigroup, SemigroupK, Show}
 import io.taig.lokal.implicits._
 
-case class Translation[A](
+final case class Translation[A](
     locale: Locale,
     value: A,
     translations: Map[Locale, A]
 ) extends (Locale => A) {
-  override final def apply(locale: Locale): A =
+  override def apply(locale: Locale): A =
     resolve(locale, toMap).getOrElse(value)
 
   private def resolve(locale: Locale, translations: Map[Locale, A]): Option[A] =
