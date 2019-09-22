@@ -40,5 +40,5 @@ website:
   only:
     - tags
   script:
-    - sbt website/makeMicrosite
+    - sbt makeMicrosite
     - mv /home/lokal/website/target/site/ /public/

@@ -30,9 +30,9 @@ RUN         cd ./cache/ && sbt -v +compile
 ADD         ./project ./cache/project/
 ADD         ./build.sbt ./cache/
 RUN         mkdir -p ./cache/core/src/test/scala/ ./cache/docs
-RUN         echo "class Test extends org.scalatest.flatspec.AnyFlatSpec { it should \"\" in {} }" > ./cache/core/src/test/scala/Test.scala
+RUN         echo "class Test extends org.scalatest.flatspec.AnyFlatSpec { it should \"x\" in {} }" > ./cache/core/src/test/scala/Test.scala
 RUN         echo "Lorem ipsum" > ./cache/docs/index.md
-RUN         cd ./cache/ && sbt -v ";set every sourceGenerators := List.empty;+test;website/makeMicrosite"
+RUN         cd ./cache/ && sbt -v ";set every sourceGenerators := List.empty;+test;makeMicrosite"
 
 # Clean cache
 RUN         rm -r ./cache/
