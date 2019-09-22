@@ -4,10 +4,6 @@ title:  "Home"
 section: "home"
 ---
 
-[![CircleCI](https://circleci.com/gh/Taig/lokal/tree/master.svg?style=shield)](https://circleci.com/gh/Taig/lokal/tree/master)
-[![codecov](https://codecov.io/gh/Taig/lokal/branch/master/graph/badge.svg)](https://codecov.io/gh/Taig/lokal)
-[![Maven Central](https://img.shields.io/maven-central/v/io.taig/lokal_2.12.svg)](https://index.scala-lang.org/taig/lokal)
-
 # Lokal
 
 An internationalization (_i18n_) and localization (_l10n_) library for Scala and ScalaJS. A minimalistic API helps defining and evaluating translations on both, the server and the client. In its current early state, _Lokal_ does unfortunately include all translations into the generated JavaScript and does not support Ajax-loading the user's preferred language only.
