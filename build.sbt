@@ -2,13 +2,12 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 lazy val lokal = project
   .in(file("."))
-  .settings(Settings.common ++ Settings.noPublish)
-  .aggregate(coreJVM, coreJS)
+  .settings(Settings.common ++ noPublishSettings)
+  .aggregate(core.jvm, core.js)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
-  .withoutSuffixFor(JVMPlatform)
   .crossType(CrossType.Pure)
-  .settings(Settings.common)
+  .settings(Settings.common ++ sonatypePublishSettings)
   .settings(
     description := "i18n & l10n for (isomorphic) Scala applications",
     libraryDependencies ++=
@@ -17,71 +16,31 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
         "org.scalatest" %%% "scalatest" % "3.0.5" % "test" ::
         "org.typelevel" %%% "cats-testkit" % "1.6.0" % "test" ::
         Nil,
-    name := "Lokal",
+    name := "lokal",
     sourceGenerators in Compile += Def.task {
-      val source =
-        SourceGenerator.render(s"${organization.value}.${normalizedName.value}")
+      val pkg = s"${organization.value}.${normalizedName.value}"
+      val source = SourceGenerator.render(pkg)
       val file = (sourceManaged in Compile).value / "Definitions.scala"
       IO.write(file, source)
       Seq(file)
-    }.taskValue,
-    startYear := Some(2017)
+    }.taskValue
   )
-
-lazy val coreJVM = core.jvm
-
-lazy val coreJS = core.js
 
 lazy val documentation = project
   .enablePlugins(BuildInfoPlugin, MicrositesPlugin)
-  .settings(Settings.common ++ Settings.noPublish)
+  .settings(Settings.common ++ micrositeSettings)
   .settings(
     micrositeAnalyticsToken := "UA-64109905-2",
-    micrositeAuthor := "Niklas Klein",
-    micrositeBaseUrl := s"/${githubProject.value}",
-    micrositeDescription := (description in coreJVM).value,
-    micrositeDocumentationUrl := {
-      val o = organization.value
-      val n = (normalizedName in coreJVM).value
-      val a = s"${n}_${scalaBinaryVersion.value}"
-      val v = version.value
-      val p = s"$o.$n".split("\\.").mkString("/")
-      s"https://static.javadoc.io/$o/$a/$v/$p/index.html"
-    },
-    micrositeGithubOwner := "Taig",
-    micrositeGithubRepo := githubProject.value,
-    micrositeGithubToken := Option(System.getenv("GITHUB_TOKEN")),
-    micrositeGitterChannel := false,
-    micrositeHighlightTheme := "atom-one-dark",
-    micrositeName := (name in coreJVM).value,
-    micrositePalette := Map(
-      "brand-primary" -> "#3e4959",
-      "brand-secondary" -> "#3e4959",
-      "brand-tertiary" -> "#3e4959",
-      "gray-dark" -> "#3e4959",
-      "gray" -> "#837f84",
-      "gray-light" -> "#e3e2e3",
-      "gray-lighter" -> "#f4f3f4",
-      "white-color" -> "#f3f3f3"
-    ),
-    micrositePushSiteWith := GitHub4s,
-    micrositeTwitterCreator := "@tttaig",
-    scalacOptions in Tut -= "-Ywarn-unused-import",
-    tutSourceDirectory := sourceDirectory.value
+    micrositeDescription := (core.jvm / description).value,
+    micrositeName := (core.jvm / name).value
   )
   .settings(
     buildInfoObject := "Build",
-    buildInfoPackage := s"${organization.value}.${(normalizedName in coreJVM).value}",
+    buildInfoPackage := s"${organization.value}.${(core.jvm / normalizedName).value}",
     buildInfoKeys := Seq[BuildInfoKey](
-      normalizedName in coreJVM,
+      core.jvm / normalizedName,
       organization,
       version
     )
   )
-  .dependsOn(coreJVM)
-
-addCommandAlias("scalafmtAll", ";scalafmt;test:scalafmt;scalafmtSbt")
-addCommandAlias(
-  "scalafmtTestAll",
-  ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck"
-)
+  .dependsOn(core.jvm)
