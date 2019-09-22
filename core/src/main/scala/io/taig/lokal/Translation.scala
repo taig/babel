@@ -49,7 +49,11 @@ object Translation {
 
   implicit val flatMap: FlatMap[Translation] = new FlatMap[Translation] {
     override def map[A, B](fa: Translation[A])(f: A => B): Translation[B] =
-      Translation(fa.locale, f(fa.value), fa.translations.mapValues(f))
+      Translation(
+        fa.locale,
+        f(fa.value),
+        fa.translations.view.mapValues(f).toMap
+      )
 
     override def flatMap[A, B](
         fa: Translation[A]

@@ -1,11 +1,13 @@
 package io.taig.lokal
 
+import cats.implicits._
 import cats.kernel.laws.discipline.SemigroupTests
 import cats.laws.discipline.{FlatMapTests, SemigroupKTests}
-import cats.tests.CatsSuite
 import org.scalacheck.Arbitrary
+import org.scalatest.funsuite.AnyFunSuite
+import org.typelevel.discipline.scalatest.Discipline
 
-class TranslationLawTest extends CatsSuite {
+class TranslationLawTest extends AnyFunSuite with Discipline {
   implicit def translation[A: Arbitrary]: Arbitrary[Translation[A]] =
     Arbitrary(Generators.translation(implicitly[Arbitrary[A]].arbitrary))
 

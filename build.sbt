@@ -11,10 +11,9 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .settings(
     description := "i18n & l10n for (isomorphic) Scala applications",
     libraryDependencies ++=
-      "org.typelevel" %%% "cats-core" % "1.6.0" ::
+      "org.typelevel" %%% "cats-core" % "2.0.0" ::
         "io.github.cquiroz" %%% "scala-java-locales" % "0.3.16-cldr35" ::
-        "org.scalatest" %%% "scalatest" % "3.0.8" % "test" ::
-        "org.typelevel" %%% "cats-testkit" % "1.6.0" % "test" ::
+        "org.typelevel" %%% "cats-testkit-scalatest" % "1.0.0-M2" % "test" ::
         Nil,
     name := "lokal",
     sourceGenerators in Compile += Def.task {

@@ -1,9 +1,10 @@
 package io.taig.lokal
 
 import io.taig.lokal.implicits._
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers
 
-class TranslationTest extends WordSpec with Matchers {
+class TranslationTest extends AnyWordSpec with Matchers {
   val english: Translation[String] = en"Hello"
   val germany: Translation[String] = de"Hallo"
   val austria: Translation[String] = de_AT"Grüß Gott"
