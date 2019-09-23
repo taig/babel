@@ -1,26 +1,29 @@
 package io.taig.lokal
 
+import cats.implicits._
 import io.taig.lokal.implicits._
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.should.Matchers
+import org.scalatest.funsuite.AnyFunSuite
 
-class TranslationTest extends AnyWordSpec with Matchers {
+final class TranslationTest extends AnyFunSuite {
   val english: Translation[String] = en"Hello"
   val germany: Translation[String] = de"Hallo"
   val austria: Translation[String] = de_AT"Grüß Gott"
-  val translations: Translation[String] = english & germany & austria
+  val spain: Translation[String] = es_ES"Hola"
+  val translations: Translation[String] = english & germany & austria & spain
 
-  "translate" should {
-    "pick the matching Locale" in {
-      translations(Locales.de_AT) shouldBe "Grüß Gott"
-    }
+  test("translate picks the exact match") {
+    assert(translations.translate(Locale.de_AT) eqv Some("Grüß Gott"))
+  }
 
-    "fall back to the language if the country is not available" in {
-      translations(Locales.de_DE) shouldBe "Hallo"
-    }
+  test("translate falls back to the language if country is not available") {
+    assert(translations.translate(Locale.de_DE) eqv Some("Hallo"))
+  }
 
-    "ball back to the wildcard if no matching language is available" in {
-      translations(Locales.es) shouldBe "Hello"
-    }
+  test("translate falls back to a different country if all else fails") {
+    assert(translations.translate(Locale.es_AR) eqv Some("Hola"))
+  }
+
+  test("translate returns None if no matching language is available") {
+    assert(translations.translate(Locale.fr) eqv None)
   }
 }
