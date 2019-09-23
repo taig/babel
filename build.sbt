@@ -30,10 +30,12 @@ lazy val dsl = crossProject(JSPlatform, JVMPlatform)
       IO.write(countries, SourceGenerator.countries(pkg))
       val locales = (sourceManaged in Compile).value / "Locales.scala"
       IO.write(locales, SourceGenerator.locales(pkg))
-      Seq(languages, countries, locales)
+      val contexts = (sourceManaged in Compile).value / "LokalStringContexts.scala"
+      IO.write(contexts, SourceGenerator.contexts(pkg))
+      Seq(languages, countries, locales, contexts)
     }.taskValue
   )
-  .dependsOn(core)
+  .dependsOn(core % "compile->compile;test->test")
 
 lazy val website = project
   .enablePlugins(MicrositesPlugin)

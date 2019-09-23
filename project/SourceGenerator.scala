@@ -14,6 +14,7 @@ object SourceGenerator {
     val vals = languages.map { language =>
       s"""val ${identifier(language)}: Language = Language("$language")"""
     }
+    val all = languages.map(identifier).mkString(", ")
 
     s"""package $pkg.dsl
        |
@@ -22,9 +23,7 @@ object SourceGenerator {
        |object Languages {
        |  ${vals.mkString("\n\n  ")}
        |
-       |  val All: List[Language] = List(${languages
-         .map(identifier)
-         .mkString(", ")})
+       |  val All: List[Language] = List($all)
        |}""".stripMargin
   }
 
@@ -33,6 +32,7 @@ object SourceGenerator {
     val vals = countries.map { country =>
       s"""val ${identifier(country)}: Country = Country("$country")"""
     }
+    val all = countries.map(identifier).mkString(", ")
 
     s"""package $pkg.dsl
        |
@@ -41,56 +41,47 @@ object SourceGenerator {
        |object Countries {
        |  ${vals.mkString("\n\n  ")}
        |
-       |  val All: List[Country] = List(${countries
-         .map(identifier)
-         .mkString(", ")})
+       |  val All: List[Country] = List($all)
        |}""".stripMargin
   }
 
   def locales(pkg: String): String = {
-    val name: Locale => String = locale =>
-      if (locale.getCountry.isEmpty) locale.getLanguage
-      else s"${locale.getLanguage}_${locale.getCountry}"
-
     val vals = locales.map { locale =>
       val language = locale.getLanguage
       val country = locale.getCountry
 
       if (country.isEmpty) {
-        s"val ${name(locale)}: Locale = Locale(Languages.${identifier(language)})"
+        s"val $locale: Locale = Locale(Languages.${identifier(language)})"
       } else {
-        s"val ${name(locale)}: Locale = Locale(" +
+        s"val $locale: Locale = Locale(" +
           s"Languages.${identifier(language)}, " +
           s"Some(Countries.${identifier(country)}))"
       }
     }
+    val all = locales.map(_.toString).mkString(", ")
 
     s"""package $pkg.dsl
        |
        |import $pkg.Locale
-       |import $pkg.dsl.Languages
-       |import $pkg.dsl.Countries
        |
        |object Locales {
        |  ${vals.mkString("\n\n  ")}
        |
-       |  val All: List[Locale] = List(${locales.map(name).mkString(", ")})
+       |  val All: List[Locale] = List($all)
        |}""".stripMargin
   }
 
-//  val allVal: String =
-//    s"  val All: List[Locale] = List(${locales.map(_.toString).mkString(", ")})"
-//
-//  def stringOperationsTrait: String =
-//    s"""trait LokalStringOperations { this: LokalStringContext =>
-//       |${locales.map(stringOperationDef).mkString("\n\n")}
-//       |}""".stripMargin
-//
-//  def stringOperationDef(locale: Locale): String = {
-//    val identifier = locale.toString
-//
-//    s"""  @inline
-//       |  def $identifier(arguments: Any*): Translation[String] =
-//       |    apply(Locale.$identifier, arguments)""".stripMargin
-//  }
+  def contexts(pkg: String): String = {
+    val defs = locales.map { locale =>
+      s"def $locale(arguments: Any*): Translation[String] = apply(Locales.$locale, arguments)"
+    }
+
+    s"""package $pkg.dsl
+       |
+       |import $pkg.Translation
+       |
+       |trait LokalStringContexts { this: LokalStringContext =>
+       |  ${defs.mkString("\n\n  ")}
+       |}""".stripMargin
+  }
 }
