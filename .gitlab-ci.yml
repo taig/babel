@@ -1,6 +1,6 @@
 stages:
   - docker
-#   - test
+  - test
   - publish
 
 variables:
@@ -19,38 +19,38 @@ docker:
     - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA .
     - docker push $CONTAINER_IMAGE
 
-# test-jvm:
-#   stage: test
-#   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
-#   script:
-#     - sbt -Dmode=strict coverage +coreJVM/test coverageAggregate
-#     - mv /builds/taig-github/lokal/target/scala-2.13/scoverage-report/ coverage/
-#   artifacts:
-#     expire_in: 1 month
-#     paths:
-#       - coverage/
-#
-# test-js:
-#   stage: test
-#   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
-#   script:
-#     - sbt -Dmode=strict +coreJS/test
+test-jvm:
+  stage: test
+  image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
+  script:
+    - sbt -Dmode=strict coverage +coreJVM/test coverageAggregate
+    - mv /builds/taig-github/lokal/target/scala-2.13/scoverage-report/ coverage/
+  artifacts:
+    expire_in: 1 month
+    paths:
+      - coverage/
+
+test-js:
+  stage: test
+  image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
+  script:
+    - sbt -Dmode=strict +coreJS/test
 
 
-# artifacts:
-#   stage: publish
-#   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
-#   only:
-#     - master
-#     - tags
-#   script:
-#     - sbt publishAndRelease
+artifacts:
+  stage: publish
+  image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
+  only:
+    - master
+    - tags
+  script:
+    - sbt publishAndRelease
 
 website:
   stage: publish
   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
-#   only:
-#     - tags
+  only:
+    - tags
   script:
     - sbt website/makeMicrosite
     - mv /builds/taig-github/lokal/website/target/site/ public/
