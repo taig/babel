@@ -23,7 +23,7 @@ test:
   stage: test
   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
   script:
-    - sbt -Dmode=strict +test
+    - sbt -Dmode=strict coverage +test coverageAggregate
 
 artifacts:
   stage: publish
@@ -40,5 +40,5 @@ website:
   only:
     - tags
   script:
-    - sbt makeMicrosite
+    - sbt website/makeMicrosite
     - mv /home/lokal/website/target/site/ /public/

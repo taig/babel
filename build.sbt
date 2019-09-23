@@ -40,5 +40,3 @@ lazy val website = project
     micrositeName := (core.jvm / name).value
   )
   .dependsOn(core.jvm)
-
-addCommandAlias("makeMicrosite", "++2.12.10 website/makeMicrosite")
