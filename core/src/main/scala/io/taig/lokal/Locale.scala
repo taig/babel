@@ -9,7 +9,7 @@ final case class Locale(language: Language, country: Option[Country]) {
   def withoutCountry: Locale = Locale(language)
 }
 
-object Locale extends Locales {
+object Locale {
   def apply(language: Language): Locale = Locale(language, country = None)
 
   def apply(language: Language, country: Country): Locale =
