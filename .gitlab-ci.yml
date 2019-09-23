@@ -1,7 +1,7 @@
 stages:
   - docker
   - test
-  - publish
+  - deploy
 
 variables:
   CONTAINER_REGISTRY: registry.gitlab.com
@@ -38,7 +38,7 @@ test-js:
 
 
 artifacts:
-  stage: publish
+  stage: deploy
   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
   only:
     - master
@@ -47,7 +47,7 @@ artifacts:
     - sbt publishAndRelease
 
 website:
-  stage: publish
+  stage: deploy
   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
 #   only:
 #     - tags
