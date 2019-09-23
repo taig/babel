@@ -24,11 +24,11 @@ docker:
 #   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
 #   script:
 #     - sbt -Dmode=strict coverage +coreJVM/test coverageAggregate
-#     - mv /builds/taig-github/lokal/target/scala-2.13/scoverage-report/ /builds/taig-github/lokal/coverage/
+#     - mv /builds/taig-github/lokal/target/scala-2.13/scoverage-report/ coverage/
 #   artifacts:
 #     expire_in: 1 month
 #     paths:
-#       - /builds/taig-github/lokal/coverage/
+#       - coverage/
 #
 # test-js:
 #   stage: test
@@ -53,7 +53,7 @@ website:
 #     - tags
   script:
     - sbt website/makeMicrosite
-    - mv /builds/taig-github/lokal/website/target/site/ /public/
+    - mv /builds/taig-github/lokal/website/target/site/ public/
   artifacts:
     paths:
-      - /public/
+      - public/
