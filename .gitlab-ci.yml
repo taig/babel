@@ -1,6 +1,6 @@
 stages:
   - docker
-  - test
+#   - test
   - publish
 
 variables:
@@ -19,22 +19,22 @@ docker:
     - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA .
     - docker push $CONTAINER_IMAGE
 
-test-jvm:
-  stage: test
-  image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
-  script:
-    - sbt -Dmode=strict coverage +coreJVM/test coverageAggregate
-    - mv /builds/taig-github/lokal/target/scala-2.13/scoverage-report/ /builds/taig-github/lokal/coverage/
-  artifacts:
-    expire_in: 1 month
-    paths:
-      - /builds/taig-github/lokal/coverage/
-
-test-js:
-  stage: test
-  image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
-  script:
-    - sbt -Dmode=strict +coreJS/test
+# test-jvm:
+#   stage: test
+#   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
+#   script:
+#     - sbt -Dmode=strict coverage +coreJVM/test coverageAggregate
+#     - mv /builds/taig-github/lokal/target/scala-2.13/scoverage-report/ /builds/taig-github/lokal/coverage/
+#   artifacts:
+#     expire_in: 1 month
+#     paths:
+#       - /builds/taig-github/lokal/coverage/
+#
+# test-js:
+#   stage: test
+#   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
+#   script:
+#     - sbt -Dmode=strict +coreJS/test
 
 
 # artifacts:
@@ -54,3 +54,6 @@ website:
   script:
     - sbt website/makeMicrosite
     - mv /builds/taig-github/lokal/website/target/site/ /public/
+artifacts:
+  paths:
+    - /public/
