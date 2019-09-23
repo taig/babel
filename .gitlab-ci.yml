@@ -54,6 +54,6 @@ website:
   script:
     - sbt website/makeMicrosite
     - mv /builds/taig-github/lokal/website/target/site/ /public/
-artifacts:
-  paths:
-    - /public/
+  artifacts:
+    paths:
+      - /public/
