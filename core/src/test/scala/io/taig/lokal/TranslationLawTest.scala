@@ -13,7 +13,9 @@ final class TranslationLawTest extends AnyFunSuite with Discipline {
 
   implicit def eq[A: Eq]: Eq[Translation[A]] =
     (x, y) =>
-      Locale.All.forall(locale => x.translate(locale) eqv y.translate(locale))
+      Generators.locales.forall(
+        locale => x.translate(locale) eqv y.translate(locale)
+      )
 
   checkAll(
     "Translation.MonadLaws",

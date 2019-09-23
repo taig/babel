@@ -22,15 +22,16 @@ object SourceGenerator {
        |object Languages {
        |  ${vals.mkString("\n\n  ")}
        |
-       |  val All: List[Language] = List(${languages.map(identifier).mkString(", ")})
+       |  val All: List[Language] = List(${languages
+         .map(identifier)
+         .mkString(", ")})
        |}""".stripMargin
   }
 
   def countries(pkg: String): String = {
     val countries = locales.map(_.getCountry).filter(_.nonEmpty).toSet
-    val vals = countries.map {
-      country =>
-        s"""val ${identifier(country)}: Country = Country("$country")"""
+    val vals = countries.map { country =>
+      s"""val ${identifier(country)}: Country = Country("$country")"""
     }
 
     s"""package $pkg.dsl
@@ -40,20 +41,22 @@ object SourceGenerator {
        |object Countries {
        |  ${vals.mkString("\n\n  ")}
        |
-       |  val All: List[Country] = List(${countries.map(identifier).mkString(", ")})
+       |  val All: List[Country] = List(${countries
+         .map(identifier)
+         .mkString(", ")})
        |}""".stripMargin
   }
 
   def locales(pkg: String): String = {
     val name: Locale => String = locale =>
-      if(locale.getCountry.isEmpty) locale.getLanguage
+      if (locale.getCountry.isEmpty) locale.getLanguage
       else s"${locale.getLanguage}_${locale.getCountry}"
 
     val vals = locales.map { locale =>
       val language = locale.getLanguage
       val country = locale.getCountry
 
-      if(country.isEmpty) {
+      if (country.isEmpty) {
         s"val ${name(locale)}: Locale = Locale(Languages.${identifier(language)})"
       } else {
         s"val ${name(locale)}: Locale = Locale(" +
