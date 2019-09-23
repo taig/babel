@@ -12,7 +12,6 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
     description := "i18n & l10n for (isomorphic) Scala applications",
     libraryDependencies ++=
       "org.typelevel" %%% "cats-core" % "2.0.0" ::
-        "io.github.cquiroz" %%% "scala-java-locales" % "0.3.16-cldr35" ::
         "org.typelevel" %%% "cats-testkit-scalatest" % "1.0.0-M2" % "test" ::
         Nil,
     name := "lokal",
@@ -41,5 +40,3 @@ lazy val website = project
     micrositeName := (core.jvm / name).value
   )
   .dependsOn(core.jvm)
-
-addCommandAlias("makeMicrosite", "++2.12.10 website/makeMicrosite")

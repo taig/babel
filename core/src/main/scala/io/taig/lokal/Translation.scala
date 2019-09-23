@@ -1,111 +1,86 @@
 package io.taig.lokal
 
-import java.util.Locale
-
+import cats._
 import cats.implicits._
-import cats.{Eq, FlatMap, Semigroup, SemigroupK, Show}
-import io.taig.lokal.implicits._
 
-case class Translation[A](
-    locale: Locale,
-    value: A,
-    translations: Map[Locale, A]
-) extends (Locale => A) {
-  override final def apply(locale: Locale): A =
-    resolve(locale, toMap).getOrElse(value)
+import scala.annotation.tailrec
 
-  private def resolve(locale: Locale, translations: Map[Locale, A]): Option[A] =
-    if (locale.getCountry == "") translations.get(locale)
-    else
-      translations
-        .get(locale)
-        .orElse(translations.get(new Locale(locale.getLanguage)))
+abstract class Translation[A] {
+  def apply(locale: Locale): Option[(Rank, A)]
 
-  def locales: Set[Locale] = translations.keys.toSet + locale
+  final def translate(locale: Locale): Option[A] = apply(locale).map(_._2)
 
-  def values: Set[A] = translations.values.toSet + value
+  final def translateOrElse(locale: Locale, fallback: => A): A =
+    translate(locale).getOrElse(fallback)
 
-  def toMap: Map[Locale, A] = translations + (locale -> value)
+  final def translateOrEmpty(locale: Locale)(implicit A: Monoid[A]): A =
+    translate(locale).orEmpty
 
-  def &(translation: Translation[A]): Translation[A] =
-    translation match {
-      case Translation(`locale`, value, translations) =>
-        Translation(locale, value, this.translations ++ translations)
-      case Translation(locale, value, translations) =>
-        Translation(
-          this.locale,
-          this.value,
-          this.translations ++ translations + (locale -> value)
-        )
+  final def &(translation: Translation[A]): Translation[A] = { locale =>
+    (apply(locale), translation(locale)) match {
+      case (x @ Some((rankX, _)), y @ Some((rankY, _))) =>
+        if (rankY >= rankX) y else x
+      case (None, y @ Some(_)) => y
+      case (x @ Some(_), None) => x
+      case (None, None)        => None
     }
+  }
 
-  override def toString(): String =
-    this.map(_.toString).show
+  final def map[B](f: A => B): Translation[B] = apply(_).map(_.map(f))
+
+  final def flatMap[B](f: A => Translation[B]): Translation[B] =
+    locale =>
+      apply(locale).flatMap {
+        case (_, value) => f(value)(locale)
+      }
 }
 
 object Translation {
+  def empty[A]: Translation[A] = _ => None
+
   def apply[A](locale: Locale, value: A): Translation[A] =
-    Translation(locale, value, Map.empty)
+    current =>
+      if (locale === current) (Rank.Exact, value).some
+      else if (locale === current.withoutCountry) (Rank.Language, value).some
+      else if (locale.language === current.language) (Rank.Country, value).some
+      else None
 
-  implicit val flatMap: FlatMap[Translation] = new FlatMap[Translation] {
+  def universal[A](value: A): Translation[A] = _ => (Rank.Universal, value).some
+
+  implicit val monad: Monad[Translation] = new Monad[Translation] {
+    override def pure[A](x: A): Translation[A] = universal(x)
+
     override def map[A, B](fa: Translation[A])(f: A => B): Translation[B] =
-      Translation(
-        fa.locale,
-        f(fa.value),
-        fa.translations.fmap(f)
-      )
+      fa.map(f)
 
-    override def flatMap[A, B](
-        fa: Translation[A]
-    )(f: A => Translation[B]): Translation[B] =
-      Translation(fa.locale, f(fa.value)(fa.locale), fa.translations.map {
-        case (locale, value) => (locale, f(value)(locale))
-      })
+    override def flatMap[A, B](fa: Translation[A])(
+        f: A => Translation[B]
+    ): Translation[B] = fa.flatMap(f)
 
-    // TODO @tailrec
     override def tailRecM[A, B](
         a: A
-    )(f: A => Translation[Either[A, B]]): Translation[B] =
-      f(a) match {
-        case Translation(locale, Left(a), translations) =>
-          Translation(locale, tailRecM(a)(f)(locale), translations.map {
-            case (locale, Left(a))  => locale -> tailRecM(a)(f)(locale)
-            case (locale, Right(b)) => locale -> b
-          })
-        case Translation(locale, Right(b), translations) =>
-          Translation(locale, b, translations.map {
-            case (locale, Left(a))  => locale -> tailRecM(a)(f)(locale)
-            case (locale, Right(b)) => locale -> b
-          })
-      }
+    )(f: A => Translation[Either[A, B]]): Translation[B] = new Translation[B] {
+      @tailrec
+      def go(value: A, locale: Locale): Option[(Rank, B)] =
+        f(value)(locale) match {
+          case Some((_, Left(a)))     => go(a, locale)
+          case Some((rank, Right(b))) => (rank, b).some
+          case None                   => None
+        }
+
+      override def apply(locale: Locale): Option[(Rank, B)] =
+        go(a, locale)
+    }
   }
 
-  implicit def semigroup[A: Semigroup]: Semigroup[Translation[A]] = { (x, y) =>
-    val locales = x.locales ++ y.locales - x.locale
+  implicit val monoidK: MonoidK[Translation] =
+    new MonoidK[Translation] {
+      override def empty[A]: Translation[A] = Translation.empty
 
-    val translations = locales.map { locale =>
-      locale -> (x(locale) |+| y(locale))
-    }.toMap
-
-    Translation(x.locale, x.value |+| y(x.locale), translations)
-  }
-
-  implicit val semigroupK: SemigroupK[Translation] =
-    new SemigroupK[Translation] {
       override def combineK[A](
           x: Translation[A],
           y: Translation[A]
-      ): Translation[A] = {
-        val translations = (x.toMap ++ y.toMap) - y.locale
-        Translation(y.locale, y.value, translations)
-      }
+      ): Translation[A] =
+        x & y
     }
-
-  implicit def show[A: Show]: Show[Translation[A]] = Show.show { translation =>
-    translation.toMap
-      .map { case (locale, value) => show"""$locale"$value"""" }
-      .mkString("Translation(", ", ", ")")
-  }
-
-  implicit def eq[A: Eq]: Eq[Translation[A]] = _.toMap === _.toMap
 }

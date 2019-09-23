@@ -1,26 +1,26 @@
 package io.taig.lokal
 
+import cats.Eq
 import cats.implicits._
-import cats.kernel.laws.discipline.SemigroupTests
-import cats.laws.discipline.{FlatMapTests, SemigroupKTests}
+import cats.laws.discipline.{MonadTests, MonoidKTests}
 import org.scalacheck.Arbitrary
 import org.scalatest.funsuite.AnyFunSuite
 import org.typelevel.discipline.scalatest.Discipline
 
-class TranslationLawTest extends AnyFunSuite with Discipline {
-  implicit def translation[A: Arbitrary]: Arbitrary[Translation[A]] =
-    Arbitrary(Generators.translation(implicitly[Arbitrary[A]].arbitrary))
+final class TranslationLawTest extends AnyFunSuite with Discipline {
+  implicit def arbitrary[A: Arbitrary]: Arbitrary[Translation[A]] =
+    Arbitrary(Generators.translations(Arbitrary.arbitrary[A]))
+
+  implicit def eq[A: Eq]: Eq[Translation[A]] =
+    (x, y) =>
+      Locale.All.forall(locale => x.translate(locale) eqv y.translate(locale))
 
   checkAll(
-    "Translation.FlatMapLaws",
-    FlatMapTests[Translation].flatMap[Int, Int, String]
+    "Translation.MonadLaws",
+    MonadTests[Translation].monad[Int, Int, String]
   )
   checkAll(
-    "Translation.SemigroupLaws",
-    SemigroupTests[Translation[Int]].semigroup
-  )
-  checkAll(
-    "Translation.SemigroupKLaws",
-    SemigroupKTests[Translation].semigroupK[Int]
+    "Translation.MonoidKLaws",
+    MonoidKTests[Translation].monoidK[Int]
   )
 }

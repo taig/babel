@@ -10,7 +10,6 @@ object SourceGenerator {
   def render(pkg: String): String =
     s"""package $pkg
        |
-       |import java.util.Locale
        |import io.taig.lokal.syntax.LokalStringContext
        |
        |$localesObject
@@ -18,21 +17,25 @@ object SourceGenerator {
        |$stringOperationsTrait""".stripMargin
 
   def localesObject: String =
-    s"""object Locales {
+    s"""trait Locales {
        |${locales.map(localeVal).mkString("\n\n")}
        |
        |$allVal
        |}""".stripMargin
 
-  def localeVal(locale: Locale): String =
-    s"""  val ${locale.toString}: Locale = new Locale("${locale.getLanguage}", "${locale.getCountry}")"""
+  def localeVal(locale: Locale): String = {
+    val country =
+      if (locale.getCountry.isEmpty) "None"
+      else s"""Some(Country("${locale.getCountry}"))"""
+    s"""  val ${locale.toString}: Locale = Locale(Language("${locale.getLanguage}"), $country)"""
+  }
 
   val allVal: String =
     s"  val All: List[Locale] = List(${locales.map(_.toString).mkString(", ")})"
 
   def stringOperationsTrait: String =
     s"""trait LokalStringOperations { this: LokalStringContext =>
-       |${locales.map(stringOperationDef).mkString("\n\n  ")}
+       |${locales.map(stringOperationDef).mkString("\n\n")}
        |}""".stripMargin
 
   def stringOperationDef(locale: Locale): String = {
@@ -40,6 +43,6 @@ object SourceGenerator {
 
     s"""  @inline
        |  def $identifier(arguments: Any*): Translation[String] =
-       |    apply(Locales.$identifier, arguments)""".stripMargin
+       |    apply(Locale.$identifier, arguments)""".stripMargin
   }
 }
