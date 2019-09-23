@@ -37,20 +37,20 @@ test-js:
     - sbt -Dmode=strict +coreJS/test
 
 
-artifacts:
-  stage: publish
-  image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
-  only:
-    - master
-    - tags
-  script:
-    - sbt publishAndRelease
+# artifacts:
+#   stage: publish
+#   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
+#   only:
+#     - master
+#     - tags
+#   script:
+#     - sbt publishAndRelease
 
 website:
   stage: publish
   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
-  only:
-    - tags
+#   only:
+#     - tags
   script:
     - sbt website/makeMicrosite
-    - mv /home/lokal/website/target/site/ /public/
+    - mv /builds/taig-github/lokal/website/target/site/ /public/
