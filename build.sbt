@@ -64,4 +64,4 @@ lazy val website = project
     micrositeName := (lokal / name).value,
     micrositeUrl := micrositeHomepage.value
   )
-  .dependsOn(core.jvm)
+  .dependsOn(dsl.jvm)

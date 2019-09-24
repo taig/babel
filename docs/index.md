@@ -8,7 +8,7 @@ section: "home"
 
 An internationalization (_i18n_) and localization (_l10n_) library for Scala and ScalaJS. A minimalistic API helps defining and evaluating translations on both, the server and the client. In its current early state, _@NAME@_ does unfortunately include all translations into the generated JavaScript and does not support Ajax-loading the user's preferred language only.
 
-# Installation
+## Installation
 
 _@NAME@_ is available for Scala @SCALA_VERSIONS@ and Scala.js @SCALAJS_VERSION@ via Maven Central.
 
@@ -20,31 +20,77 @@ libraryDependencies ++=
   Nil
 ```
 
-# Getting started
+## Usage
 
-```mdoc scala
+_@NAME@'s_ main feature is the `Translation` class. It is intended to be used with the `@MODULE_DSL@` module with `String` values.
+
+```scala mdoc:silent
 import io.taig.lokal._
-import io.taig.lokal.implicits._
+import io.taig.lokal.dsl._
 
 val world: Translation[String] = en"World" & de"Welt"
-val greeting: Translation[String] =
-    en"Hello $world" & de"Hallo $world" & de_AT"Grüß Gott $world"
+val greeting: Translation[String] = en_GB"Hello $world" & de"Hallo $world" & de_AT"Grüß Gott $world"
 ```
 
 Exact matches are always preferred
 
-```tut
+```scala mdoc
+greeting.translate(Locales.de_AT)
 greeting(Locales.de_AT)
 ```
 
 Language is used as fallback when there is no specific translation for the country
 
-```tut
+```scala mdoc
+greeting.translate(Locales.de_DE)
 greeting(Locales.de_DE)
 ```
 
-The first translation is the fallback when the language is not available
+A different country's translation is used as a last resort fallback.
 
-```tut
-greeting(Locales.es)
+```scala mdoc
+greeting.translate(Locales.en_US)
+greeting(Locales.en_US)
+```
+
+### Universal Values
+
+Translations can be promoted to be the same across all languages.
+
+```scala mdoc:silent
+val project: Translation[String] = Translation.universal("@NAME@")
+val headline: Translation[String] = en"The name of this project is $project"
+```
+
+```scala mdoc
+headline.translate(Locales.en)
+headline.translate(Locales.fr)
+project.translate(Locales.fr)
+```
+
+### Monadic composition
+
+```scala mdoc:silent
+import cats.implicits._
+
+val currencySymbol: Translation[Char] =
+  Translation.of(Locales.de, Locales.fr, Locales.es)('€') &
+  Translation(Locales.en_GB, '£') &
+  Translation.universal('$')
+
+def formatNumber(value: Float): Translation[String] =
+  Translation.universal(String.valueOf(value)).flatMap { value =>
+    Translation.of(Locales.de, Locales.fr, Locales.es)(value.replace(".", ",")) &
+    Translation.universal(value)
+  }
+
+def price(value: Int): Translation[String] =
+  (formatNumber(value / 100f), currencySymbol).mapN { (value, symbol) =>
+    s"$value $symbol"
+  }
+```
+
+```scala mdoc
+price(99).translate(Locales.en_US)
+price(149).translate(Locales.de)
 ```

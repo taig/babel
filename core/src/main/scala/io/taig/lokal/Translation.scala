@@ -45,6 +45,9 @@ object Translation {
       else if (locale.language === current.language) (Rank.Country, value).some
       else None
 
+  def of[A](locales: Locale*)(value: A): Translation[A] =
+    locales.map(apply(_, value)).toList.combineAll(monoidK.algebra)
+
   def universal[A](value: A): Translation[A] = _ => (Rank.Universal, value).some
 
   implicit val monad: Monad[Translation] = new Monad[Translation] {
