@@ -1,7 +1,7 @@
 stages:
   - docker
   - test
-  - publish
+  - deploy
 
 variables:
   CONTAINER_REGISTRY: registry.gitlab.com
@@ -23,8 +23,8 @@ test-jvm:
   stage: test
   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
   script:
-    - sbt -Dmode=strict coverage +coreJVM/test coverageAggregate
-    - mv /builds/taig-github/lokal/target/scala-2.13/scoverage-report/ coverage/
+    - sbt -Dmode=strict coverage +coreJVM/test +dslJVM/test coverageAggregate
+    - mv target/scala-2.13/scoverage-report/ coverage/
   artifacts:
     expire_in: 1 month
     paths:
@@ -34,11 +34,10 @@ test-js:
   stage: test
   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
   script:
-    - sbt -Dmode=strict +coreJS/test
-
+    - sbt -Dmode=strict +coreJS/test +dslJS/test
 
 artifacts:
-  stage: publish
+  stage: deploy
   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
   only:
     - master
@@ -46,14 +45,17 @@ artifacts:
   script:
     - sbt publishAndRelease
 
-website:
-  stage: publish
+pages:
+  stage: deploy
   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
   only:
     - tags
   script:
     - sbt website/makeMicrosite
-    - mv /builds/taig-github/lokal/website/target/site/ public/
+    - mv website/target/site/ public/
+    - mv coverage/ public/coverage/
   artifacts:
     paths:
       - public/
+  dependencies:
+    - test-jvm

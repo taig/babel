@@ -7,42 +7,81 @@ object SourceGenerator {
       label.nonEmpty && !label.contains("#") && label.length <= 5
     }
 
-  def render(pkg: String): String =
-    s"""package $pkg
-       |
-       |import io.taig.lokal.syntax.LokalStringContext
-       |
-       |$localesObject
-       |
-       |$stringOperationsTrait""".stripMargin
+  def identifier(value: String): String = value.toLowerCase.capitalize
 
-  def localesObject: String =
-    s"""trait Locales {
-       |${locales.map(localeVal).mkString("\n\n")}
+  def languages(pkg: String): String = {
+    val languages = locales.map(_.getLanguage).toSet
+    val vals = languages.map { language =>
+      s"""val ${identifier(language)}: Language = Language("$language")"""
+    }
+    val all = languages.map(identifier).mkString(", ")
+
+    s"""package $pkg.dsl
        |
-       |$allVal
+       |import $pkg.Language
+       |
+       |object Languages {
+       |  ${vals.mkString("\n\n  ")}
+       |
+       |  val All: List[Language] = List($all)
        |}""".stripMargin
-
-  def localeVal(locale: Locale): String = {
-    val country =
-      if (locale.getCountry.isEmpty) "None"
-      else s"""Some(Country("${locale.getCountry}"))"""
-    s"""  val ${locale.toString}: Locale = Locale(Language("${locale.getLanguage}"), $country)"""
   }
 
-  val allVal: String =
-    s"  val All: List[Locale] = List(${locales.map(_.toString).mkString(", ")})"
+  def countries(pkg: String): String = {
+    val countries = locales.map(_.getCountry).filter(_.nonEmpty).toSet
+    val vals = countries.map { country =>
+      s"""val ${identifier(country)}: Country = Country("$country")"""
+    }
+    val all = countries.map(identifier).mkString(", ")
 
-  def stringOperationsTrait: String =
-    s"""trait LokalStringOperations { this: LokalStringContext =>
-       |${locales.map(stringOperationDef).mkString("\n\n")}
+    s"""package $pkg.dsl
+       |
+       |import $pkg.Country
+       |
+       |object Countries {
+       |  ${vals.mkString("\n\n  ")}
+       |
+       |  val All: List[Country] = List($all)
        |}""".stripMargin
+  }
 
-  def stringOperationDef(locale: Locale): String = {
-    val identifier = locale.toString
+  def locales(pkg: String): String = {
+    val vals = locales.map { locale =>
+      val language = locale.getLanguage
+      val country = locale.getCountry
 
-    s"""  @inline
-       |  def $identifier(arguments: Any*): Translation[String] =
-       |    apply(Locale.$identifier, arguments)""".stripMargin
+      if (country.isEmpty) {
+        s"val $locale: Locale = Locale(Languages.${identifier(language)})"
+      } else {
+        s"val $locale: Locale = Locale(" +
+          s"Languages.${identifier(language)}, " +
+          s"Some(Countries.${identifier(country)}))"
+      }
+    }
+    val all = locales.map(_.toString).mkString(", ")
+
+    s"""package $pkg.dsl
+       |
+       |import $pkg.Locale
+       |
+       |object Locales {
+       |  ${vals.mkString("\n\n  ")}
+       |
+       |  val All: List[Locale] = List($all)
+       |}""".stripMargin
+  }
+
+  def contexts(pkg: String): String = {
+    val defs = locales.map { locale =>
+      s"def $locale(arguments: Any*): Translation[String] = apply(Locales.$locale, arguments)"
+    }
+
+    s"""package $pkg.dsl
+       |
+       |import $pkg.Translation
+       |
+       |trait LokalStringContexts { this: LokalStringContext =>
+       |  ${defs.mkString("\n\n  ")}
+       |}""".stripMargin
   }
 }

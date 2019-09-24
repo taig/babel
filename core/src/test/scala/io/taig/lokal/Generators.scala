@@ -4,7 +4,19 @@ import cats.implicits._
 import org.scalacheck.Gen
 
 object Generators {
-  val locale: Gen[Locale] = Gen.oneOf(Locale.All)
+  val locales: List[Locale] = List(
+    Locale(Language("de")),
+    Locale(Language("de"), Country("AT")),
+    Locale(Language("de"), Country("CH")),
+    Locale(Language("de"), Country("DE")),
+    Locale(Language("en")),
+    Locale(Language("en"), Country("GB")),
+    Locale(Language("en"), Country("US")),
+    Locale(Language("es")),
+    Locale(Language("fr"))
+  )
+
+  val locale: Gen[Locale] = Gen.oneOf(locales)
 
   val rank: Gen[Rank] =
     Gen.oneOf(Rank.Exact, Rank.Country, Rank.Language, Rank.Universal)
