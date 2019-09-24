@@ -6,6 +6,11 @@ section: "home"
 
 # @NAME@
 
+[![GitLab CI](https://gitlab.com/taig-github/lokal/badges/master/build.svg?style=flat-square)](https://gitlab.com/taig-github/lokal/pipelines)
+[![GitLab CI](https://gitlab.com/taig-github/lokal/badges/master/coverage.svg?style=flat-square)](https://lokal.taig.io/coverage)
+[![Maven Central](https://img.shields.io/maven-central/v/io.taig/lokal-core_2.13.svg?style=flat-square)](https://search.maven.org/search?q=g:io.taig%20AND%20a:lokal-*)
+[![License](https://img.shields.io/github/license/taig/lokal?style=flat-square)](LICENSE)
+
 An internationalization (_i18n_) and localization (_l10n_) library for Scala and ScalaJS. A minimalistic API helps defining and evaluating translations on both, the server and the client. In its current early state, _@NAME@_ does unfortunately include all translations into the generated JavaScript and does not support Ajax-loading the user's preferred language only.
 
 ## Installation
