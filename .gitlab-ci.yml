@@ -23,7 +23,7 @@ test-jvm:
   stage: test
   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
   script:
-    - sbt -Dmode=strict coverage +coreJVM/test +dslJVM/test coverageAggregate
+    - sbt -Dmode=strict scalafmtCheckAll coverage +coreJVM/test +dslJVM/test coverageAggregate
     - mv target/scala-2.13/scoverage-report/ coverage/
   artifacts:
     expire_in: 1 month
