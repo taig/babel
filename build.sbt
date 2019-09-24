@@ -48,8 +48,11 @@ lazy val website = project
       "SCALA_VERSIONS" -> crossScalaVersions.value.mkString(", "),
       "SCALAJS_VERSION" -> scalaJSVersion
     ),
+    micrositeBaseUrl := "/",
     micrositeAnalyticsToken := "UA-64109905-2",
     micrositeDescription := (core.jvm / description).value,
-    micrositeName := (core.jvm / name).value
+    micrositeHomepage := "https://lokal.taig.io",
+    micrositeName := (core.jvm / name).value,
+    micrositeUrl := "https://lokal.taig.io"
   )
   .dependsOn(core.jvm)
