@@ -53,8 +53,8 @@ lazy val website = project
       "MODULE_DSL" -> (dsl.jvm / normalizedName).value,
       "ORGANIZATION" -> organization.value,
       "VERSION" -> version.value,
-      "SCALA_VERSIONS" -> crossScalaVersions.value.mkString(", "),
-      "SCALAJS_VERSION" -> scalaJSVersion
+      "SCALA_VERSIONS" -> crossScalaVersions.value.map(version => s"`$version`").mkString(", "),
+      "SCALAJS_VERSION" -> s"`$scalaJSVersion`"
     ),
     micrositeDocumentationLabelDescription := "Coverage",
     micrositeDocumentationUrl := "/coverage",

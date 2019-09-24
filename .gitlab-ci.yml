@@ -48,8 +48,8 @@ artifacts:
 pages:
   stage: deploy
   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
-#   only:
-#     - tags
+  only:
+    - tags
   script:
     - sbt website/makeMicrosite
     - mv website/target/site/ public/
