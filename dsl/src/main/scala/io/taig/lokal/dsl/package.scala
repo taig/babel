@@ -3,7 +3,7 @@ package io.taig.lokal
 import cats.implicits._
 
 package object dsl {
-  final implicit class LokalStringContext(context: StringContext) {
+  final implicit class LokalStringContext(context: StringContext) extends LokalStringContexts {
     private def substitute(arguments: Seq[Any]): Seq[Translation[String]] =
       arguments.map {
         case translation: Translation[_] => translation.map(_.toString)
@@ -24,8 +24,5 @@ package object dsl {
         substitute(arguments).toList
       ).reduce((_, _).mapN(_ ++ _))
     }
-
-    def de_DE(arguments: Any*): Translation[String] =
-      apply(Locales.de_DE, arguments)
   }
 }
