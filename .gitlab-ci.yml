@@ -23,10 +23,8 @@ test-jvm:
   stage: test
   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
   script:
-    - ls -la
-    - git status
     - sbt -Dmode=strict coverage +coreJVM/test +dslJVM/test coverageAggregate
-    - mv /builds/taig-github/lokal/target/scala-2.13/scoverage-report/ coverage/
+    - mv target/scala-2.13/scoverage-report/ coverage/
   artifacts:
     expire_in: 1 month
     paths:
@@ -54,7 +52,7 @@ pages:
 #     - tags
   script:
     - sbt website/makeMicrosite
-    - mv /builds/taig-github/lokal/website/target/site/ public/
+    - mv website/target/site/ public/
     - mv coverage/ public/coverage/
   artifacts:
     paths:

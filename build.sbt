@@ -47,7 +47,9 @@ lazy val website = project
   .settings(
     name := "Website",
     mdocVariables ++= Map(
-      "MODULE" -> (normalizedName in core.jvm).value,
+      "NAME" -> (lokal / name).value,
+      "MODULE_CORE" -> (core.jvm / normalizedName).value,
+      "MODULE_DSL" -> (dsl.jvm / normalizedName).value,
       "ORGANIZATION" -> organization.value,
       "VERSION" -> version.value,
       "SCALA_VERSIONS" -> crossScalaVersions.value.mkString(", "),
