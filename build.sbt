@@ -3,6 +3,10 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 lazy val lokal = project
   .in(file("."))
   .settings(Settings.common ++ noPublishSettings)
+  .settings(
+    name := "Lokal",
+    normalizedName := "lokal"
+  )
   .aggregate(core.jvm, core.js, dsl.jvm, dsl.js)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
@@ -14,14 +18,14 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
       "org.typelevel" %%% "cats-core" % "2.0.0" ::
         "org.typelevel" %%% "cats-testkit-scalatest" % "1.0.0-M2" % "test" ::
         Nil,
-    name := "lokal-core"
+    name := "Core"
   )
 
 lazy val dsl = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .settings(Settings.common ++ sonatypePublishSettings)
   .settings(
-    name := "lokal-dsl",
+    name := "Dsl",
     sourceGenerators in Compile += Def.task {
       val pkg = s"${organization.value}.lokal"
       val languages = (sourceManaged in Compile).value / "Languages.scala"
@@ -41,6 +45,7 @@ lazy val website = project
   .enablePlugins(MicrositesPlugin)
   .settings(Settings.common ++ micrositeSettings)
   .settings(
+    name := "Website",
     mdocVariables ++= Map(
       "MODULE" -> (normalizedName in core.jvm).value,
       "ORGANIZATION" -> organization.value,
@@ -48,7 +53,9 @@ lazy val website = project
       "SCALA_VERSIONS" -> crossScalaVersions.value.mkString(", "),
       "SCALAJS_VERSION" -> scalaJSVersion
     ),
-    micrositeBaseUrl := "/",
+    micrositeDocumentationLabelDescription := "Coverage",
+    micrositeDocumentationUrl := "/coverage",
+    micrositeBaseUrl := "",
     micrositeAnalyticsToken := "UA-64109905-2",
     micrositeDescription := (core.jvm / description).value,
     micrositeHomepage := "https://lokal.taig.io",
