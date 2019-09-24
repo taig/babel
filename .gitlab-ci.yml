@@ -46,7 +46,7 @@ artifacts:
   script:
     - sbt publishAndRelease
 
-website:
+pages:
   stage: deploy
   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
 #   only:
