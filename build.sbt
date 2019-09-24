@@ -25,7 +25,6 @@ lazy val dsl = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .settings(Settings.common ++ sonatypePublishSettings)
   .settings(
-    coverageExcludedPackages := "*LokalStringContexts.scala",
     name := "Dsl",
     sourceGenerators in Compile += Def.task {
       val pkg = s"${organization.value}.lokal"

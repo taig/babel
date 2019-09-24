@@ -21,9 +21,11 @@ object SourceGenerator {
        |import $pkg.Language
        |
        |object Languages {
+       |  // $$COVERAGE-OFF$$
        |  ${vals.mkString("\n\n  ")}
        |
        |  val All: List[Language] = List($all)
+       |  // $$COVERAGE-ON$$
        |}""".stripMargin
   }
 
@@ -39,9 +41,11 @@ object SourceGenerator {
        |import $pkg.Country
        |
        |object Countries {
+       |  // $$COVERAGE-OFF$$
        |  ${vals.mkString("\n\n  ")}
        |
        |  val All: List[Country] = List($all)
+       |  // $$COVERAGE-ON$$
        |}""".stripMargin
   }
 
@@ -65,9 +69,11 @@ object SourceGenerator {
        |import $pkg.Locale
        |
        |object Locales {
+       |  // $$COVERAGE-OFF$$
        |  ${vals.mkString("\n\n  ")}
        |
        |  val All: List[Locale] = List($all)
+       |  // $$COVERAGE-ON$$
        |}""".stripMargin
   }
 
@@ -81,7 +87,9 @@ object SourceGenerator {
        |import $pkg.Translation
        |
        |trait LokalStringContexts { this: LokalStringContext =>
+       |  // $$COVERAGE-OFF$$
        |  ${defs.mkString("\n\n  ")}
+       |  // $$COVERAGE-ON$$
        |}""".stripMargin
   }
 }
