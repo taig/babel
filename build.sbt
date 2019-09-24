@@ -4,6 +4,7 @@ lazy val lokal = project
   .in(file("."))
   .settings(Settings.common ++ noPublishSettings)
   .settings(
+    description := "i18n & l10n for (isomorphic) Scala applications",
     name := "Lokal",
     normalizedName := "lokal"
   )
@@ -13,7 +14,6 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .settings(Settings.common ++ sonatypePublishSettings)
   .settings(
-    description := "i18n & l10n for (isomorphic) Scala applications",
     libraryDependencies ++=
       "org.typelevel" %%% "cats-core" % "2.0.0" ::
         "org.typelevel" %%% "cats-testkit-scalatest" % "1.0.0-M2" % "test" ::
@@ -57,9 +57,9 @@ lazy val website = project
     micrositeDocumentationUrl := "/coverage",
     micrositeBaseUrl := "",
     micrositeAnalyticsToken := "UA-64109905-2",
-    micrositeDescription := (core.jvm / description).value,
+    micrositeDescription := (lokal / description).value,
     micrositeHomepage := "https://lokal.taig.io",
-    micrositeName := (core.jvm / name).value,
-    micrositeUrl := "https://lokal.taig.io"
+    micrositeName := (lokal / name).value,
+    micrositeUrl := micrositeHomepage.value
   )
   .dependsOn(core.jvm)
