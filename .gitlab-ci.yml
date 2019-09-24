@@ -36,7 +36,6 @@ test-js:
   script:
     - sbt -Dmode=strict +coreJS/test +dslJS/test
 
-
 artifacts:
   stage: deploy
   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
@@ -54,6 +53,9 @@ pages:
   script:
     - sbt website/makeMicrosite
     - mv /builds/taig-github/lokal/website/target/site/ public/
+    - mv coverage/ public/coverage/
   artifacts:
     paths:
-      - public/g 
+      - public/
+  dependencies:
+    - test-jvm
