@@ -3,8 +3,7 @@ import sbt.Keys._
 
 object Settings {
   val common: Seq[Def.Setting[_]] = Def.settings(
-    homepage := Some(url("https://taig.io/lokal/")),
-    normalizedName := s"${(LocalRootProject / normalizedName).value}-${normalizedName.value}",
+    homepage := Some(url("https://lokal.taig.io/")),
     startYear := Some(2017)
   )
 }
