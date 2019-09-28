@@ -21,7 +21,7 @@ object Generators {
   val rank: Gen[Rank] =
     Gen.oneOf(Rank.Exact, Rank.Country, Rank.Language, Rank.Universal)
 
-  def translationEmpty[A]: Gen[Translation[A]] = Gen.const(Translation.empty)
+  def translationEmpty[A]: Gen[Translation[A]] = Gen.const(Translation.Empty)
 
   def translationUniversal[A](value: Gen[A]): Gen[Translation[A]] =
     value.map(Translation.universal)

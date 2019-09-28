@@ -5,18 +5,18 @@ import cats.implicits._
 
 import scala.annotation.tailrec
 
-abstract class Translation[A] {
+abstract class Translation[+A] {
   def apply(locale: Locale): Option[(Rank, A)]
 
   final def translate(locale: Locale): Option[A] = apply(locale).map(_._2)
 
-  final def translateOrElse(locale: Locale, fallback: => A): A =
+  final def translateOrElse[B >: A](locale: Locale, fallback: => B): B =
     translate(locale).getOrElse(fallback)
 
-  final def translateOrEmpty(locale: Locale)(implicit A: Monoid[A]): A =
-    translate(locale).orEmpty
+  final def translateOrEmpty[B >: A: Monoid](locale: Locale): B =
+    translate(locale).getOrElse(Monoid[B].empty)
 
-  final def &(translation: Translation[A]): Translation[A] = { locale =>
+  final def &[B >: A](translation: Translation[B]): Translation[B] = { locale =>
     (apply(locale), translation(locale)) match {
       case (x @ Some((rankX, _)), y @ Some((rankY, _))) =>
         if (rankY >= rankX) y else x
@@ -29,14 +29,11 @@ abstract class Translation[A] {
   final def map[B](f: A => B): Translation[B] = apply(_).map(_.map(f))
 
   final def flatMap[B](f: A => Translation[B]): Translation[B] =
-    locale =>
-      apply(locale).flatMap {
-        case (_, value) => f(value)(locale)
-      }
+    locale => apply(locale).flatMap { case (_, value) => f(value)(locale) }
 }
 
 object Translation {
-  def empty[A]: Translation[A] = _ => None
+  val Empty: Translation[Nothing] = _ => None
 
   def apply[A](locale: Locale, value: A): Translation[A] =
     current =>
@@ -78,7 +75,7 @@ object Translation {
 
   implicit val monoidK: MonoidK[Translation] =
     new MonoidK[Translation] {
-      override def empty[A]: Translation[A] = Translation.empty
+      override def empty[A]: Translation[A] = Empty
 
       override def combineK[A](
           x: Translation[A],

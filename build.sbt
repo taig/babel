@@ -14,6 +14,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .settings(
     libraryDependencies ++=
       "org.typelevel" %%% "cats-core" % "2.0.0" ::
+        "com.github.alexarchambault" %%% "scalacheck-shapeless_1.14" % "1.2.3" % "test" ::
         "org.typelevel" %%% "cats-testkit-scalatest" % "1.0.0-M2" % "test" ::
         Nil
   )
