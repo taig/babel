@@ -54,6 +54,7 @@ lazy val website = project
       )
     },
     micrositeAnalyticsToken := "UA-64109905-2",
-    micrositeDescription := (lokal / description).value
+    micrositeDescription := (lokal / description).value,
+    scalaVersion := "2.13.0"
   )
   .dependsOn(dsl.jvm)
