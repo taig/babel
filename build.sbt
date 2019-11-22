@@ -1,5 +1,9 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
+val CatsVersion = "2.0.0"
+val ScalacheckShapelessVersion = "1.2.3"
+val CatsTestkitScalatestVersion = "1.0.0-RC1"
+
 lazy val lokal = project
   .in(file("."))
   .settings(Settings.common ++ noPublishSettings)
@@ -13,9 +17,9 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .settings(Settings.common ++ sonatypePublishSettings)
   .settings(
     libraryDependencies ++=
-      "org.typelevel" %%% "cats-core" % "2.0.0" ::
-        "com.github.alexarchambault" %%% "scalacheck-shapeless_1.14" % "1.2.3" % "test" ::
-        "org.typelevel" %%% "cats-testkit-scalatest" % "1.0.0-RC1" % "test" ::
+      "org.typelevel" %%% "cats-core" % CatsVersion ::
+        "com.github.alexarchambault" %%% "scalacheck-shapeless_1.14" % ScalacheckShapelessVersion % "test" ::
+        "org.typelevel" %%% "cats-testkit-scalatest" % CatsTestkitScalatestVersion % "test" ::
         Nil
   )
 
