@@ -29,9 +29,9 @@ RUN         cd ./cache/ && sbt -v +compile
 # Cache dependencies
 ADD         ./project ./cache/project/
 ADD         ./build.sbt ./cache/
-RUN         mkdir -p ./cache/core/src/test/scala/ ./cache/docs
+RUN         mkdir -p ./cache/core/src/test/scala/ ./cache/website/docs/
 RUN         echo "class Test" > ./cache/core/src/test/scala/Test.scala
-RUN         echo "Lorem ipsum" > ./cache/docs/index.md
+RUN         echo "Lorem ipsum" > ./cache/website/docs/index.md
 RUN         cd ./cache/ && sbt -v ";set every sourceGenerators := List.empty;coverage;+test;website/makeMicrosite"
 
 # Clean cache
