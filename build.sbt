@@ -1,5 +1,7 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
+import scala.sys.process.Process
+
 val CatsVersion = "2.0.0"
 val ScalacheckShapelessVersion = "1.2.3"
 val CatsTestkitScalatestVersion = "1.0.0-RC1"
@@ -46,6 +48,12 @@ lazy val website = project
   .enablePlugins(MicrositesPlugin)
   .settings(Settings.common ++ micrositeSettings)
   .settings(
+    micrositeVersionList := {
+      if (isSnapshot.value) {
+        val tag = Process(Seq("git", "describe", "--abbrev=0")).!!
+        List(tag)
+      } else List.empty
+    },
     mdocVariables ++= {
       val dropMinor: String => String =
         version => s"`${version.replaceAll("\\.\\d+$", "")}`"

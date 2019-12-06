@@ -23,7 +23,7 @@ test-jvm:
   stage: test
   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
   script:
-    - sbt -Dmode=strict scalafmtCheckAll coverage +coreJVM/test +dslJVM/test website/makeMicrosite coverageAggregate
+    - sbt -Dmode=strict scalafmtCheckAll coverage +coreJVM/test +dslJVM/test website/makeMultiversionMicrosite coverageAggregate
     - mv target/scala-2.13/scoverage-report/ coverage/
     - mv website/target/site/ site/
   artifacts:
@@ -51,7 +51,7 @@ pages:
   stage: deploy
   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
   only:
-    - tags
+    - master
   script:
     - mv site/ public/
     - mv coverage/ public/coverage/
