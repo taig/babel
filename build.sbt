@@ -47,18 +47,19 @@ lazy val website = project
   .settings(Settings.common ++ micrositeSettings)
   .settings(
     mdocVariables ++= {
-      val format: String => String =
+      val dropMinor: String => String =
         version => s"`${version.replaceAll("\\.\\d+$", "")}`"
 
       Map(
         "MODULE_CORE" -> (core.jvm / name).value,
         "MODULE_DSL" -> (dsl.jvm / name).value,
-        "SCALA_VERSIONS" -> crossScalaVersions.value.map(format).mkString(", "),
-        "SCALAJS_VERSION" -> format(scalaJSVersion)
+        "SCALA_VERSIONS" -> crossScalaVersions.value
+          .map(dropMinor)
+          .mkString(", "),
+        "SCALAJS_VERSION" -> dropMinor(scalaJSVersion)
       )
     },
     micrositeAnalyticsToken := "UA-64109905-2",
-    micrositeDescription := (lokal / description).value,
-    scalaVersion := "2.13.0"
+    micrositeDescription := (lokal / description).value
   )
   .dependsOn(dsl.jvm)
