@@ -1,4 +1,4 @@
-import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
+import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 import scala.sys.process.Process
 import scala.util.Try

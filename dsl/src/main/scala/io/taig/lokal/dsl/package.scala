@@ -3,7 +3,7 @@ package io.taig.lokal
 import cats.implicits._
 
 package object dsl {
-  final implicit class LokalStringContext(context: StringContext)
+  implicit final class LokalStringContext(context: StringContext)
       extends LokalStringContexts {
     private def substitute(arguments: Seq[Any]): Seq[Translation[String]] =
       arguments.map {
