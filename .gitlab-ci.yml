@@ -53,4 +53,4 @@ pages:
     paths:
       - public/
   dependencies:
-    - test-jvm
+    - test
