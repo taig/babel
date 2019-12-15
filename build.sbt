@@ -50,10 +50,9 @@ lazy val website = project
   .settings(Settings.common ++ micrositeSettings)
   .settings(
     micrositeVersionList := {
-      if (isSnapshot.value)
-        Try(Process(Seq("git", "describe", "--abbrev=0")).!!)
-          .fold(_ => List.empty, List(_))
-      else List.empty
+      //  Try(Process(Seq("git", "describe", "--abbrev=0")).!!)
+      //    .fold(_ => List.empty, List(_))
+      if (isSnapshot.value) List.empty else List.empty
     },
     mdocVariables ++= {
       val dropMinor: String => String =
