@@ -19,11 +19,11 @@ docker:
     - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA .
     - docker push $CONTAINER_IMAGE
 
-test-jvm:
+test:
   stage: test
   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
   script:
-    - sbt -Dmode=strict scalafmtCheckAll coverage +coreJVM/test +dslJVM/test website/makeMultiversionMicrosite coverageAggregate
+    - sbt -Dmode=strict scalafmtCheckAll coverage test website/makeMultiversionMicrosite coverageAggregate
     - mv target/scala-2.13/scoverage-report/ coverage/
     - mv website/target/site/ site/
   artifacts:
@@ -31,12 +31,6 @@ test-jvm:
     paths:
       - coverage/
       - site/
-
-test-js:
-  stage: test
-  image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
-  script:
-    - sbt -Dmode=strict +coreJS/test +dslJS/test
 
 artifacts:
   stage: deploy
