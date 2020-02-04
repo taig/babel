@@ -4,7 +4,7 @@ import scala.sys.process.Process
 import scala.util.Try
 
 val CatsVersion = "2.0.0"
-val ScalacheckShapelessVersion = "1.2.3"
+val ScalacheckShapelessVersion = "1.2.4"
 val CatsTestkitScalatestVersion = "1.0.0-RC1"
 
 lazy val lokal = project
