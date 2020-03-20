@@ -1,4 +1,4 @@
-addSbtPlugin("com.47deg" % "sbt-microsites" % "1.1.3")
+addSbtPlugin("com.47deg" % "sbt-microsites" % "1.1.4")
 
 addSbtPlugin("io.taig" % "sbt-houserules" % "0.1.10")
 
