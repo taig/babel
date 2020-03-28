@@ -5,7 +5,7 @@ import scala.util.Try
 
 val CatsVersion = "2.1.1"
 val ScalacheckShapelessVersion = "1.2.5"
-val CatsTestkitScalatestVersion = "1.0.0-RC1"
+val CatsTestkitScalatestVersion = "1.0.1"
 
 lazy val lokal = project
   .in(file("."))
