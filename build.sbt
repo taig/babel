@@ -3,7 +3,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 import scala.sys.process.Process
 import scala.util.Try
 
-val CatsVersion = "2.0.0"
+val CatsVersion = "2.1.1"
 val ScalacheckShapelessVersion = "1.2.5"
 val CatsTestkitScalatestVersion = "1.0.0-RC1"
 
