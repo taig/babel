@@ -23,7 +23,7 @@ test:
   stage: test
   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
   script:
-    - sbt -Dmode=strict scalafmtCheckAll coverage test website/makeMultiversionMicrosite coverageAggregate
+    - sbt -Dmode=strict scalafmtCheckAll coverage test website/makeMicrosite coverageAggregate
     - mv target/scala-2.13/scoverage-report/ coverage/
     - mv website/target/site/ site/
   artifacts:

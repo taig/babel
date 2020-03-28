@@ -49,11 +49,6 @@ lazy val website = project
   .enablePlugins(MicrositesPlugin)
   .settings(Settings.common ++ micrositeSettings)
   .settings(
-    micrositeVersionList := {
-      //  Try(Process(Seq("git", "describe", "--abbrev=0")).!!)
-      //    .fold(_ => List.empty, List(_))
-      if (isSnapshot.value) List.empty else List.empty
-    },
     mdocVariables ++= {
       val dropMinor: String => String =
         version => s"`${version.replaceAll("\\.\\d+$", "")}`"
