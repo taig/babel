@@ -1,6 +1,6 @@
 addSbtPlugin("com.47deg" % "sbt-microsites" % "1.1.3")
 
-addSbtPlugin("io.taig" % "sbt-houserules" % "0.1.10")
+addSbtPlugin("io.taig" % "sbt-houserules" % "0.1.11")
 
 addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "0.6.1")
 
