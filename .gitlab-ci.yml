@@ -31,17 +31,15 @@ formatting:
   script:
     - sbt scalafmtCheckAll
 
-test:
+suite:
   stage: test
   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
   script:
-    - sbt coverage test website/makeMicrosite coverageAggregate
-    - mv target/scala-2.13/scoverage-report/ coverage/
+    - sbt +test website/makeMicrosite
     - mv website/target/site/ site/
   artifacts:
     expire_in: 1 month
     paths:
-      - coverage/
       - site/
 
 artifacts:
@@ -60,9 +58,8 @@ pages:
     - master
   script:
     - mv site/ public/
-    - mv coverage/ public/coverage/
   artifacts:
     paths:
       - public/
   dependencies:
-    - test
+    - suite

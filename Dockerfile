@@ -30,7 +30,7 @@ ADD         ./build.sbt ./cache/
 RUN         mkdir -p ./cache/core/src/test/scala/ ./cache/website/docs/
 RUN         echo "class Test" > ./cache/core/src/test/scala/Test.scala
 RUN         echo "Lorem ipsum" > ./cache/website/docs/index.md
-RUN         cd ./cache/ && sbt -v ";set every sourceGenerators := List.empty;coverage;+test;website/makeMicrosite"
+RUN         cd ./cache/ && sbt -v ";set every sourceGenerators := List.empty;+test;website/makeMicrosite"
 
 # Clean cache
 RUN         rm -r ./cache/
