@@ -1,11 +1,11 @@
 package io.taig.lokal
 
 import cats.kernel.laws.discipline.EqTests
+import cats.tests.CatsSuite
 import org.scalacheck.{Arbitrary, Cogen}
 import org.scalatest.funsuite.AnyFunSuite
-import org.typelevel.discipline.scalatest.Discipline
 
-final class LocaleLawTest extends AnyFunSuite with Discipline {
+final class LocaleLawTest extends AnyFunSuite with CatsSuite {
   implicit val arbitrary: Arbitrary[Locale] = Arbitrary(Generators.locale)
 
   implicit val cogen: Cogen[Locale] = Cogens.locale
