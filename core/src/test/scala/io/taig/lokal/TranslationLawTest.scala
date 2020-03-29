@@ -11,10 +11,7 @@ final class TranslationLawTest extends AnyFunSuite with CatsSuite {
     Arbitrary(Generators.translations(Arbitrary.arbitrary[A]))
 
   implicit def eq[A: Eq]: Eq[Translation[A]] =
-    (x, y) =>
-      Generators.locales.forall(locale =>
-        Eq[Option[A]].eqv(x.translate(locale), y.translate(locale))
-      )
+    (x, y) => Generators.locales.forall(locale => Eq[Option[A]].eqv(x.translate(locale), y.translate(locale)))
 
   checkAll(
     "Translation.MonadLaws",

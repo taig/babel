@@ -15,8 +15,7 @@ object Locale {
   def apply(language: Language, country: Country): Locale =
     Locale(language, country.some)
 
-  implicit val eq: Eq[Locale] = (x, y) =>
-    x.language === y.language && x.country === y.country
+  implicit val eq: Eq[Locale] = (x, y) => x.language === y.language && x.country === y.country
 
   implicit val show: Show[Locale] = {
     case Locale(language, Some(country)) => show"${language}_$country"

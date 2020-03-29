@@ -10,19 +10,16 @@ abstract class Translation[+A] {
 
   final def translate(locale: Locale): Option[A] = apply(locale).map(_._2)
 
-  final def translateOrElse[B >: A](locale: Locale, fallback: => B): B =
-    translate(locale).getOrElse(fallback)
+  final def translateOrElse[B >: A](locale: Locale, fallback: => B): B = translate(locale).getOrElse(fallback)
 
-  final def translateOrEmpty[B >: A: Monoid](locale: Locale): B =
-    translate(locale).getOrElse(Monoid[B].empty)
+  final def translateOrEmpty[B >: A: Monoid](locale: Locale): B = translate(locale).getOrElse(Monoid[B].empty)
 
   final def &[B >: A](translation: Translation[B]): Translation[B] = { locale =>
     (apply(locale), translation(locale)) match {
-      case (x @ Some((rankX, _)), y @ Some((rankY, _))) =>
-        if (rankY >= rankX) y else x
-      case (None, y @ Some(_)) => y
-      case (x @ Some(_), None) => x
-      case (None, None)        => None
+      case (x @ Some((rankX, _)), y @ Some((rankY, _))) => if (rankY >= rankX) y else x
+      case (None, y @ Some(_))                          => y
+      case (x @ Some(_), None)                          => x
+      case (None, None)                                 => None
     }
   }
 
@@ -50,16 +47,11 @@ object Translation {
   implicit val monad: Monad[Translation] = new Monad[Translation] {
     override def pure[A](x: A): Translation[A] = universal(x)
 
-    override def map[A, B](fa: Translation[A])(f: A => B): Translation[B] =
-      fa.map(f)
+    override def map[A, B](fa: Translation[A])(f: A => B): Translation[B] = fa.map(f)
 
-    override def flatMap[A, B](fa: Translation[A])(
-        f: A => Translation[B]
-    ): Translation[B] = fa.flatMap(f)
+    override def flatMap[A, B](fa: Translation[A])(f: A => Translation[B]): Translation[B] = fa.flatMap(f)
 
-    override def tailRecM[A, B](
-        a: A
-    )(f: A => Translation[Either[A, B]]): Translation[B] = new Translation[B] {
+    override def tailRecM[A, B](a: A)(f: A => Translation[Either[A, B]]): Translation[B] = new Translation[B] {
       @tailrec
       def go(value: A, locale: Locale): Option[(Rank, B)] =
         f(value)(locale) match {
@@ -77,10 +69,6 @@ object Translation {
     new MonoidK[Translation] {
       override def empty[A]: Translation[A] = Empty
 
-      override def combineK[A](
-          x: Translation[A],
-          y: Translation[A]
-      ): Translation[A] =
-        x & y
+      override def combineK[A](x: Translation[A], y: Translation[A]): Translation[A] = x & y
     }
 }
