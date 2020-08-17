@@ -51,8 +51,8 @@ lazy val website = project
         version => s"`${version.replaceAll("\\.\\d+$", "")}`"
 
       Map(
-        "MODULE_CORE" -> (core.jvm / name).value,
-        "MODULE_DSL" -> (dsl.jvm / name).value,
+        "MODULE_CORE" -> (core.jvm / normalizedName).value,
+        "MODULE_DSL" -> (dsl.jvm / normalizedName).value,
         "SCALA_VERSIONS" -> crossScalaVersions.value
           .map(dropMinor)
           .mkString(", "),
