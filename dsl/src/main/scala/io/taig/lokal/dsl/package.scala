@@ -20,7 +20,7 @@ package object dsl {
         arguments: Seq[Any]
     ): Translation[String] = {
       merge(
-        context.parts.map(Translation(locale, _)).toList,
+        context.parts.map(Translation.one(locale, _)).toList,
         substitute(arguments).toList
       ).reduce((_, _).mapN(_ ++ _))
     }
