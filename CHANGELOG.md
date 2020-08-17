@@ -1,5 +1,17 @@
 # Changelog
 
+# 0.7.0
+
+_2020-08-17_
+
+ * [#22] Improve Show/toString of Translation (#71)
+ * Upgrade to cats-testkit-scalatest 2.0.0
+ * Upgrade to scala 2.12.12
+ * Upgrade to scala 2.13.3
+ * Upgrade to sbt-scalajs 1.1.1
+ * Upgrade to sbt 1.3.13
+ * Upgrade sbt-houserules to 0.2.4 (#69)
+
 # 0.6.1
 
 _2020-03-28_
