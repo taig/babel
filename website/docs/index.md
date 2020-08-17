@@ -51,13 +51,6 @@ greeting.translate(Locales.de_DE)
 greeting(Locales.de_DE)
 ```
 
-A different country's translation is used as a last resort fallback.
-
-```scala mdoc
-greeting.translate(Locales.en_US)
-greeting(Locales.en_US)
-```
-
 ### Universal Values
 
 Translations can be promoted to be the same across all languages.
@@ -80,11 +73,11 @@ import cats.implicits._
 
 val currencySymbol: Translation[Char] =
   Translation.of(Locales.de, Locales.fr, Locales.es)('€') &
-  Translation(Locales.en_GB, '£') &
+  Translation.one(Locales.en_GB, '£') &
   Translation.universal('$')
 
 def formatNumber(value: Float): Translation[String] =
-  Translation.universal(String.valueOf(value)).flatMap { value =>
+  Translation.universal(String.valueOf(value)).andThen { value =>
     Translation.of(Locales.de, Locales.fr, Locales.es)(value.replace(".", ",")) &
     Translation.universal(value)
   }

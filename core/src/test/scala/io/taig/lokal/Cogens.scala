@@ -6,6 +6,4 @@ import org.scalacheck.ScalacheckShapeless._
 
 object Cogens {
   val locale: Cogen[Locale] = MkCogen[Locale].cogen
-
-  val rank: Cogen[Rank] = MkCogen[Rank].cogen
 }

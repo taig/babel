@@ -18,9 +18,6 @@ object Generators {
 
   val locale: Gen[Locale] = Gen.oneOf(locales)
 
-  val rank: Gen[Rank] =
-    Gen.oneOf(Rank.Exact, Rank.Country, Rank.Language, Rank.Universal)
-
   def translationEmpty[A]: Gen[Translation[A]] = Gen.const(Translation.Empty)
 
   def translationUniversal[A](value: Gen[A]): Gen[Translation[A]] =
@@ -30,7 +27,7 @@ object Generators {
     for {
       locale <- locale
       value <- value
-    } yield Translation(locale, value)
+    } yield Translation.one(locale, value)
 
   def translation[A](value: Gen[A]): Gen[Translation[A]] =
     Gen.oneOf(
