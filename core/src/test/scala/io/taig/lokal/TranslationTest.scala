@@ -21,4 +21,15 @@ final class TranslationTest extends AnyFunSuite {
   test("translate returns None if no matching language is available") {
     assert(translations.translate(Locale(Language("fr"))) eqv None)
   }
+
+  test("andThen allows to chain Translations") {
+    val translation = Translation.universal("1.23").andThen { value =>
+      Translation.one(Locale(Language("de")), value.replace(".", ",")) &
+        Translation.universal(value)
+    }
+
+    val expectation = Translation(Map(Locale(Language("de")) -> "1,23"), Some("1.23"))
+
+    assert(translation eqv expectation)
+  }
 }

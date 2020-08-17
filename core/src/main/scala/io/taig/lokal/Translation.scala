@@ -21,7 +21,7 @@ final case class Translation[+A](translations: Map[Locale, A], fallback: Option[
   def map[B](f: A => B): Translation[B] = Translation(translations.fmap(f), fallback.map(f))
 
   def andThen[B](f: A => Translation[B]): Translation[B] = {
-    val result = translations.flatMap {
+    val result = fallback.map(f(_)).map(_.translations).getOrElse(Map.empty) ++ translations.flatMap {
       case (locale, value) => f(value).translate(locale).map(value => Map(locale -> value)).getOrElse(Map.empty)
     }
 
