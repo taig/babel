@@ -1,11 +1,8 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
-import scala.sys.process.Process
-import scala.util.Try
-
 val CatsVersion = "2.1.1"
 val ScalacheckShapelessVersion = "1.2.5"
-val CatsTestkitScalatestVersion = "1.0.1"
+val CatsTestkitScalatestVersion = "2.0.0"
 
 lazy val lokal = project
   .in(file("."))
