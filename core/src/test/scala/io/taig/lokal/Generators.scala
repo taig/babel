@@ -40,7 +40,5 @@ object Generators {
     )
 
   def translations[A](value: Gen[A]): Gen[Translation[A]] =
-    Gen.listOf(translation(value)).map { translations =>
-      translations.combineAll(Translation.monoidK.algebra)
-    }
+    Gen.listOf(translation(value)).map { translations => translations.combineAll(Translation.monoidK.algebra) }
 }

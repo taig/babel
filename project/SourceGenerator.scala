@@ -11,9 +11,7 @@ object SourceGenerator {
 
   def languages(pkg: String): String = {
     val languages = locales.map(_.getLanguage).toSet
-    val vals = languages.map { language =>
-      s"""val ${identifier(language)}: Language = Language("$language")"""
-    }
+    val vals = languages.map { language => s"""val ${identifier(language)}: Language = Language("$language")""" }
     val all = languages.map(identifier).mkString(", ")
 
     s"""package $pkg.dsl
@@ -31,9 +29,7 @@ object SourceGenerator {
 
   def countries(pkg: String): String = {
     val countries = locales.map(_.getCountry).filter(_.nonEmpty).toSet
-    val vals = countries.map { country =>
-      s"""val ${identifier(country)}: Country = Country("$country")"""
-    }
+    val vals = countries.map { country => s"""val ${identifier(country)}: Country = Country("$country")""" }
     val all = countries.map(identifier).mkString(", ")
 
     s"""package $pkg.dsl
