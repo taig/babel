@@ -77,7 +77,7 @@ val currencySymbol: Translation[Char] =
   Translation.universal('$')
 
 def formatNumber(value: Float): Translation[String] =
-  Translation.universal(String.valueOf(value)).andThen { value =>
+  Translation.universal(String.valueOf(value)).flatMap { value =>
     Translation.of(Locales.de, Locales.fr, Locales.es)(value.replace(".", ",")) &
     Translation.universal(value)
   }
