@@ -36,6 +36,8 @@ object Translation {
     override def apply(locale: Locale): Option[(Rank, A)] = f(locale)
   }
 
+  def exact[A](f: Locale => A): Translation[A] = Translation(locale => (Rank.Exact, f(locale)).some)
+
   def one[A](locale: Locale, value: A): Translation[A] =
     current =>
       if (locale === current) (Rank.Exact, value).some
