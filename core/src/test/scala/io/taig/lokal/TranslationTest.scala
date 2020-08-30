@@ -22,14 +22,13 @@ final class TranslationTest extends AnyFunSuite {
     assert(translations.translate(Locale(Language("fr"))) eqv None)
   }
 
-  test("andThen allows to chain Translations") {
-    val translation = Translation.universal("1.23").andThen { value =>
+  test("flatMap allows to chain Translations") {
+    val translation = Translation.universal("1.23").flatMap { value =>
       Translation.one(Locale(Language("de")), value.replace(".", ",")) &
         Translation.universal(value)
     }
 
-    val expectation = Translation(Map(Locale(Language("de")) -> "1,23"), Some("1.23"))
-
-    assert(translation eqv expectation)
+    assert(translation.translate(Locale(Language("de"))) eqv Some("1,23"))
+    assert(translation.translate(Locale(Language("en"))) eqv Some("1.23"))
   }
 }

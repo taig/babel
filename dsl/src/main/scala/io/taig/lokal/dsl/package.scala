@@ -15,10 +15,7 @@ package object dsl {
       case Nil          => right
     }
 
-    protected def apply(
-        locale: Locale,
-        arguments: Seq[Any]
-    ): Translation[String] = {
+    protected def apply(locale: Locale, arguments: Seq[Any]): Translation[String] = {
       merge(
         context.parts.map(Translation.one(locale, _)).toList,
         substitute(arguments).toList

@@ -3,63 +3,68 @@ package io.taig.lokal
 import cats._
 import cats.implicits._
 
-final case class Translation[+A](translations: Map[Locale, A], fallback: Option[A]) {
-  def apply(locale: Locale): Option[(Option[Locale], A)] =
-    translations.get(locale).tupleLeft(locale.some) orElse
-      translations.get(locale.withoutCountry).tupleLeft(locale.withoutCountry.some) orElse
-      fallback.tupleLeft(none)
+import scala.annotation.tailrec
 
-  def translate(locale: Locale): Option[A] = apply(locale).map(_._2)
+abstract class Translation[+A] {
+  def apply(locale: Locale): Option[(Rank, A)]
 
-  def translateOrElse[B >: A](locale: Locale, fallback: => B): B = translate(locale).getOrElse(fallback)
+  final def translate(locale: Locale): Option[A] = apply(locale).map(_._2)
 
-  def translateOrEmpty[B >: A: Monoid](locale: Locale): B = translate(locale).getOrElse(Monoid[B].empty)
+  final def translateOrElse[B >: A](locale: Locale, fallback: => B): B = translate(locale).getOrElse(fallback)
 
-  def &[B >: A](translation: Translation[B]): Translation[B] =
-    Translation(translations ++ translation.translations, translation.fallback orElse fallback)
+  final def translateOrEmpty[B >: A: Monoid](locale: Locale): B = translate(locale).getOrElse(Monoid[B].empty)
 
-  def map[B](f: A => B): Translation[B] = Translation(translations.fmap(f), fallback.map(f))
-
-  def andThen[B](f: A => Translation[B]): Translation[B] = {
-    val result = fallback.map(f(_)).map(_.translations).getOrElse(Map.empty) ++ translations.flatMap {
-      case (locale, value) => f(value).translate(locale).map(value => Map(locale -> value)).getOrElse(Map.empty)
+  final def &[B >: A](translation: Translation[B]): Translation[B] = { locale =>
+    (apply(locale), translation(locale)) match {
+      case (x @ Some((rankX, _)), y @ Some((rankY, _))) => if (rankY >= rankX) y else x
+      case (None, y @ Some(_))                          => y
+      case (x @ Some(_), None)                          => x
+      case (None, None)                                 => None
     }
-
-    Translation(result, fallback.flatMap(f(_).fallback))
   }
+
+  final def map[B](f: A => B): Translation[B] = apply(_).map(_.map(f))
+
+  final def flatMap[B](f: A => Translation[B]): Translation[B] =
+    locale => apply(locale).flatMap { case (_, value) => f(value)(locale) }
 }
 
 object Translation {
-  val Empty: Translation[Nothing] = Translation(Map.empty, None)
+  val Empty: Translation[Nothing] = _ => None
+
+  def apply[A](f: Locale => Option[(Rank, A)]): Translation[A] = new Translation[A] {
+    override def apply(locale: Locale): Option[(Rank, A)] = f(locale)
+  }
 
   def one[A](locale: Locale, value: A): Translation[A] =
-    Translation(Map(locale -> value), None)
+    current =>
+      if (locale === current) (Rank.Exact, value).some
+      else if (locale === current.withoutCountry) (Rank.Language, value).some
+      else None
 
   def of[A](locales: Locale*)(value: A): Translation[A] =
-    Translation(locales.toList.tupleRight(value).toMap, None)
+    locales.map(one(_, value)).toList.combineAll(monoidK.algebra)
 
-  def universal[A](value: A): Translation[A] = Translation(Map.empty, value.some)
+  def universal[A](value: A): Translation[A] = _ => (Rank.Universal, value).some
 
-  implicit val applicative: Applicative[Translation] = new Applicative[Translation] {
+  implicit val monad: Monad[Translation] = new Monad[Translation] {
     override def pure[A](x: A): Translation[A] = universal(x)
 
     override def map[A, B](fa: Translation[A])(f: A => B): Translation[B] = fa.map(f)
 
-    override def product[A, B](fa: Translation[A], fb: Translation[B]): Translation[(A, B)] = {
-      val keys = fa.translations.keys ++ fb.translations.keys
-      val translations = keys.toList.mapFilter { locale =>
-        (fa.translate(locale), fb.translate(locale)).tupled.tupleLeft(locale)
-      }.toMap
-      Translation(translations, (fa.fallback, fb.fallback).tupled)
-    }
+    override def flatMap[A, B](fa: Translation[A])(f: A => Translation[B]): Translation[B] = fa.flatMap(f)
 
-    override def ap[A, B](ff: Translation[A => B])(fa: Translation[A]): Translation[B] = {
-      val keys = ff.translations.keys ++ fa.translations.keys
-      val translations = keys.toList.mapFilter { locale =>
-        fa.translate(locale).flatMap(a => ff.translate(locale).map(_.apply(a))).tupleLeft(locale)
-      }.toMap
+    override def tailRecM[A, B](a: A)(f: A => Translation[Either[A, B]]): Translation[B] = new Translation[B] {
+      @tailrec
+      def go(value: A, locale: Locale): Option[(Rank, B)] =
+        f(value)(locale) match {
+          case Some((_, Left(a)))     => go(a, locale)
+          case Some((rank, Right(b))) => (rank, b).some
+          case None                   => None
+        }
 
-      Translation(translations, fa.fallback.flatMap(a => ff.fallback.map(_.apply(a))))
+      override def apply(locale: Locale): Option[(Rank, B)] =
+        go(a, locale)
     }
   }
 
@@ -69,12 +74,4 @@ object Translation {
 
       override def combineK[A](x: Translation[A], y: Translation[A]): Translation[A] = x & y
     }
-
-  implicit def eq[A: Eq]: Eq[Translation[A]] =
-    Eq.instance { (x, y) => x.translations === y.translations && x.fallback === y.fallback }
-
-  implicit def show[A: Show]: Show[Translation[A]] = { translation =>
-    (translation.translations.toList.map { case (locale, value) => show"""$locale"$value"""" } ++ translation.fallback
-      .map(value => show"""*"$value"""")).mkString(" & ")
-  }
 }
