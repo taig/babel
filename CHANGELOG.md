@@ -1,5 +1,12 @@
 # Changelog
 
+# 0.8.0
+
+_2020-08-30_
+
+ * Back to monadic behavior from 0.6
+ * Add fromJavaLocale / toJavaLocale methods
+
 # 0.7.0
 
 _2020-08-17_
