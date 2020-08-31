@@ -33,8 +33,8 @@ _@NAME@'s_ main feature is the `Translation` class. It is intended to be used wi
 import io.taig.lokal._
 import io.taig.lokal.dsl._
 
-val world: Translation[String] = en"World" & de"Welt"
-val greeting: Translation[String] = en_GB"Hello $world" & de"Hallo $world" & de_AT"Grüß Gott $world"
+val world: Dictionary[String] = x"World" & es"Mundo" & de"Welt"
+val greeting: Dictionary[String] = x"Hello" & es"Hola $world" & de"Hallo $world" & de_AT"Grüß Gott $world"
 ```
 
 Exact matches are always preferred
@@ -42,6 +42,8 @@ Exact matches are always preferred
 ```scala mdoc
 greeting.translate(Locales.de_AT)
 greeting(Locales.de_AT)
+greeting(Locales.de)
+greeting(Locales.es)
 ```
 
 Language is used as fallback when there is no specific translation for the country
@@ -71,18 +73,18 @@ project.translate(Locales.fr)
 ```scala mdoc:silent
 import cats.implicits._
 
-val currencySymbol: Translation[Char] =
-  Translation.of(Locales.de, Locales.fr, Locales.es)('€') &
-  Translation.one(Locales.en_GB, '£') &
-  Translation.universal('$')
+val currencySymbol: Dictionary[Char] =
+  Dictionary.universal('$') &
+  Translation.forAll(Locales.de, Locales.fr, Locales.es)('€') &
+  Translation.one(Locales.en_GB, '£')
 
-def formatNumber(value: Float): Translation[String] =
-  Translation.universal(String.valueOf(value)).flatMap { value =>
-    Translation.of(Locales.de, Locales.fr, Locales.es)(value.replace(".", ",")) &
-    Translation.universal(value)
+def formatNumber(value: Float): Dictionary[String] =
+  Dictionary.universal(String.valueOf(value)).flatMap { value =>
+    Dictionary.universal(value) &
+    Translation.forAll(Locales.de, Locales.fr, Locales.es)(value.replace(".", ","))
   }
 
-def price(value: Int): Translation[String] =
+def price(value: Int): Dictionary[String] =
   (formatNumber(value / 100f), currencySymbol).mapN { (value, symbol) =>
     s"$value $symbol"
   }

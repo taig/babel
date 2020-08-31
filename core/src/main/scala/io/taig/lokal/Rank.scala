@@ -27,11 +27,11 @@ object Rank {
     */
   final case object Language extends Rank
 
-  final case object Universal extends Rank
+  final case object Fallback extends Rank
 
   implicit val order: Order[Rank] = Order.by {
-    case Universal => 1
-    case Language  => 2
-    case Exact     => 3
+    case Fallback => 1
+    case Language => 2
+    case Exact    => 3
   }
 }
