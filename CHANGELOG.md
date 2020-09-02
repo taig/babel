@@ -1,5 +1,12 @@
 # Changelog
 
+# 0.9.0
+
+_2020-09-02_
+
+ * Introduce Dictionary as a non-empty alternative to Translation
+ * Add Translation.exact builder
+
 # 0.8.0
 
 _2020-08-30_
