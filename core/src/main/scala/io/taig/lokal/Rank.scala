@@ -1,7 +1,6 @@
 package io.taig.lokal
 
 import cats.Order
-import cats.implicits._
 
 sealed abstract class Rank extends Product with Serializable
 

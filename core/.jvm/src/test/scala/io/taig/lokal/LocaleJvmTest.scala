@@ -1,7 +1,7 @@
 package io.taig.lokal
 
 import java.util.{Locale => JLocale}
-import cats.implicits._
+import cats.syntax.all._
 
 import org.scalatest.funsuite.AnyFunSuite
 

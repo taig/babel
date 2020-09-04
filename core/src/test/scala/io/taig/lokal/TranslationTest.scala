@@ -1,6 +1,6 @@
 package io.taig.lokal
 
-import cats.implicits._
+import cats.syntax.all._
 import org.scalatest.funsuite.AnyFunSuite
 
 final class TranslationTest extends AnyFunSuite {

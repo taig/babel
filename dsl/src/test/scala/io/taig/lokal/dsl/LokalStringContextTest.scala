@@ -1,6 +1,6 @@
 package io.taig.lokal.dsl
 
-import cats.implicits._
+import cats.syntax.all._
 import org.scalatest.funsuite.AnyFunSuite
 
 final class LokalStringContextTest extends AnyFunSuite {

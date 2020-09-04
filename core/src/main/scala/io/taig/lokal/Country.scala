@@ -1,7 +1,6 @@
 package io.taig.lokal
 
 import cats._
-import cats.implicits._
 
 final case class Country(value: String) extends AnyVal
 

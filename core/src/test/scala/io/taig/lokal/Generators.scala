@@ -1,7 +1,7 @@
 package io.taig.lokal
 
 import org.scalacheck.Gen
-import cats.implicits._
+import cats.syntax.all._
 
 object Generators {
   val locales: List[Locale] = List(

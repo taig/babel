@@ -1,7 +1,7 @@
 package io.taig.lokal
 
 import cats._
-import cats.implicits._
+import cats.syntax.all._
 
 import scala.annotation.tailrec
 
