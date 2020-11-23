@@ -1,32 +1,30 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
-val CatsVersion = "2.2.0"
-val ScalacheckShapelessVersion = "1.2.5"
-val CatsTestkitScalatestVersion = "2.0.0"
+val Version = new {
+  val Cats = "2.2.0"
+  val ScalacheckShapeless = "1.2.5"
+  val CatsTestkitScalatest = "2.0.0"
+}
 
-lazy val lokal = project
-  .in(file("."))
-  .settings(Settings.common ++ noPublishSettings)
-  .settings(
-    description := "i18n & l10n for (isomorphic) Scala applications"
-  )
-  .aggregate(core.jvm, core.js, dsl.jvm, dsl.js)
+noPublishSettings
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .settings(Settings.common ++ sonatypePublishSettings)
   .settings(
     libraryDependencies ++=
-      "org.typelevel" %%% "cats-core" % CatsVersion ::
-        "com.github.alexarchambault" %%% "scalacheck-shapeless_1.14" % ScalacheckShapelessVersion % "test" ::
-        "org.typelevel" %%% "cats-testkit-scalatest" % CatsTestkitScalatestVersion % "test" ::
-        Nil
+      "org.typelevel" %%% "cats-core" % Version.Cats ::
+        "com.github.alexarchambault" %%% "scalacheck-shapeless_1.14" % Version.ScalacheckShapeless % "test" ::
+        "org.typelevel" %%% "cats-testkit-scalatest" % Version.CatsTestkitScalatest % "test" ::
+        Nil,
+    name := "lokal-core"
   )
 
 lazy val dsl = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .settings(Settings.common ++ sonatypePublishSettings)
   .settings(
+    name := "lokal-dsl",
     sourceGenerators in Compile += Def.task {
       val pkg = s"${organization.value}.lokal"
       val languages = (sourceManaged in Compile).value / "Languages.scala"
@@ -53,13 +51,11 @@ lazy val website = project
       Map(
         "MODULE_CORE" -> (core.jvm / normalizedName).value,
         "MODULE_DSL" -> (dsl.jvm / normalizedName).value,
-        "SCALA_VERSIONS" -> crossScalaVersions.value
-          .map(dropMinor)
-          .mkString(", "),
+        "SCALA_VERSIONS" -> crossScalaVersions.value.map(dropMinor).mkString(", "),
         "SCALAJS_VERSION" -> dropMinor(scalaJSVersion)
       )
     },
     micrositeAnalyticsToken := "UA-64109905-2",
-    micrositeDescription := (lokal / description).value
+    micrositeDescription := "i18n & l10n for (isomorphic) Scala applications"
   )
   .dependsOn(dsl.jvm)
