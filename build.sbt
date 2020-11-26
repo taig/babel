@@ -1,7 +1,7 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 val Version = new {
-  val Cats = "2.2.0"
+  val Cats = "2.3.0"
   val ScalacheckShapeless = "1.2.5"
   val CatsTestkitScalatest = "2.0.0"
 }
