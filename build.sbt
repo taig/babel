@@ -2,15 +2,17 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 val Version = new {
   val Cats = "2.3.0"
-  val ScalacheckShapeless = "1.2.5"
   val CatsTestkitScalatest = "2.1.0"
+  val Circe = "0.13.0"
+  val ScalacheckShapeless = "1.2.5"
+  val Shapeless = "2.3.3"
 }
 
 noPublishSettings
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
-  .settings(Settings.common ++ sonatypePublishSettings)
+  .settings(sonatypePublishSettings)
   .settings(
     libraryDependencies ++=
       "org.typelevel" %%% "cats-core" % Version.Cats ::
@@ -20,9 +22,31 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
     name := "lokal-core"
   )
 
+lazy val generic = crossProject(JSPlatform, JVMPlatform)
+  .crossType(CrossType.Pure)
+  .settings(sonatypePublishSettings)
+  .settings(
+    libraryDependencies ++=
+      "com.chuusai" %%% "shapeless" % Version.Shapeless ::
+        Nil,
+    name := "lokal-generic"
+  )
+  .dependsOn(core)
+
+lazy val circe = crossProject(JSPlatform, JVMPlatform)
+  .crossType(CrossType.Pure)
+  .settings(sonatypePublishSettings)
+  .settings(
+    libraryDependencies ++=
+      "io.circe" %%% "circe-parser" % Version.Circe ::
+        Nil,
+    name := "lokal-circe"
+  )
+  .dependsOn(core)
+
 lazy val dsl = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
-  .settings(Settings.common ++ sonatypePublishSettings)
+  .settings(sonatypePublishSettings)
   .settings(
     name := "lokal-dsl",
     sourceGenerators in Compile += Def.task {
@@ -40,22 +64,13 @@ lazy val dsl = crossProject(JSPlatform, JVMPlatform)
   )
   .dependsOn(core % "compile->compile;test->test")
 
-lazy val website = project
-  .enablePlugins(MicrositesPlugin)
-  .settings(Settings.common ++ micrositeSettings)
+lazy val sample = crossProject(JSPlatform, JVMPlatform)
+  .crossType(CrossType.Pure)
+  .settings(noPublishSettings)
   .settings(
-    mdocVariables ++= {
-      val dropMinor: String => String =
-        version => s"`${version.replaceAll("\\.\\d+$", "")}`"
-
-      Map(
-        "MODULE_CORE" -> (core.jvm / normalizedName).value,
-        "MODULE_DSL" -> (dsl.jvm / normalizedName).value,
-        "SCALA_VERSIONS" -> crossScalaVersions.value.map(dropMinor).mkString(", "),
-        "SCALAJS_VERSION" -> dropMinor(scalaJSVersion)
-      )
-    },
-    micrositeAnalyticsToken := "UA-64109905-2",
-    micrositeDescription := "i18n & l10n for (isomorphic) Scala applications"
+    name := "lokal-sample",
+    libraryDependencies ++=
+      "io.circe" %%% "circe-generic" % Version.Circe ::
+        Nil
   )
-  .dependsOn(dsl.jvm)
+  .dependsOn(circe, dsl, generic)
