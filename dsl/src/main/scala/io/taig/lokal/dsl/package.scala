@@ -1,7 +1,7 @@
 package io.taig.lokal
 
 package object dsl {
-//  implicit final class LokalStringContext(context: StringContext) extends LokalStringContexts {
+  implicit final class LokalStringContext(context: StringContext) extends LokalStringContexts {
 //    private def substitute(locale: Locale, arguments: Seq[Any]): Seq[String] =
 //      arguments.map {
 //        case translation: Translation[_] => translation.translate(locale).map(_.toString).getOrElse("???")
@@ -14,11 +14,11 @@ package object dsl {
 //      case Nil          => right
 //    }
 //
-//    protected def apply(locale: Locale, arguments: Seq[Any]): Translation[String] =
+    protected def apply(locale: Locale, arguments: Seq[Any]): Translation[Any, String] = ???
 //      Translation.one(locale, merge(context.parts.toList, substitute(locale, arguments).toList).mkString)
 //
 //    def x(arguments: Any*): Dictionary[String] = Dictionary { locale =>
 //      Result(Rank.Fallback, merge(context.parts.toList, substitute(locale, arguments).toList).mkString)
 //    }
-//  }
+  }
 }

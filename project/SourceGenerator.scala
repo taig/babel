@@ -75,7 +75,7 @@ object SourceGenerator {
 
   def contexts(pkg: String): String = {
     val defs = locales.map { locale =>
-      s"final def $locale(arguments: Any*): Translation[String] = apply(Locales.$locale, arguments)"
+      s"final def $locale(arguments: Any*): Translation[Any, String] = apply(Locales.$locale, arguments)"
     }
 
     s"""package $pkg.dsl
