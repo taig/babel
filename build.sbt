@@ -38,7 +38,8 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
   .settings(sonatypePublishSettings)
   .settings(
     libraryDependencies ++=
-      "io.circe" %%% "circe-parser" % Version.Circe ::
+      "com.chuusai" %%% "shapeless" % Version.Shapeless ::
+        "io.circe" %%% "circe-parser" % Version.Circe ::
         Nil,
     name := "lokal-circe"
   )

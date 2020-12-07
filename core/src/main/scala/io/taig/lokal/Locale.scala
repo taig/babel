@@ -18,6 +18,12 @@ object Locale {
   def apply(language: Language, country: Country): Locale =
     Locale(language, country.some)
 
+  def parse(value: String): Option[Locale] = value.split('_') match {
+    case Array(language)          => Some(Locale(Language(language)))
+    case Array(language, country) => Some(Locale(Language(language), Country(country)))
+    case _                        => None
+  }
+
   def fromJavaLocale(locale: JLocale): Option[Locale] =
     Option(locale.getLanguage)
       .filter(_.nonEmpty)
