@@ -24,19 +24,19 @@ lazy val dsl = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .settings(Settings.common ++ sonatypePublishSettings)
   .settings(
-    name := "lokal-dsl",
-    sourceGenerators in Compile += Def.task {
-      val pkg = s"${organization.value}.lokal"
-      val languages = (sourceManaged in Compile).value / "Languages.scala"
-      IO.write(languages, SourceGenerator.languages(pkg))
-      val countries = (sourceManaged in Compile).value / "Countries.scala"
-      IO.write(countries, SourceGenerator.countries(pkg))
-      val locales = (sourceManaged in Compile).value / "Locales.scala"
-      IO.write(locales, SourceGenerator.locales(pkg))
-      val contexts = (sourceManaged in Compile).value / "LokalStringContexts.scala"
-      IO.write(contexts, SourceGenerator.contexts(pkg))
-      Seq(languages, countries, locales, contexts)
-    }.taskValue
+    name := "lokal-dsl"
+//    sourceGenerators in Compile += Def.task {
+//      val pkg = s"${organization.value}.lokal"
+//      val languages = (sourceManaged in Compile).value / "Languages.scala"
+//      IO.write(languages, SourceGenerator.languages(pkg))
+//      val countries = (sourceManaged in Compile).value / "Countries.scala"
+//      IO.write(countries, SourceGenerator.countries(pkg))
+//      val locales = (sourceManaged in Compile).value / "Locales.scala"
+//      IO.write(locales, SourceGenerator.locales(pkg))
+//      val contexts = (sourceManaged in Compile).value / "LokalStringContexts.scala"
+//      IO.write(contexts, SourceGenerator.contexts(pkg))
+//      Seq(languages, countries, locales, contexts)
+//    }.taskValue
   )
   .dependsOn(core % "compile->compile;test->test")
 
