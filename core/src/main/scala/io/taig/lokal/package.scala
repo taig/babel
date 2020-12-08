@@ -1,5 +1,5 @@
 package io.taig
 
 package object lokal {
-  type Dictionary = Translation[Any, String]
+  type Dictionary = Translation[_, String]
 }

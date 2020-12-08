@@ -81,17 +81,17 @@ object Translation {
       Plurals(encoder.imap(f)(g), identifier, default.imap(f)(g), quantities.fmap(_.imap(f)(g)))
   }
 
-  final case class Provide[A, B, C](
-      value: B,
-      translation: Translation[(A, B), C]
-  ) extends Translation[A, C] {
-    override def apply(locale: Locale, arguments: A): Option[Result[C]] =
-      translation(locale, (arguments, value))
-
-    override def enforce(locale: Locale, arguments: A): C = ???
-
-    override def imap[X](f: C => X)(g: X => C): Translation[A, X] = ???
-  }
+//  final case class Provide[A, B, C](
+//      value: B,
+//      translation: Translation[(A, B), C]
+//  ) extends Translation[A, C] {
+//    override def apply(locale: Locale, arguments: A): Option[Result[C]] =
+//      translation(locale, (arguments, value))
+//
+//    override def enforce(locale: Locale, arguments: A): C = ???
+//
+//    override def imap[X](f: C => X)(g: X => C): Translation[A, X] = ???
+//  }
 
   def apply[A, B](locale: Locale, translation: Translation[A, B]): Specific[A, B] = Specific(locale, translation)
 

@@ -25,9 +25,16 @@ object Playground {
 
     final case class Test(inner: Inner)
 
-    final case class Inner(yolo: Dictionary)
+    final case class Inner(yolo: Translation[_, String])
 
-    println(Encoder[Test].apply(Test(Inner(Translation.universal("hhihi")))))
+    val p: Translation[_, String] =
+      Translation.Plurals(
+        QuantityEncoder.string,
+        "foofa",
+        Translation.universal("haha"),
+        Map(Quantity.Zero -> Translation.universal("haha"))
+      )
+    println(Encoder[Test].apply(Test(Inner(p))))
 
     println(
       Decoder[Test].apply(

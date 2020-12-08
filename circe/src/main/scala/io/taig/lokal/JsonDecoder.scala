@@ -44,11 +44,11 @@ object JsonDecoder {
 
   implicit val dictionary: JsonDecoder[Dictionary] = new JsonDecoder[Dictionary] {
     override def apply(
-                        mode: Mode,
-                        strict: Boolean,
-                        json: Json,
-                        path: Chain[String]
-                      ): Either[Decoder.Error, Dictionary] = {
+        mode: Mode,
+        strict: Boolean,
+        json: Json,
+        path: Chain[String]
+    ): Either[Decoder.Error, Dictionary] = {
       path.foldLeft[ACursor](json.hcursor)(_ downField _).focus match {
         case Some(json) => fromJson(mode, json)
         case None =>
