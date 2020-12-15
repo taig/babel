@@ -70,7 +70,21 @@ object Loader {
             read(blocker, path).flatMap(parse[F, Dictionary]).tupleLeft(locale)
         }
       }
-      .map(values => toI18n(values.toMap).leftMap(new RuntimeException(_)))
+      .map(_.toMap)
+      .map { dictionaries =>
+        val locales = dictionaries.keySet.collect { case Some(locale) => locale }
+
+        toI18n(dictionaries)
+          .leftMap(new RuntimeException(_))
+          .flatMap { i18n =>
+            locales
+              .collectFirst {
+                case locale if !i18n.supports(locale) =>
+                  new IllegalArgumentException(s"Incomplete support: ${locale.printLanguageTag}")
+              }
+              .toLeft(i18n)
+          }
+      }
       .rethrow
   }
 }

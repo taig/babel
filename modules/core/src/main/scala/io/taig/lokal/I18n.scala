@@ -22,6 +22,8 @@ final case class I18n(values: Segments[Translation]) extends AnyVal {
   def only(locale: Locale): Dictionary = Dictionary(values.mapFilter(_ get locale))
 
   def merge(i18n: I18n): Either[String, I18n] = values.merge(i18n.values)(_ ++ _).map(I18n.apply)
+
+  def supports(locale: Locale): Boolean = values.forall(_.supports(locale))
 }
 
 object I18n {

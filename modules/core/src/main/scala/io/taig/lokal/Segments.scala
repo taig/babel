@@ -34,6 +34,11 @@ final case class Segments[+A](branches: Map[String, Either[A, Segments[A]]]) {
       case (result, (key, Left(value))) => f(value).fold(result)(value => result + (key -> Left(value)))
     })
 
+  def forall(f: A => Boolean): Boolean = branches.forall {
+    case (_, Right(segments)) => segments.forall(f)
+    case (_, Left(value))     => f(value)
+  }
+
   // TODO tailrec and error message
   def merge[A1 >: A](segments: Segments[A1])(f: (A1, A1) => A1): Either[String, Segments[A1]] =
     segments.branches

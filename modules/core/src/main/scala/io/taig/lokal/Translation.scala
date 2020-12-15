@@ -15,6 +15,8 @@ final case class Translation(values: Map[Locale, Text], fallback: Option[Text]) 
 
   def ++(translation: Translation): Translation =
     Translation(values ++ translation.values, translation.fallback orElse fallback)
+
+  def supports(locale: Locale): Boolean = get(locale).isDefined
 }
 
 object Translation {
