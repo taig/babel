@@ -13,8 +13,13 @@ final case class Path(head: String, tail: List[String]) {
 object Path {
   def one(head: String): Path = Path(head, List.empty)
 
-  def from(value: String): Path = {
-    val segments = value.split('/')
-    Path(segments.head, segments.tail.toList)
+  def parse(value: String): Option[Path] = value.split('/') match {
+    case Array("")   => None
+    case Array(head) => Some(Path(head, Nil))
+    case segments    => Some(Path(segments.head, segments.tail.toList))
   }
+
+  implicit val printer: Printer[Path] = Printer[String].contramap(_.print)
+
+  implicit val parser: Parser[Path] = Parser[String].emap(parse(_).toRight("Path"))
 }

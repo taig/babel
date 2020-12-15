@@ -3,20 +3,12 @@ package io.taig.lokal
 import cats.implicits._
 import io.circe.syntax._
 import io.circe.{Decoder, DecodingFailure, Encoder, Json, JsonObject, KeyDecoder, KeyEncoder}
+import io.circe.{Printer => CircePrinter}
 
 object circe {
-  implicit val decoderLocale: Decoder[Locale] =
-    Decoder[String].emap(Locale.parseLanguageTag(_).toRight("Invalid Locale"))
+  implicit def keyDecoderParser[A: Parser]: KeyDecoder[A] = KeyDecoder.instance(Parser[A].parse(_).toOption)
 
-  implicit val encoderLocale: Encoder[Locale] = Encoder[String].contramap(_.printLanguageTag)
-
-  implicit val keyDecoderLocale: KeyDecoder[Locale] = KeyDecoder.instance(Locale.parseLanguageTag)
-
-  implicit val keyEncoderLocale: KeyEncoder[Locale] = KeyEncoder.instance(_.printLanguageTag)
-
-  implicit val keyDecoderQuantity: KeyDecoder[Quantity] = KeyDecoder[Int].map(Quantity.apply)
-
-  implicit val keyEncoderQuantity: KeyEncoder[Quantity] = KeyEncoder[Int].contramap(_.value)
+  implicit def keyEncoderPrinter[A: Printer]: KeyEncoder[A] = KeyEncoder.instance(Printer[A].print)
 
   implicit val decoderText: Decoder[Text] = Decoder.instance { cursor =>
     cursor.as[String].map(Text(_, Map.empty)).orElse {
@@ -88,4 +80,8 @@ object circe {
   implicit val decoderI18n: Decoder[I18n] = Decoder[Map[Path, Translation]].map(I18n.apply)
 
   implicit val encoderI18n: Encoder[I18n] = Encoder[Map[Path, Translation]].contramap(_.values)
+
+  def printerJson[A: Encoder](printer: CircePrinter): Printer[A] = a => printer.print(Encoder[A].apply(a))
+
+  implicit def printerJsonNoSpaces[A: Encoder]: Printer[A] = printerJson[A](CircePrinter.noSpaces)
 }
