@@ -12,10 +12,11 @@ ThisBuild / testFrameworks += new TestFramework("munit.Framework")
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
+  .in(file("modules/core"))
   .settings(sonatypePublishSettings)
   .settings(
     libraryDependencies ++=
-      "org.scalameta" %% "munit" % Version.Munit % "test" ::
+      "org.scalameta" %%% "munit" % Version.Munit % "test" ::
         Nil,
     name := "lokal-core",
     sourceGenerators in Compile += Def.task {
@@ -29,6 +30,15 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
       Seq(languages, countries, locales)
     }.taskValue
   )
+  .jsSettings(
+    scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
+  )
+
+lazy val dslStringFormat = crossProject(JSPlatform, JVMPlatform)
+  .crossType(CrossType.Pure)
+  .in(file("modules/dsl-string-format"))
+  .settings(sonatypePublishSettings)
+  .dependsOn(core % "compile->compile;test->test")
 
 lazy val generic = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
