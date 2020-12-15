@@ -39,6 +39,8 @@ final case class Segments[+A](branches: Map[String, Either[A, Segments[A]]]) {
     case (_, Left(value))     => f(value)
   }
 
+  def ++[A1 >: A](segments: Segments[A1]): Segments[A1] = Segments(branches ++ segments.branches)
+
   // TODO tailrec and error message
   def merge[A1 >: A](segments: Segments[A1])(f: (A1, A1) => A1): Either[String, Segments[A1]] =
     segments.branches

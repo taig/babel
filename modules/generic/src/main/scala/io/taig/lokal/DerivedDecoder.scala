@@ -10,7 +10,7 @@ trait DerivedDecoder[A, B] {
 object DerivedDecoder extends DerivedDecoder1 {
   def apply[A, B](implicit decoder: DerivedDecoder[A, B]): DerivedDecoder[A, B] = decoder
 
-  implicit def fieldNested[A, K <: Symbol, V](
+  implicit def segments[A, K <: Symbol, V](
       implicit key: Witness.Aux[K],
       decoder: DerivedDecoder[A, V]
   ): DerivedDecoder[A, FieldType[K, V]] =
@@ -50,7 +50,7 @@ object DerivedDecoder extends DerivedDecoder1 {
 }
 
 trait DerivedDecoder1 {
-  implicit def fieldValue[A, K <: Symbol](implicit key: Witness.Aux[K]): DerivedDecoder[A, FieldType[K, A]] =
+  implicit def value[A, K <: Symbol](implicit key: Witness.Aux[K]): DerivedDecoder[A, FieldType[K, A]] =
     new DerivedDecoder[A, FieldType[K, A]] {
       override def decode(segments: Segments[A]): Either[String, FieldType[K, A]] =
         segments.get(key.value.name) match {
