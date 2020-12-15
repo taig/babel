@@ -6,6 +6,8 @@ final case class Path(head: String, tail: List[String]) {
   def /(segment: String): Path = copy(tail = tail :+ segment)
 
   def print: String = toList.mkString("/")
+
+  def printPretty: String = toList.mkString("[", " / ", "]")
 }
 
 object Path {

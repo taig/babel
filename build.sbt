@@ -38,6 +38,9 @@ lazy val dslStringFormat = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/dsl-string-format"))
   .settings(sonatypePublishSettings)
+  .jsSettings(
+    scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
+  )
   .dependsOn(core % "compile->compile;test->test")
 
 lazy val generic = crossProject(JSPlatform, JVMPlatform)
@@ -64,14 +67,3 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
     name := "lokal-circe"
   )
   .dependsOn(core)
-
-lazy val sample = crossProject(JSPlatform, JVMPlatform)
-  .crossType(CrossType.Pure)
-  .settings(noPublishSettings)
-  .settings(
-    name := "lokal-sample",
-    libraryDependencies ++=
-      "io.circe" %%% "circe-generic" % Version.Circe ::
-        Nil
-  )
-  .dependsOn(circe, generic)
