@@ -1,27 +1,50 @@
 # Lokal
 
-> i18n & l10n for (isomorphic) Scala applications
+> String-based internationalisation (i18n) for Scala applications
 
-Please visit the [documentation](https://lokal.taig.io/) microsite to learn how to install and use _Lokal_.
+## Features
 
-## Building the microsite
+- First class support for plurals
+- Great for Scala.js, since `java.util.Locale` is not used
+- Define your translations in code or in a supported serialisation format (e.g. JSON)
+- Lift translations into data classes to improve type safety and enforce the translations in all languages
+- Create subsets of your translations that are only suitable for a specific language, which can be useful for clients that request all translations for a single language 
+- Pick your preferred String formatting flavour (e.g. `String.format` or `java.util.MessageFormat`) or bring your own
+- Dependency-free `core` module
 
-The microsite relies on [`sbt-microsites`](https://github.com/47deg/sbt-microsites) and does therefore require `ruby` and `jekyll` to be installed on your system. When these requirements are met, the microsite can be built as follows.
+## Installation
 
-```
-sbt website/makeMicrosite
-cd website/target/site/
-jekyll serve
-```
+Dependency-free core module, that contains all data class definitions, type classes and pre-defined locales
 
-Alternatively, when `ruby` and `jekyll` are not available the microsite can be built via docker.
-
-```
-docker build -t lokal .
-docker run -it -p 4000:4000  -v $PWD:/home/lokal/ lokal 
-sbt website/makeMicrosite
-cd website/target/site/
-jekyll serve --host=0.0.0.0
+```scala
+"io.taig" %%% "lokal-core" % "x.y.z" 
 ```
 
-The site can now be opened in a web browser at [`http://localhost:4000/`](http://localhost:4000/).
+JSON serialisation and deserialisation
+
+```scala
+"io.taig" %%% "lokal-circe" % "x.y.z"
+```
+
+Codecs for translation case classes
+
+```scala
+"io.taig" %%% "lokal-generic" % "x.y.z"
+```
+
+String formatting choices: note that `java.util.MessageFormat` is not available for Scala.js, so the `printf` module is recommended
+
+```scala
+"io.taig" %%% "lokal-formatter-printf" % "x.y.z"
+"io.taig" %% "lokal-formatter-message-format" % "x.y.z"
+```
+
+## Overview
+
+### Data classes
+
+- Lorem
+
+### Type classes
+
+- Ipsum
