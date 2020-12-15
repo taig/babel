@@ -1,12 +1,9 @@
 package io.taig.lokal
 
-import simulacrum.typeclass
-
-@typeclass
-trait Decoder[A] {
-  def decode(values: Map[Path, A]): Either[String, A]
+trait Decoder[A, B] {
+  def decode(values: Segments[A]): Either[String, B]
 }
 
-//object Decoder {
-//  implicit def fromParser[A: Parser]: Decoder[A] = Parser[A].parse(_)
-//}
+object Decoder {
+  def apply[A, B](implicit decoder: Decoder[A, B]): Decoder[A, B] = decoder
+}

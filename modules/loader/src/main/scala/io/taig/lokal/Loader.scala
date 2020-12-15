@@ -39,6 +39,7 @@ object Loader {
   private def parse[F[_], A](value: String)(implicit F: MonadThrow[F], parser: Parser[A]): F[A] =
     F.fromEither(parser.parse(value).leftMap(reason => new RuntimeException(s"Parsing failure: $reason")))
 
+  /** Turn all `Some(Locale) -> Dictionaries` into `I18n`s with the `None -> Dictionaries` as fallbacks */
   private def toI18n(values: Map[Option[Locale], Dictionary]): Either[String, I18n] = {
     val fallbacks = values.getOrElse(None, Dictionary.Empty).toI18nFallbacks
 
