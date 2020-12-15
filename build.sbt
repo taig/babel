@@ -1,24 +1,33 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 val Version = new {
-  val Cats = "2.3.0"
-  val CatsTestkitScalatest = "2.1.0"
   val Circe = "0.13.0"
-  val ScalacheckShapeless = "1.2.5"
+  val Munit = "0.7.19"
   val Shapeless = "2.3.3"
 }
 
 noPublishSettings
+
+ThisBuild / testFrameworks += new TestFramework("munit.Framework")
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .settings(sonatypePublishSettings)
   .settings(
     libraryDependencies ++=
-        "com.github.alexarchambault" %%% "scalacheck-shapeless_1.14" % Version.ScalacheckShapeless % "test" ::
-        "org.typelevel" %%% "cats-testkit-scalatest" % Version.CatsTestkitScalatest % "test" ::
+      "org.scalameta" %% "munit" % Version.Munit % "test" ::
         Nil,
-    name := "lokal-core"
+    name := "lokal-core",
+    sourceGenerators in Compile += Def.task {
+      val pkg = s"${organization.value}.lokal"
+      val languages = (sourceManaged in Compile).value / "Languages.scala"
+      IO.write(languages, SourceGenerator.languages(pkg))
+      val countries = (sourceManaged in Compile).value / "Countries.scala"
+      IO.write(countries, SourceGenerator.countries(pkg))
+      val locales = (sourceManaged in Compile).value / "Locales.scala"
+      IO.write(locales, SourceGenerator.locales(pkg))
+      Seq(languages, countries, locales)
+    }.taskValue
   )
 
 lazy val generic = crossProject(JSPlatform, JVMPlatform)
@@ -40,17 +49,7 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
       "com.chuusai" %%% "shapeless" % Version.Shapeless ::
         "io.circe" %%% "circe-parser" % Version.Circe ::
         Nil,
-    name := "lokal-circe",
-    sourceGenerators in Compile += Def.task {
-      val pkg = s"${organization.value}.lokal"
-      val languages = (sourceManaged in Compile).value / "Languages.scala"
-      IO.write(languages, SourceGenerator.languages(pkg))
-      val countries = (sourceManaged in Compile).value / "Countries.scala"
-      IO.write(countries, SourceGenerator.countries(pkg))
-      val locales = (sourceManaged in Compile).value / "Locales.scala"
-      IO.write(locales, SourceGenerator.locales(pkg))
-      Seq(languages, countries, locales)
-    }.taskValue
+    name := "lokal-circe"
   )
   .dependsOn(core)
 

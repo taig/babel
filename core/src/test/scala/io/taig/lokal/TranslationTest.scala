@@ -1,35 +1,28 @@
 package io.taig.lokal
 
-import cats.implicits._
-import org.scalatest.funsuite.AnyFunSuite
+import munit.FunSuite
 
-final class TranslationTest extends AnyFunSuite {
-  val translations: I18n[String] = I18n.of(
-    List(
-      Locale(Language("de")) -> "Hallo",
-      Locale(Language("de"), Country("AT")) -> "Grüß Gott",
-      Locale(Language("es"), Country("ES")) -> "Hola"
-    )
-  )
-
-  test("translate picks the exact match") {
-    assert(translations.translate(Locale(Language("de"), Country("AT"))) eqv Some("Grüß Gott"))
+final class TranslationTest extends FunSuite {
+  test("prefers direct Locale matches") {
+    val translation = Translation(Map(Locales.de_DE -> Text.one("foo")), fallback = None)
+    assertEquals(obtained = translation.apply(Locales.de_DE), expected = Some(Text.one("foo")))
   }
 
-  test("translate falls back to the language if country is not available") {
-    assert(translations.translate(Locale(Language("de"), Country("DE"))) eqv Some("Hallo"))
+  test("prefers language fallbacks over general fallbacks") {
+    val translation = Translation(Map(Locales.de -> Text.one("foo")), fallback = Some(Text.one("bar")))
+    assertEquals(obtained = translation.apply(Locales.de_DE), expected = Some(Text.one("foo")))
   }
 
-  test("translate returns None if no matching language is available") {
-    assert(translations.translate(Locale(Language("fr"))) eqv None)
+  test("uses the general fallback as a last resort") {
+    val translation = Translation(Map(Locales.de -> Text.one("foo")), fallback = Some(Text.one("bar")))
+    assertEquals(obtained = translation.apply(Locales.en), expected = Some(Text.one("bar")))
   }
 
-//  test("flatMap allows to chain Translations") {
-//    val translation = Translation.universal("1.23").flatMap { value =>
-//      Translation.one(Locale(Language("de")), value.replace(".", ","), value)
-//    }
-//
-//    assert(translation.translate(Locale(Language("de"))) eqv "1,23")
-//    assert(translation.translate(Locale(Language("en"))) eqv "1.23")
-//  }
+  test("++ favors the right side") {
+    val left = Translation(Map(Locales.de -> Text.one("a")), fallback = Some(Text.one("aaa")))
+    val right = Translation(Map(Locales.de -> Text.one("b")), fallback = Some(Text.one("bbb")))
+    val translations = left ++ right
+    assertEquals(obtained = translations.apply(Locales.de), expected = Some(Text.one("b")))
+    assertEquals(obtained = translations.apply(Locales.en), expected = Some(Text.one("bbb")))
+  }
 }
