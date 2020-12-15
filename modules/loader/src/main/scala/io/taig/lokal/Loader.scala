@@ -1,19 +1,13 @@
 package io.taig.lokal
 
-import cats.effect.{Blocker, ContextShift, ExitCode, IO, IOApp, Sync}
-import cats.effect.MonadThrow
+import cats.effect.{Blocker, ContextShift, MonadThrow, Sync}
 import cats.syntax.all._
-import fs2.io.readInputStream
-import fs2.text.utf8Decode
-import io.taig.lokal.Loader.auto
-
-import java.io.InputStream
-import java.nio.file.{FileSystems, Files, Paths}
-import java.nio.file.{Path => JPath}
-import java.util.Collections
-import scala.jdk.CollectionConverters._
 import fs2.Stream
 import fs2.io.file.readAll
+import fs2.text.utf8Decode
+
+import java.nio.file.{Files, Paths, Path => JPath}
+import scala.jdk.CollectionConverters._
 
 object Loader {
 
@@ -22,18 +16,19 @@ object Loader {
       blocker: Blocker,
       path: JPath,
       extension: String
-  ): Stream[F, (Option[Locale], JPath)] = {
-    val needle = s".$extension"
-
+  ): Stream[F, (Option[Locale], JPath)] =
     Stream
       .fromBlockingIterator[F](blocker, Files.list(path).iterator().asScala)
-      .evalFilter(path => blocker.delay(path.endsWith(needle) && Files.isRegularFile(path)))
+      .evalFilter(path => blocker.delay(Files.isRegularFile(path)))
       .mapFilter { path =>
-        val name = path.getFileName.toString.replace(needle, "")
-        if (name == "*") Some((None, path))
-        else Locale.parseLanguageTag(name).map(locale => (Some(locale), path))
+        val fullName = path.getFileName.toString
+        val suffix = s".$extension"
+
+        if (fullName.endsWith(suffix)) {
+          val name = fullName.replace(suffix, "")
+          if (name == "*") Some((None, path)) else Locale.parseLanguageTag(name).map(locale => (Some(locale), path))
+        } else None
       }
-  }
 
   private def read[F[_]: Sync: ContextShift](blocker: Blocker, path: JPath): F[String] =
     readAll(path, blocker, chunkSize = 8192)
@@ -44,18 +39,22 @@ object Loader {
   private def parse[F[_], A](value: String)(implicit F: MonadThrow[F], parser: Parser[A]): F[A] =
     F.fromEither(parser.parse(value).leftMap(reason => new RuntimeException(s"Parsing failure: $reason")))
 
-  private def toI18n(values: Map[Option[Locale], Dictionary]): I18n = {
-    val fallbacks = values.getOrElse(None, Dictionary.Empty)
+  private def toI18n(values: Map[Option[Locale], Dictionary]): Either[String, I18n] = {
+    val fallbacks = values.getOrElse(None, Dictionary.Empty).toI18nFallbacks
+
     values
-      .collect { case (Some(locale), dictionary) => (locale, dictionary) }
-      .map { case (locale, dictionary) => dictionary.toI18n(locale) }
-    ???
+      .collect { case (Some(locale), dictionary) => dictionary.toI18n(locale) }
+      .foldLeft(fallbacks.asRight[String]) {
+        case (Right(result), i18n) => result.merge(i18n)
+        case (left @ Left(_), _)   => left
+      }
   }
 
-  def auto[F[_]: Sync: ContextShift](blocker: Blocker, resource: String)(implicit parser: Parser[Dictionary]) = {
+  def auto[F[_]: Sync: ContextShift](blocker: Blocker, resource: String, loader: ClassLoader)(
+      implicit parser: Parser[Dictionary]
+  ): F[I18n] = {
     val path = blocker.delay {
-      val url = getClass.getClassLoader.getResource(resource)
-      FileSystems.newFileSystem(url.toURI, Collections.emptyMap[String, AnyRef]())
+      val url = loader.getResource(resource)
       Option(url).map(url => Paths.get(url.toURI))
     }
 
@@ -71,13 +70,7 @@ object Loader {
             read(blocker, path).flatMap(parse[F, Dictionary]).tupleLeft(locale)
         }
       }
+      .map(values => toI18n(values.toMap).leftMap(new RuntimeException(_)))
+      .rethrow
   }
-
-  final case class Yolo[A](foo: A, bar: A)
-
-  val x: Yolo[Translation] = ???
-  val y: Map[Locale, Map[Path, Text]] = ???
-  val z: Map[Locale, Yolo[Text]] = ???
-  z.apply(???).foo()
-  x.foo
 }

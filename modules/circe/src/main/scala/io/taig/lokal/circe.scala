@@ -2,6 +2,7 @@ package io.taig.lokal
 
 import cats.implicits._
 import io.circe.syntax._
+import io.circe.parser._
 import io.circe.{Decoder, DecodingFailure, Encoder, Json, JsonObject, KeyDecoder, KeyEncoder}
 import io.circe.{Printer => CircePrinter}
 
@@ -72,6 +73,8 @@ object circe {
   implicit val decoderI18n: Decoder[I18n] = Decoder[Segments[Translation]].map(I18n.apply)
 
   implicit val encoderI18n: Encoder[I18n] = Encoder[Segments[Translation]].contramap(_.values)
+
+  implicit def parserJson[A: Decoder]: Parser[A] = decode[A](_).leftMap(_.show)
 
   def printerJson[A: Encoder](printer: CircePrinter): Printer[A] = a => printer.print(Encoder[A].apply(a))
 

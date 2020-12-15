@@ -21,4 +21,6 @@ object Translation {
   val Empty: Translation = Translation(Map.empty, None)
 
   def one(locale: Locale, text: Text): Translation = Translation(Map(locale -> text), fallback = None)
+
+  def fallback(text: Text): Translation = Translation(Map.empty, fallback = Some(text))
 }

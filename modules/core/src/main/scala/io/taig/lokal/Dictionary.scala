@@ -14,7 +14,9 @@ final case class Dictionary(values: Segments[Text]) extends AnyVal {
 
   def apply(path: Path): Option[String] = apply(path, Quantity.One)
 
-  def toI18n(locale: Locale): I18n = ??? // I18n(values.view.mapValues(Translation.one(locale, _)).toMap)
+  def toI18n(locale: Locale): I18n = I18n(values.map(Translation.one(locale, _)))
+
+  def toI18nFallbacks: I18n = I18n(values.map(Translation.fallback))
 }
 
 object Dictionary {
