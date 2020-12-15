@@ -1,5 +1,7 @@
 package io.taig.lokal
 
+import scala.collection.immutable.Map
+
 final case class I18n(values: Map[Path, Translation]) extends AnyVal {
   @inline
   def get(path: Path): Option[Translation] = values.get(path)
@@ -29,4 +31,12 @@ final case class I18n(values: Map[Path, Translation]) extends AnyVal {
       .mapValues(_.map(_._2).foldLeft(Translation.Empty)(_ ++ _))
       .toMap
   )
+}
+
+object I18n {
+  val Empty: I18n = I18n(Map.empty)
+
+  def forLanguage(language: Language, values: Map[Option[Country], Dictionary]): I18n = values.foldLeft(Empty) {
+    case (i18n, (country, dictionary)) => i18n merge dictionary.toI18n(Locale(language, country))
+  }
 }

@@ -1,7 +1,7 @@
 package io.taig.lokal
 
-import munit.FunSuite
 import io.taig.lokal.printf._
+import munit.FunSuite
 
 final class FormatterPrintFTest extends FunSuite {
   test("arguments") {

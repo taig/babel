@@ -1,7 +1,7 @@
 package io.taig.lokal
 
-import munit.FunSuite
 import io.taig.lokal.mf._
+import munit.FunSuite
 
 final class FormatterMessageFormatTest extends FunSuite {
   test("arguments") {

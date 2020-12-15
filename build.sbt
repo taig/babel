@@ -2,22 +2,18 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 val Version = new {
   val Circe = "0.13.0"
+  val Fs2 = "2.4.6"
   val Munit = "0.7.19"
   val Shapeless = "2.3.3"
 }
 
 noPublishSettings
 
-ThisBuild / testFrameworks += new TestFramework("munit.Framework")
-
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/core"))
   .settings(sonatypePublishSettings)
   .settings(
-    libraryDependencies ++=
-      "org.scalameta" %%% "munit" % Version.Munit % "test" ::
-        Nil,
     name := "lokal-core",
     sourceGenerators in Compile += Def.task {
       val pkg = s"${organization.value}.lokal"
@@ -30,23 +26,37 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
       Seq(languages, countries, locales)
     }.taskValue
   )
-  .jsSettings(
-    scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
-  )
 
-lazy val formatPrintf = crossProject(JSPlatform, JVMPlatform)
+lazy val formatterPrintf = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/formatter-printf"))
   .settings(sonatypePublishSettings)
+  .settings(
+    name := "lokal-formatter-printf"
+  )
   .jsSettings(
     scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
   )
   .dependsOn(core % "compile->compile;test->test")
 
-lazy val formatMessageFormat = project
+lazy val formatterMessageFormat = project
   .in(file("modules/formatter-message-format"))
   .settings(sonatypePublishSettings)
+  .settings(
+    name := "lokal-formatter-message-format"
+  )
   .dependsOn(core.jvm % "compile->compile;test->test")
+
+lazy val loader = project
+  .in(file("modules/loader"))
+  .settings(sonatypePublishSettings)
+  .settings(
+    libraryDependencies ++=
+      "co.fs2" %% "fs2-io" % Version.Fs2 ::
+        Nil,
+    name := "lokal-loader"
+  )
+  .dependsOn(core.jvm)
 
 lazy val generic = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
@@ -72,3 +82,20 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
     name := "lokal-circe"
   )
   .dependsOn(core)
+
+lazy val tests = crossProject(JSPlatform, JVMPlatform)
+  .crossType(CrossType.Full)
+  .in(file("modules/tests"))
+  .settings(noPublishSettings)
+  .settings(
+    name := "lokal-tests",
+    libraryDependencies ++=
+      "org.scalameta" %%% "munit" % Version.Munit % "test" ::
+        Nil,
+    testFrameworks += new TestFramework("munit.Framework")
+  )
+  .dependsOn(core, circe, generic, formatterPrintf)
+  .jvmConfigure(_.dependsOn(loader, formatterMessageFormat))
+  .jsSettings(
+    scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
+  )
