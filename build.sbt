@@ -1,9 +1,11 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 val Version = new {
+  val CatsEffect = "2.3.0"
   val Circe = "0.13.0"
   val Fs2 = "2.4.6"
   val Munit = "0.7.19"
+  val MunitCatsEffect = "0.11.0"
   val Shapeless = "2.3.3"
 }
 
@@ -53,6 +55,7 @@ lazy val loader = project
   .settings(
     libraryDependencies ++=
       "co.fs2" %% "fs2-io" % Version.Fs2 ::
+        "org.typelevel" %% "cats-effect" % Version.CatsEffect ::
         Nil,
     name := "lokal-loader"
   )
@@ -91,6 +94,7 @@ lazy val tests = crossProject(JSPlatform, JVMPlatform)
     name := "lokal-tests",
     libraryDependencies ++=
       "org.scalameta" %%% "munit" % Version.Munit % "test" ::
+        "org.typelevel" %%% "munit-cats-effect-2" % Version.MunitCatsEffect % "test" ::
         Nil,
     testFrameworks += new TestFramework("munit.Framework")
   )

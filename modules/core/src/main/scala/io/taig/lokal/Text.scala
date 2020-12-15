@@ -7,6 +7,8 @@ final case class Text(default: String, quantities: Map[Quantity, String]) {
   def apply(arguments: Seq[Any])(implicit formatter: Formatter): String = apply(Quantity.One, arguments)
 
   def apply(quantity: Quantity): String = quantities.getOrElse(quantity, default)
+
+  def apply(): String = default
 }
 
 object Text {

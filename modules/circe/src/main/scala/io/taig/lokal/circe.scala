@@ -25,41 +25,33 @@ object circe {
       Json.obj("*" := text.default) deepMerge text.quantities.asJson
   }
 
-  implicit def decoderPathMap[A: Decoder]: Decoder[Map[Path, A]] = Decoder.instance { cursor =>
-    def decode(json: Json, path: Path): Either[DecodingFailure, Map[Path, A]] =
-      json.as[A].map(value => Map(path -> value)).orElse {
-        json.as[JsonObject].flatMap { obj =>
-          obj.keys.foldLeft(Map.empty[Path, A].asRight[DecodingFailure]) {
-            case (right @ Right(result), key) =>
-              obj.apply(key) match {
-                case Some(json) => decode(json, path / key).map(result ++ _)
-                case None       => right
-              }
-            case (failure @ Left(_), _) => failure
-          }
+  implicit def decoderSegments[A: Decoder]: Decoder[Segments[A]] = Decoder.instance { cursor =>
+    cursor
+      .as[JsonObject]
+      .flatMap { obj =>
+        obj.toMap.foldLeft(Map.empty[String, Either[A, Segments[A]]].asRight[DecodingFailure]) {
+          case (Right(result), (key, json)) =>
+            json
+              .as[A]
+              .map(_.asLeft[Segments[A]])
+              .orElse(json.as[Segments[A]].map(_.asRight))
+              .map(value => result + (key -> value))
+          case (failure @ Left(_), _) => failure
         }
       }
+      .map(Segments[A])
+  }
 
-    cursor.as[JsonObject].flatMap { obj =>
-      obj.toMap.foldLeft(Map.empty[Path, A].asRight[DecodingFailure]) {
-        case (Right(result), (key, json)) => decode(json, Path.one(key)).map(result ++ _)
-        case (failure @ Left(_), _)       => failure
-      }
+  implicit def encoderSegments[A: Encoder]: Encoder[Segments[A]] = Encoder.instance { values =>
+    values.branches.foldLeft(Json.obj()) {
+      case (json, (key, Right(segments))) => json deepMerge Json.obj(key := segments)
+      case (json, (key, Left(value)))     => json deepMerge Json.obj(key := value)
     }
   }
 
-  implicit def encoderPathMap[A: Encoder]: Encoder[Map[Path, A]] = Encoder.instance { values =>
-    def encode(path: Path, value: A): Json = path match {
-      case Path(head, Nil)             => Json.obj(head := value)
-      case Path(segment, head :: tail) => Json.obj(segment := encode(Path(head, tail), value))
-    }
+  implicit val decoderDictionary: Decoder[Dictionary] = Decoder[Segments[Text]].map(Dictionary.apply)
 
-    values.map((encode _).tupled).foldLeft(Json.obj())(_ deepMerge _)
-  }
-
-  implicit val decoderDictionary: Decoder[Dictionary] = Decoder[Map[Path, Text]].map(Dictionary.apply)
-
-  implicit val encoderDictionary: Encoder[Dictionary] = Encoder[Map[Path, Text]].contramap(_.values)
+  implicit val encoderDictionary: Encoder[Dictionary] = Encoder[Segments[Text]].contramap(_.values)
 
   implicit val keyEncoderEitherLocale: KeyEncoder[Either["*", Locale]] = KeyEncoder.instance {
     case Right(locale) => locale.printLanguageTag
@@ -77,9 +69,9 @@ object circe {
     translation.values.map(_.leftMap(_.printLanguageTag)) ++ translation.fallback.map("*" -> _).toMap
   }
 
-  implicit val decoderI18n: Decoder[I18n] = Decoder[Map[Path, Translation]].map(I18n.apply)
+  implicit val decoderI18n: Decoder[I18n] = Decoder[Segments[Translation]].map(I18n.apply)
 
-  implicit val encoderI18n: Encoder[I18n] = Encoder[Map[Path, Translation]].contramap(_.values)
+  implicit val encoderI18n: Encoder[I18n] = Encoder[Segments[Translation]].contramap(_.values)
 
   def printerJson[A: Encoder](printer: CircePrinter): Printer[A] = a => printer.print(Encoder[A].apply(a))
 

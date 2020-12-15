@@ -1,6 +1,7 @@
 package io.taig.lokal
 
 import cats.effect.{Blocker, ContextShift, ExitCode, IO, IOApp, Sync}
+import cats.effect.MonadThrow
 import cats.syntax.all._
 import fs2.io.readInputStream
 import fs2.text.utf8Decode
@@ -34,6 +35,23 @@ object Loader {
       }
   }
 
+  private def read[F[_]: Sync: ContextShift](blocker: Blocker, path: JPath): F[String] =
+    readAll(path, blocker, chunkSize = 8192)
+      .through(utf8Decode[F])
+      .compile
+      .string
+
+  private def parse[F[_], A](value: String)(implicit F: MonadThrow[F], parser: Parser[A]): F[A] =
+    F.fromEither(parser.parse(value).leftMap(reason => new RuntimeException(s"Parsing failure: $reason")))
+
+  private def toI18n(values: Map[Option[Locale], Dictionary]): I18n = {
+    val fallbacks = values.getOrElse(None, Dictionary.Empty)
+    values
+      .collect { case (Some(locale), dictionary) => (locale, dictionary) }
+      .map { case (locale, dictionary) => dictionary.toI18n(locale) }
+    ???
+  }
+
   def auto[F[_]: Sync: ContextShift](blocker: Blocker, resource: String)(implicit parser: Parser[Dictionary]) = {
     val path = blocker.delay {
       val url = getClass.getClassLoader.getResource(resource)
@@ -50,16 +68,16 @@ object Loader {
       .flatMap { paths =>
         paths.traverse {
           case (locale, path) =>
-            readAll(path, blocker, chunkSize = 8192)
-              .through(utf8Decode[F])
-              .compile
-              .string
-              .map(parser.parse(_).leftMap { reason =>
-                new RuntimeException(s"Parsing failure in ${locale.map(_.printLanguageTag).getOrElse("*")}: $reason")
-              })
-              .rethrow
-              .tupleLeft(locale)
+            read(blocker, path).flatMap(parse[F, Dictionary]).tupleLeft(locale)
         }
       }
   }
+
+  final case class Yolo[A](foo: A, bar: A)
+
+  val x: Yolo[Translation] = ???
+  val y: Map[Locale, Map[Path, Text]] = ???
+  val z: Map[Locale, Yolo[Text]] = ???
+  z.apply(???).foo()
+  x.foo
 }

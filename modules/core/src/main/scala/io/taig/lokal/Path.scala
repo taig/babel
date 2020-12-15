@@ -1,25 +1,25 @@
 package io.taig.lokal
 
-final case class Path(head: String, tail: List[String]) {
-  def toList: List[String] = head +: tail
+final case class Path(values: List[String]) {
+  def /(segment: String): Path = Path(values :+ segment)
 
-  def /(segment: String): Path = copy(tail = tail :+ segment)
+  def print: String = values.mkString("/")
 
-  def print: String = toList.mkString("/")
-
-  def printPretty: String = toList.mkString("[", " / ", "]")
+  def printPretty: String = values.mkString("[", " / ", "]")
 }
 
 object Path {
-  def one(head: String): Path = Path(head, List.empty)
+  val Empty: Path = Path(List.empty)
 
-  def parse(value: String): Option[Path] = value.split('/') match {
-    case Array("")   => None
-    case Array(head) => Some(Path(head, Nil))
-    case segments    => Some(Path(segments.head, segments.tail.toList))
+  def one(head: String): Path = Path(List(head))
+
+  def parse(value: String): Path = value.split('/') match {
+    case Array("")   => Empty
+    case Array(head) => one(head)
+    case segments    => apply(segments.toList)
   }
 
   implicit val printer: Printer[Path] = Printer[String].contramap(_.print)
 
-  implicit val parser: Parser[Path] = Parser[String].emap(parse(_).toRight("Path"))
+  implicit val parser: Parser[Path] = Parser[String].map(parse)
 }
