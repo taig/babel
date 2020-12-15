@@ -1,9 +1,9 @@
 package io.taig.lokal
 
-trait Decoder[A, B] {
-  def decode(values: Segments[A]): Either[String, B]
+trait Decoder[F[_], A] {
+  def decode(values: Segments[A]): Either[String, F[A]]
 }
 
 object Decoder {
-  def apply[A, B](implicit decoder: Decoder[A, B]): Decoder[A, B] = decoder
+  def apply[F[_], A](implicit decoder: Decoder[F, A]): Decoder[F, A] = decoder
 }
