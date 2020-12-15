@@ -4,7 +4,7 @@ import cats.implicits._
 import org.scalatest.funsuite.AnyFunSuite
 
 final class TranslationTest extends AnyFunSuite {
-  val translations: Translation[String] = Translation.of(
+  val translations: I18n[String] = I18n.of(
     List(
       Locale(Language("de")) -> "Hallo",
       Locale(Language("de"), Country("AT")) -> "Grüß Gott",

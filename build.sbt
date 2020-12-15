@@ -15,7 +15,6 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .settings(sonatypePublishSettings)
   .settings(
     libraryDependencies ++=
-      "org.typelevel" %%% "cats-core" % Version.Cats ::
         "com.github.alexarchambault" %%% "scalacheck-shapeless_1.14" % Version.ScalacheckShapeless % "test" ::
         "org.typelevel" %%% "cats-testkit-scalatest" % Version.CatsTestkitScalatest % "test" ::
         Nil,
@@ -41,15 +40,7 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
       "com.chuusai" %%% "shapeless" % Version.Shapeless ::
         "io.circe" %%% "circe-parser" % Version.Circe ::
         Nil,
-    name := "lokal-circe"
-  )
-  .dependsOn(core)
-
-lazy val dsl = crossProject(JSPlatform, JVMPlatform)
-  .crossType(CrossType.Pure)
-  .settings(sonatypePublishSettings)
-  .settings(
-    name := "lokal-dsl",
+    name := "lokal-circe",
     sourceGenerators in Compile += Def.task {
       val pkg = s"${organization.value}.lokal"
       val languages = (sourceManaged in Compile).value / "Languages.scala"
@@ -58,12 +49,10 @@ lazy val dsl = crossProject(JSPlatform, JVMPlatform)
       IO.write(countries, SourceGenerator.countries(pkg))
       val locales = (sourceManaged in Compile).value / "Locales.scala"
       IO.write(locales, SourceGenerator.locales(pkg))
-      val contexts = (sourceManaged in Compile).value / "LokalStringContexts.scala"
-      IO.write(contexts, SourceGenerator.contexts(pkg))
-      Seq(languages, countries, locales, contexts)
+      Seq(languages, countries, locales)
     }.taskValue
   )
-  .dependsOn(core % "compile->compile;test->test")
+  .dependsOn(core)
 
 lazy val sample = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
@@ -74,4 +63,4 @@ lazy val sample = crossProject(JSPlatform, JVMPlatform)
       "io.circe" %%% "circe-generic" % Version.Circe ::
         Nil
   )
-  .dependsOn(circe, dsl, generic)
+  .dependsOn(circe, generic)

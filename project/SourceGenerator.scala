@@ -14,7 +14,7 @@ object SourceGenerator {
     val vals = languages.map { language => s"""val ${identifier(language)}: Language = Language("$language")""" }
     val all = languages.map(identifier).mkString(", ")
 
-    s"""package $pkg.dsl
+    s"""package $pkg
        |
        |import $pkg.Language
        |
@@ -32,7 +32,7 @@ object SourceGenerator {
     val vals = countries.map { country => s"""val ${identifier(country)}: Country = Country("$country")""" }
     val all = countries.map(identifier).mkString(", ")
 
-    s"""package $pkg.dsl
+    s"""package $pkg
        |
        |import $pkg.Country
        |
@@ -60,7 +60,7 @@ object SourceGenerator {
     }
     val all = locales.map(_.toString).mkString(", ")
 
-    s"""package $pkg.dsl
+    s"""package $pkg
        |
        |import $pkg.Locale
        |
@@ -69,22 +69,6 @@ object SourceGenerator {
        |  ${vals.mkString("\n\n  ")}
        |
        |  val All: List[Locale] = List($all)
-       |  // $$COVERAGE-ON$$
-       |}""".stripMargin
-  }
-
-  def contexts(pkg: String): String = {
-    val defs = locales.map { locale =>
-      s"final def $locale(arguments: Any*): Translation[Any, String] = apply(Locales.$locale, arguments)"
-    }
-
-    s"""package $pkg.dsl
-       |
-       |import $pkg.Translation
-       |
-       |trait LokalStringContexts { this: LokalStringContext =>
-       |  // $$COVERAGE-OFF$$
-       |  ${defs.mkString("\n\n  ")}
        |  // $$COVERAGE-ON$$
        |}""".stripMargin
   }

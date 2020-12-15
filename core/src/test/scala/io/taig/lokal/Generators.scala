@@ -18,20 +18,20 @@ object Generators {
 
   val locale: Gen[Locale] = Gen.oneOf(locales)
 
-  def translationOne[A](value: Gen[A]): Gen[Translation[A]] =
+  def translationOne[A](value: Gen[A]): Gen[I18n[A]] =
     for {
       locale <- locale
       translation <- value
-    } yield Translation.one(locale, translation)
+    } yield I18n.one(locale, translation)
 
-  def translationUniversal[A](value: Gen[A]): Gen[Translation[A]] =
-    value.map(Translation.universal)
+  def translationUniversal[A](value: Gen[A]): Gen[I18n[A]] =
+    value.map(I18n.universal)
 
-  def translation[A](value: Gen[A]): Gen[Translation[A]] =
+  def translation[A](value: Gen[A]): Gen[I18n[A]] =
     Gen.oneOf(translationOne(value), translationUniversal(value))
 
-  def translations[A](value: Gen[A]): Gen[Translation[A]] =
-    Gen.listOf(translation(value)).map(_.combineAll(Translation.monoidK.algebra))
+  def translations[A](value: Gen[A]): Gen[I18n[A]] =
+    Gen.listOf(translation(value)).map(_.combineAll(I18n.monoidK.algebra))
 
   def dictionaryOne[A](value: Gen[A]): Gen[Dictionary[A]] =
     for {

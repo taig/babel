@@ -2,7 +2,9 @@ package io.taig.lokal
 
 import cats.Functor
 
-final case class Result[+A](rank: Rank, value: A)
+final case class Result[+A](rank: Rank, value: A) {
+  def withRank(rank: Rank): Result[A] = Result(rank, value)
+}
 
 object Result {
   implicit val functor: Functor[Result] = new Functor[Result] {
