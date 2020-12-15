@@ -9,9 +9,9 @@ object Playground {
 
     val i18n = I18n(
       Map(
-        "hello.world" -> Translation(
+        Path.from("hello/world") -> Translation(
           Map(
-            Locales.de -> Text("Hallo Welt", Map.empty),
+            Locales.de -> Text("Hallo Welten", Map(Quantity.One -> "Hallo Welt")),
             Locales.de_AT -> Text("Grüß Gott", Map.empty)
           ),
           fallback = None
@@ -19,6 +19,7 @@ object Playground {
       )
     )
 
+    println(i18n.asJson)
     println(i18n.asJson.as[I18n])
   }
 }
