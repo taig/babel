@@ -34,9 +34,9 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
     scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
   )
 
-lazy val dslStringFormat = crossProject(JSPlatform, JVMPlatform)
+lazy val formatPrintf = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
-  .in(file("modules/dsl-string-format"))
+  .in(file("modules/format-printf"))
   .settings(sonatypePublishSettings)
   .jsSettings(
     scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))

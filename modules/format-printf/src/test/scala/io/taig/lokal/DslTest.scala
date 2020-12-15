@@ -1,7 +1,7 @@
 package io.taig.lokal
 
 import munit.FunSuite
-import io.taig.lokal.dsl._
+import io.taig.lokal.printf._
 
 final class DslTest extends FunSuite {
   test("arguments") {
