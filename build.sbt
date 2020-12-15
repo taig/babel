@@ -36,12 +36,17 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
 
 lazy val formatPrintf = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
-  .in(file("modules/format-printf"))
+  .in(file("modules/formatter-printf"))
   .settings(sonatypePublishSettings)
   .jsSettings(
     scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
   )
   .dependsOn(core % "compile->compile;test->test")
+
+lazy val formatMessageFormat = project
+  .in(file("modules/formatter-message-format"))
+  .settings(sonatypePublishSettings)
+  .dependsOn(core.jvm % "compile->compile;test->test")
 
 lazy val generic = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
