@@ -1,17 +1,18 @@
 package io.taig.lokal
 
-import cats.syntax.all._
+import cats.implicits._
 import io.circe.syntax._
 import io.circe.{Decoder, Encoder, Json, JsonObject, KeyDecoder, KeyEncoder}
 
 object circe {
-  implicit val decoderLocale: Decoder[Locale] = Decoder[String].emap(Locale.parse(_).toRight("Invalid Locale"))
+  implicit val decoderLocale: Decoder[Locale] =
+    Decoder[String].emap(Locale.parseLanguageTag(_).toRight("Invalid Locale"))
 
-  implicit val encoderLocale: Encoder[Locale] = Encoder[String].contramap(_.show)
+  implicit val encoderLocale: Encoder[Locale] = Encoder[String].contramap(_.printLanguageTag)
 
-  implicit val keyDecoderLocale: KeyDecoder[Locale] = KeyDecoder.instance(Locale.parse)
+  implicit val keyDecoderLocale: KeyDecoder[Locale] = KeyDecoder.instance(Locale.parseLanguageTag)
 
-  implicit val keyEncoderLocale: KeyEncoder[Locale] = KeyEncoder.instance(_.show)
+  implicit val keyEncoderLocale: KeyEncoder[Locale] = KeyEncoder.instance(_.printLanguageTag)
 
   implicit val keyDecoderQuantity: KeyDecoder[Quantity] = KeyDecoder[Int].map(Quantity.apply)
 
@@ -40,7 +41,7 @@ object circe {
   implicit val encoderDictionary: Encoder[Dictionary] = Encoder[Map[String, Text]].contramap(_.values)
 
   implicit val keyEncoderEitherLocale: KeyEncoder[Either["*", Locale]] = KeyEncoder.instance {
-    case Right(locale) => locale.show
+    case Right(locale) => locale.printLanguageTag
     case Left(_)       => "*"
   }
 
@@ -52,7 +53,7 @@ object circe {
   }
 
   implicit val encoderTranslations: Encoder[Translation] = Encoder[Map[String, Text]].contramap { translation =>
-    translation.values.map(_.leftMap(_.show)) ++ translation.fallback.map("*" -> _).toMap
+    translation.values.map(_.leftMap(_.printLanguageTag)) ++ translation.fallback.map("*" -> _).toMap
   }
 
   implicit val decoderI18n: Decoder[I18n] = Decoder[Map[String, Translation]].map(I18n.apply)

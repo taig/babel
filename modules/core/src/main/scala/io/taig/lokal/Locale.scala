@@ -7,13 +7,13 @@ final case class Locale(language: Language, country: Option[Country]) {
 
   def withoutCountry: Locale = Locale(language)
 
-  def print(separator: String): String = country.fold(language.value) { country =>
+  def print(separator: Char): String = country.fold(language.value) { country =>
     language.value + separator + country.value
   }
 
-  def printLanguageTag: String = print("-")
+  def printLanguageTag: String = print('-')
 
-  def printJavaLocaleFormat: String = print("_")
+  def printJavaLocaleFormat: String = print('_')
 
   def toJavaLocale: JLocale = new JLocale(language.value, country.map(_.value).getOrElse(""))
 }
@@ -23,11 +23,15 @@ object Locale {
 
   def apply(language: Language, country: Country): Locale = Locale(language, Some(country))
 
-  def parseLanguageTag(value: String): Option[Locale] = value.split('-') match {
+  def parse(value: String, separator: Char): Option[Locale] = value.split(separator) match {
     case Array(language)          => Some(Locale(Language(language)))
     case Array(language, country) => Some(Locale(Language(language), Country(country)))
     case _                        => None
   }
+
+  def parseLanguageTag(value: String): Option[Locale] = parse(value, '-')
+
+  def parseJavaLocaleFormat(value: String): Option[Locale] = parse(value, '_')
 
   def fromJavaLocale(locale: JLocale): Option[Locale] =
     Option(locale.getLanguage)

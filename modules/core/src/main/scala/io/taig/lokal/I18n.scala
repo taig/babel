@@ -1,10 +1,10 @@
 package io.taig.lokal
 
-final case class I18n(values: Map[String, Translation]) extends AnyVal {
+final case class I18n(values: Map[Path, Translation]) extends AnyVal {
   @inline
-  def get(key: String): Option[Translation] = values.get(key)
+  def get(path: Path): Option[Translation] = values.get(path)
 
-  def get(key: String, locale: Locale): Option[Text] = get(key).flatMap(_ apply locale)
+  def get(path: Path, locale: Locale): Option[Text] = get(path).flatMap(_ apply locale)
 
   def only(locale: Locale): Dictionary =
     Dictionary(values.view.mapValues(_ apply locale).collect { case (key, Some(value)) => (key, value) }.toMap)

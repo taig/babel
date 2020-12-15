@@ -42,6 +42,7 @@ lazy val dslStringFormat = crossProject(JSPlatform, JVMPlatform)
 
 lazy val generic = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
+  .in(file("modules/generic"))
   .settings(sonatypePublishSettings)
   .settings(
     libraryDependencies ++=
@@ -53,6 +54,7 @@ lazy val generic = crossProject(JSPlatform, JVMPlatform)
 
 lazy val circe = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
+  .in(file("modules/circe"))
   .settings(sonatypePublishSettings)
   .settings(
     libraryDependencies ++=
