@@ -16,8 +16,9 @@ docker:
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CONTAINER_REGISTRY
     - docker pull $CONTAINER_IMAGE:latest || true
-    - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA .
-    - docker push $CONTAINER_IMAGE
+    - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE:latest .
+    - docker push $CONTAINER_IMAGE:$CI_COMMIT_SHA
+    - docker push $CONTAINER_IMAGE:latest
 
 warnings:
   stage: test

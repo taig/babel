@@ -37,7 +37,9 @@ Codecs to populate custom translation data classes
 "io.taig" %%% "babel-generic" % "x.y.z"
 ```
 
-String formatting choices: note that `java.util.MessageFormat` is not available for Scala.js, so the `printf` module is recommended
+String formatting choices, pick one or role your own
+
+> Please note that `java.util.MessageFormat` is not available for Scala.js, so the `printf` module is recommended
 
 ```scala
 "io.taig" %%% "babel-formatter-printf" % "x.y.z"
@@ -58,14 +60,14 @@ Default setup which is assumed in the documentation below
 ### Data classes
 
 - `Locale`, `Language`, `Country`  
-Lorem ipsum
+Basic data classes in the fashion of `java.util.Locale`. It is possible to convert between `java.util.Locale` and `io.taig.babel.Locale`.
 - `Text`, `Quantity`  
 Lorem ipsum
-- `Dictionary`  
-Lorem ipsum
-- `Translation`  
-Lorem ipsum
 - `Segments`, `Path`  
+`Segments` is a tree structure that mimics nested case classes. A `Path` can be used to identify a `Node` or a `Leaf` in such a tree.
+- `Dictionary`  
+A collection of `Text`s that are namespaced in `Segments`
+- `Translation`  
 Lorem ipsum
 - `Babel`  
 Lorem ipsum
