@@ -16,9 +16,9 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .in(file("modules/core"))
   .settings(sonatypePublishSettings)
   .settings(
-    name := "lokal-core",
+    name := "babel-core",
     sourceGenerators in Compile += Def.task {
-      val pkg = s"${organization.value}.lokal"
+      val pkg = s"${organization.value}.babel"
       val languages = (sourceManaged in Compile).value / "Languages.scala"
       IO.write(languages, SourceGenerator.languages(pkg))
       val countries = (sourceManaged in Compile).value / "Countries.scala"
@@ -34,7 +34,7 @@ lazy val formatterPrintf = crossProject(JSPlatform, JVMPlatform)
   .in(file("modules/formatter-printf"))
   .settings(sonatypePublishSettings)
   .settings(
-    name := "lokal-formatter-printf"
+    name := "babel-formatter-printf"
   )
   .jsSettings(
     scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
@@ -45,7 +45,7 @@ lazy val formatterMessageFormat = project
   .in(file("modules/formatter-message-format"))
   .settings(sonatypePublishSettings)
   .settings(
-    name := "lokal-formatter-message-format"
+    name := "babel-formatter-message-format"
   )
   .dependsOn(core.jvm % "compile->compile;test->test")
 
@@ -57,7 +57,7 @@ lazy val loader = project
       "co.fs2" %% "fs2-io" % Version.Fs2 ::
         "org.typelevel" %% "cats-effect" % Version.CatsEffect ::
         Nil,
-    name := "lokal-loader"
+    name := "babel-loader"
   )
   .dependsOn(core.jvm)
 
@@ -69,7 +69,7 @@ lazy val generic = crossProject(JSPlatform, JVMPlatform)
     libraryDependencies ++=
       "com.chuusai" %%% "shapeless" % Version.Shapeless ::
         Nil,
-    name := "lokal-generic"
+    name := "babel-generic"
   )
   .dependsOn(core)
 
@@ -82,7 +82,7 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
       "com.chuusai" %%% "shapeless" % Version.Shapeless ::
         "io.circe" %%% "circe-parser" % Version.Circe ::
         Nil,
-    name := "lokal-circe"
+    name := "babel-circe"
   )
   .dependsOn(core)
 
@@ -91,7 +91,7 @@ lazy val tests = crossProject(JSPlatform, JVMPlatform)
   .in(file("modules/tests"))
   .settings(noPublishSettings)
   .settings(
-    name := "lokal-tests",
+    name := "babel-tests",
     libraryDependencies ++=
       "org.scalameta" %%% "munit" % Version.Munit % "test" ::
         "org.typelevel" %%% "munit-cats-effect-2" % Version.MunitCatsEffect % "test" ::

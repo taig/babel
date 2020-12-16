@@ -1,4 +1,4 @@
-# Lokal
+# Babel
 
 > String-based internationalisation (i18n) for Scala applications
 
@@ -22,40 +22,40 @@
 Dependency-free core module, that contains all data class definitions, type classes and pre-defined locales
 
 ```scala
-"io.taig" %%% "lokal-core" % "x.y.z" 
+"io.taig" %%% "babel-core" % "x.y.z" 
 ```
 JSON serialisation and deserialisation
 
 ```scala
-"io.taig" %%% "lokal-circe" % "x.y.z"
+"io.taig" %%% "babel-circe" % "x.y.z"
 ```
 
 Reading serialised language definitions from resources (JVM only)
 
 ```scala
-"io.taig" %% "lokal-loader" % "x.y.z"
+"io.taig" %% "babel-loader" % "x.y.z"
 ```
 
 Codecs to populate custom translation data classes
 
 ```scala
-"io.taig" %%% "lokal-generic" % "x.y.z"
+"io.taig" %%% "babel-generic" % "x.y.z"
 ```
 
 String formatting choices: note that `java.util.MessageFormat` is not available for Scala.js, so the `printf` module is recommended
 
 ```scala
-"io.taig" %%% "lokal-formatter-printf" % "x.y.z"
-"io.taig" %% "lokal-formatter-message-format" % "x.y.z"
+"io.taig" %%% "babel-formatter-printf" % "x.y.z"
+"io.taig" %% "babel-formatter-message-format" % "x.y.z"
 ```
 
 Default setup which is assumed in the documentation below
 
 ```scala
-"io.taig" %% "lokal-loader" % "x.y.z"
-"io.taig" %%% "lokal-circe" % "x.y.z"
-"io.taig" %%% "lokal-generic" % "x.y.z"
-"io.taig" %%% "lokal-formatter-printf" % "x.y.z"
+"io.taig" %% "babel-loader" % "x.y.z"
+"io.taig" %%% "babel-circe" % "x.y.z"
+"io.taig" %%% "babel-generic" % "x.y.z"
+"io.taig" %%% "babel-formatter-printf" % "x.y.z"
 ```
 
 ## Overview
