@@ -35,12 +35,7 @@ suite:
   stage: test
   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
   script:
-    - sbt +test website/makeMicrosite
-    - mv website/target/site/ site/
-  artifacts:
-    expire_in: 1 month
-    paths:
-      - site/
+    - sbt test
 
 artifacts:
   stage: deploy
@@ -50,16 +45,3 @@ artifacts:
     - tags
   script:
     - sbt publishAndRelease
-
-pages:
-  stage: deploy
-  image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
-  only:
-    - master
-  script:
-    - mv site/ public/
-  artifacts:
-    paths:
-      - public/
-  dependencies:
-    - suite
