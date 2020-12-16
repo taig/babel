@@ -1,27 +1,84 @@
-# Lokal
+# Babel
 
-> i18n & l10n for (isomorphic) Scala applications
+> String-based internationalization (i18n) for Scala applications
 
-Please visit the [documentation](https://lokal.taig.io/) microsite to learn how to install and use _Lokal_.
+## Features
 
-## Building the microsite
+- First class support for plurals
+- Great fit for Scala.js clients, since `java.util.Locale` is not used
+- Translation definitions in either code or a supported serialisation format (e.g. JSON)
+- Allows lifting translations into data classes: no more `String` key look-ups
+- Creating translation subsets that are only suitable for a specific language, which can be useful for clients that request all translations for a single language 
+- Open to arbitrary `String` formatting solutions (e.g. `String.format` or `java.util.MessageFormat`)
+- Dependency-free `core` module
 
-The microsite relies on [`sbt-microsites`](https://github.com/47deg/sbt-microsites) and does therefore require `ruby` and `jekyll` to be installed on your system. When these requirements are met, the microsite can be built as follows.
+## Installation
 
+Dependency-free core module, that contains all data class definitions, type classes and pre-defined locales
+
+```scala
+"io.taig" %%% "babel-core" % "x.y.z" 
 ```
-sbt website/makeMicrosite
-cd website/target/site/
-jekyll serve
+JSON serialisation and deserialisation
+
+```scala
+"io.taig" %%% "babel-circe" % "x.y.z"
 ```
 
-Alternatively, when `ruby` and `jekyll` are not available the microsite can be built via docker.
+Reading serialised language definitions from resources (JVM only)
 
-```
-docker build -t lokal .
-docker run -it -p 4000:4000  -v $PWD:/home/lokal/ lokal 
-sbt website/makeMicrosite
-cd website/target/site/
-jekyll serve --host=0.0.0.0
+```scala
+"io.taig" %% "babel-loader" % "x.y.z"
 ```
 
-The site can now be opened in a web browser at [`http://localhost:4000/`](http://localhost:4000/).
+Codecs to populate custom translation data classes
+
+```scala
+"io.taig" %%% "babel-generic" % "x.y.z"
+```
+
+String formatting choices: note that `java.util.MessageFormat` is not available for Scala.js, so the `printf` module is recommended
+
+```scala
+"io.taig" %%% "babel-formatter-printf" % "x.y.z"
+"io.taig" %% "babel-formatter-message-format" % "x.y.z"
+```
+
+Default setup which is assumed in the documentation below
+
+```scala
+"io.taig" %% "babel-loader" % "x.y.z"
+"io.taig" %%% "babel-circe" % "x.y.z"
+"io.taig" %%% "babel-generic" % "x.y.z"
+"io.taig" %%% "babel-formatter-printf" % "x.y.z"
+```
+
+## Overview
+
+### Data classes
+
+- `Locale`, `Language`, `Country`  
+Lorem ipsum
+- `Text`, `Quantity`  
+Lorem ipsum
+- `Dictionary`  
+Lorem ipsum
+- `Translation`  
+Lorem ipsum
+- `Segments`, `Path`  
+Lorem ipsum
+- `Babel`  
+Lorem ipsum
+
+### Type classes
+
+- `Formatter`  
+Lorem ipsum
+- `Printer`  
+Lorem ipsum
+- `Parser`  
+Lorem ipsum
+- `Encoder`  
+Lorem ipsum
+- `Decoder`  
+Lorem ipsum

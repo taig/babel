@@ -5,7 +5,7 @@ stages:
 
 variables:
   CONTAINER_REGISTRY: registry.gitlab.com
-  CONTAINER_IMAGE: $CONTAINER_REGISTRY/taig-github/lokal
+  CONTAINER_IMAGE: $CONTAINER_REGISTRY/taig-github/babel
   DOCKER_DRIVER: overlay2
 
 docker:
@@ -35,12 +35,7 @@ suite:
   stage: test
   image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
   script:
-    - sbt +test website/makeMicrosite
-    - mv website/target/site/ site/
-  artifacts:
-    expire_in: 1 month
-    paths:
-      - site/
+    - sbt test
 
 artifacts:
   stage: deploy
@@ -50,16 +45,3 @@ artifacts:
     - tags
   script:
     - sbt publishAndRelease
-
-pages:
-  stage: deploy
-  image: $CONTAINER_IMAGE:$CI_COMMIT_SHA
-  only:
-    - master
-  script:
-    - mv site/ public/
-  artifacts:
-    paths:
-      - public/
-  dependencies:
-    - suite
