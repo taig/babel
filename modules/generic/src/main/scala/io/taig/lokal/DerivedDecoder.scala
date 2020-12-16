@@ -23,6 +23,18 @@ object DerivedDecoder extends DerivedDecoder1 {
         }
     }
 
+  implicit def optional[A, K <: Symbol, V](
+      implicit key: Witness.Aux[K],
+      decoder: DerivedDecoder[A, FieldType[K, V]]
+  ): DerivedDecoder[A, FieldType[K, Option[V]]] =
+    new DerivedDecoder[A, FieldType[K, Option[V]]] {
+      override def decode(segments: Segments[A]): Either[String, FieldType[K, Option[V]]] =
+        segments.get(key.value.name) match {
+          case Some(_) => decoder.decode(segments).map(result => field[K](Some(result)))
+          case None    => Right(field[K](None))
+        }
+    }
+
   implicit def hnil[A]: DerivedDecoder[A, HNil] = new DerivedDecoder[A, HNil] {
     override def decode(segments: Segments[A]): Either[String, HNil] = Right(HNil)
   }

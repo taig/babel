@@ -20,6 +20,15 @@ object DerivedEncoder extends DerivedEncoder1 {
         Segments(Map(key.value.name -> Right(encoder.encode(value))))
     }
 
+  implicit def optional[A, K <: Symbol, V](
+      implicit
+      encoder: DerivedEncoder[FieldType[K, V], A]
+  ): DerivedEncoder[FieldType[K, Option[V]], A] =
+    new DerivedEncoder[FieldType[K, Option[V]], A] {
+      override def encode(value: FieldType[K, Option[V]]): Segments[A] =
+        value.fold[Segments[A]](Segments.Empty)(value => encoder.encode(field[K](value)))
+    }
+
   implicit def hnil[A]: DerivedEncoder[HNil, A] = new DerivedEncoder[HNil, A] {
     override def encode(value: HNil): Segments[A] = Segments.Empty
   }

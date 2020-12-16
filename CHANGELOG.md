@@ -1,10 +1,11 @@
 # Changelog
 
-# 0.9.1
+# 0.10.0
 
-_2020-09-??_
+_2020-12-16_
 
- * Upgrade to cats 2.2.0
+ * Rewrite focussing on String-based translations and serializability
+ * Drop Scala 2.12 support 
 
 # 0.9.0
 
