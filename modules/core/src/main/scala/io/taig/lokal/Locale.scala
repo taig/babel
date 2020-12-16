@@ -16,6 +16,8 @@ final case class Locale(language: Language, country: Option[Country]) {
   def printJavaLocaleFormat: String = print('_')
 
   def toJavaLocale: JLocale = new JLocale(language.value, country.map(_.value).getOrElse(""))
+
+  override def toString: String = printLanguageTag
 }
 
 object Locale {

@@ -26,6 +26,16 @@ final case class Segments[+A](branches: Map[String, Either[A, Segments[A]]]) {
       case Left(value)     => Left(f(value))
     }.toMap)
 
+  def mapWithPath[B](f: (Path, A) => B): Segments[B] = {
+    def go(path: Path, segments: Segments[A]): Segments[B] =
+      Segments(segments.branches.map {
+        case (segment, Right(segments)) => segment -> Right(go(path / segment, segments))
+        case (segment, Left(value))     => segment -> Left(f(path / segment, value))
+      })
+
+    go(Path.Empty, this)
+  }
+
   def mapFilter[B](f: A => Option[B]): Segments[B] =
     Segments(branches.view.foldLeft(Map.empty[String, Either[B, Segments[B]]]) {
       case (result, (key, Right(segments))) =>
@@ -43,8 +53,8 @@ final case class Segments[+A](branches: Map[String, Either[A, Segments[A]]]) {
 
   // TODO tailrec and error message
   def merge[A1 >: A](segments: Segments[A1])(f: (A1, A1) => A1): Either[String, Segments[A1]] =
-    segments.branches
-      .foldLeft[Either[String, Map[String, Either[A1, Segments[A1]]]]](Right(branches)) {
+    branches
+      .foldLeft[Either[String, Map[String, Either[A1, Segments[A1]]]]](Right(segments.branches)) {
         case (Right(branches), pair @ (key, left)) =>
           branches.get(key) match {
             case Some(right) =>

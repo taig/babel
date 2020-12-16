@@ -22,8 +22,7 @@ object circe {
 
   implicit val encoderText: Encoder[Text] = Encoder.instance { text =>
     if (text.quantities.isEmpty) text.default.asJson
-    else
-      Json.obj("*" := text.default) deepMerge text.quantities.asJson
+    else Json.obj("*" := text.default) deepMerge text.quantities.asJson
   }
 
   implicit def decoderSegments[A: Decoder]: Decoder[Segments[A]] = Decoder.instance { cursor =>
@@ -53,26 +52,6 @@ object circe {
   implicit val decoderDictionary: Decoder[Dictionary] = Decoder[Segments[Text]].map(Dictionary.apply)
 
   implicit val encoderDictionary: Encoder[Dictionary] = Encoder[Segments[Text]].contramap(_.values)
-
-  implicit val keyEncoderEitherLocale: KeyEncoder[Either["*", Locale]] = KeyEncoder.instance {
-    case Right(locale) => locale.printLanguageTag
-    case Left(_)       => "*"
-  }
-
-  implicit val decoderTranslations: Decoder[Translation] = Decoder.instance { cursor =>
-    for {
-      values <- cursor.as[JsonObject].map(_.remove("*")).flatMap(Json.fromJsonObject(_).as[Map[Locale, Text]])
-      fallback <- cursor.get[Option[Text]]("*")
-    } yield Translation(values, fallback)
-  }
-
-  implicit val encoderTranslations: Encoder[Translation] = Encoder[Map[String, Text]].contramap { translation =>
-    translation.values.map(_.leftMap(_.printLanguageTag)) ++ translation.fallback.map("*" -> _).toMap
-  }
-
-  implicit val decoderI18n: Decoder[I18n] = Decoder[Segments[Translation]].map(I18n.apply)
-
-  implicit val encoderI18n: Encoder[I18n] = Encoder[Segments[Translation]].contramap(_.values)
 
   implicit def parserJson[A: Decoder]: Parser[A] = decode[A](_).leftMap(_.show)
 

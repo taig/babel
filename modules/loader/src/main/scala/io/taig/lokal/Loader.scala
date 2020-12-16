@@ -41,7 +41,7 @@ object Loader {
 
   /** Turn all `Some(Locale) -> Dictionaries` into `I18n`s with the `None -> Dictionaries` as fallbacks */
   private def toI18n(values: Map[Option[Locale], Dictionary]): Either[String, I18n] = {
-    val fallbacks = values.getOrElse(None, Dictionary.Empty).toI18nFallbacks
+    val fallbacks = values.getOrElse(None, Dictionary.Empty).toI18nUniversals
 
     values
       .collect { case (Some(locale), dictionary) => dictionary.toI18n(locale) }

@@ -15,7 +15,7 @@
 ## Roadmap
 
 - Reference substitution
-- Code generation
+- More codecs with support for nested and flattened structures
 
 ## Installation
 
