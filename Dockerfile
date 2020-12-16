@@ -34,4 +34,4 @@ RUN         cd ./cache/ && sbt -v ";set every sourceGenerators := List.empty;tes
 RUN         rm -r ./cache/
 
 ENTRYPOINT  /bin/bash
-WORKDIR     /root/lokal/
+WORKDIR     /root/babel/

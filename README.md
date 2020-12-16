@@ -1,21 +1,16 @@
 # Babel
 
-> String-based internationalisation (i18n) for Scala applications
+> String-based internationalization (i18n) for Scala applications
 
 ## Features
 
 - First class support for plurals
-- Great for Scala.js, since `java.util.Locale` is not used
+- Great fit for Scala.js clients, since `java.util.Locale` is not used
 - Translation definitions in either code or a supported serialisation format (e.g. JSON)
-- Lifting translations into data classes greatly improving type safety
-- Creating translation subset that are only suitable for a specific language, which can be useful for clients that request all translations for a single language 
-- Open to arbitrary String formatting solutions (e.g. `String.format` or `java.util.MessageFormat`)
+- Allows lifting translations into data classes: no more `String` key look-ups
+- Creating translation subsets that are only suitable for a specific language, which can be useful for clients that request all translations for a single language 
+- Open to arbitrary `String` formatting solutions (e.g. `String.format` or `java.util.MessageFormat`)
 - Dependency-free `core` module
-
-## Roadmap
-
-- Reference substitution
-- More codecs with support for nested and flattened structures
 
 ## Installation
 
@@ -70,9 +65,9 @@ Lorem ipsum
 Lorem ipsum
 - `Translation`  
 Lorem ipsum
-- `I18n`  
-Lorem ipsum
 - `Segments`, `Path`  
+Lorem ipsum
+- `Babel`  
 Lorem ipsum
 
 ### Type classes
