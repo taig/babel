@@ -1,15 +1,15 @@
 package io.taig.babel
 
 final case class Text(default: String, quantities: Map[Quantity, String]) {
-  def raw(quantity: Quantity): String = quantities.getOrElse(quantity, default)
+  def raw(quantity: Int): String = quantities.getOrElse(Quantity(quantity), default)
 
-  def apply(quantity: Quantity, arguments: Seq[Any])(implicit formatter: Formatter): String = {
+  def apply(quantity: Int, arguments: Seq[Any])(implicit formatter: Formatter): String = {
     if (arguments.isEmpty) raw(quantity) else formatter.format(raw(quantity), arguments)
   }
 
-  def apply(arguments: Seq[Any])(implicit formatter: Formatter): String = apply(Quantity.One, arguments)
+  def apply(arguments: Seq[Any])(implicit formatter: Formatter): String = apply(quantity = 1, arguments)
 
-  def apply(quantity: Quantity): String = raw(quantity)
+  def apply(quantity: Int): String = raw(quantity)
 
   def apply(): String = default
 }
