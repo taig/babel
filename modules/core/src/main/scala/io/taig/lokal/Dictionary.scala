@@ -2,7 +2,7 @@ package io.taig.lokal
 
 final case class Dictionary(values: Segments[Text]) extends AnyVal {
   @inline
-  def get(path: Path): Option[Text] = values.findLeaf(path)
+  def get(path: Path): Option[Text] = values.getLeaf(path)
 
   def apply(path: Path, quantity: Quantity, arguments: Seq[Any])(implicit formatter: Formatter): Option[String] =
     get(path).map(_.apply(quantity, arguments))
@@ -15,7 +15,7 @@ final case class Dictionary(values: Segments[Text]) extends AnyVal {
   def apply(path: Path): Option[String] = apply(path, Quantity.One)
 
   def toI18n(locale: Locale): I18n =
-    I18n(values.mapWithPath((path, text) => Translation.of(path.printPretty)(locale -> text)))
+    I18n(values.mapWithPath((path, text) => Translation.of(path.printPlaceholder)(locale -> text)))
 
   def toI18nUniversals: I18n = I18n(values.map(Translation.universal))
 }

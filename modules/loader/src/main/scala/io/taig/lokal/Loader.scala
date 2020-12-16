@@ -5,9 +5,10 @@ import cats.syntax.all._
 import fs2.Stream
 import fs2.io.file.readAll
 import fs2.text.utf8Decode
-
 import java.nio.file.{Files, Paths, Path => JPath}
+
 import scala.jdk.CollectionConverters._
+import scala.util.control.NoStackTrace
 
 object Loader {
 
@@ -78,12 +79,21 @@ object Loader {
         toI18n(dictionaries)
           .leftMap(new RuntimeException(_))
           .flatMap { i18n =>
-            locales
-              .collectFirst {
-                case locale if !i18n.supports(locale) =>
-                  new IllegalArgumentException(s"Incomplete support: ${locale.printLanguageTag}")
-              }
-              .toLeft(i18n)
+            val missingTranslations = locales
+              .map(locale => locale -> i18n.missingTranslations(locale))
+              .filter(_._2.nonEmpty)
+
+            if (missingTranslations.isEmpty) Right(i18n)
+            else {
+              val details = missingTranslations
+                .map {
+                  case (locale, paths) =>
+                    locale.printLanguageTag + ":\n" + paths.map(path => s" - ${path.printPretty}").mkString("\n")
+                }
+                .mkString("\n")
+
+              Left(new RuntimeException(s"Missing translations\n$details") with NoStackTrace)
+            }
           }
       }
       .rethrow

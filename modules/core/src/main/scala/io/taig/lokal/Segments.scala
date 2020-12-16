@@ -7,18 +7,21 @@ final case class Segments[+A](branches: Map[String, Either[A, Segments[A]]]) {
   def get(segment: String): Option[Either[A, Segments[A]]] = branches.get(segment)
 
   @tailrec
-  def find(path: Path): Option[Either[A, Segments[A]]] = path match {
+  def get(path: Path): Option[Either[A, Segments[A]]] = path match {
     case Path(Nil)         => None
     case Path(head :: Nil) => get(head)
     case Path(head :: tail) =>
       get(head) match {
-        case Some(Right(segments)) => segments.find(Path(tail))
+        case Some(Right(segments)) => segments.get(Path(tail))
         case Some(Left(_))         => None
         case None                  => None
       }
   }
 
-  def findLeaf(path: Path): Option[A] = find(path).collect { case Left(value) => value }
+  @inline
+  def isEmpty: Boolean = branches.isEmpty
+
+  def getLeaf(path: Path): Option[A] = get(path).collect { case Left(value) => value }
 
   def map[B](f: A => B): Segments[B] =
     Segments(branches.view.mapValues {

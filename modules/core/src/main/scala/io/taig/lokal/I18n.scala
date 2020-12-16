@@ -2,18 +2,18 @@ package io.taig.lokal
 
 final case class I18n(values: Segments[Translation]) extends AnyVal {
   @inline
-  def get(path: Path): Option[Translation] = values.findLeaf(path)
+  def get(path: Path): Option[Translation] = values.getLeaf(path)
 
   def apply(path: Path, locale: Locale, quantity: Quantity, arguments: Seq[Any])(
       implicit formatter: Formatter
   ): String =
-    get(path).map(_.apply(locale, quantity, arguments)).getOrElse(path.printPretty)
+    get(path).map(_.apply(locale, quantity, arguments)).getOrElse(path.printPlaceholder)
 
   def apply(path: Path, locale: Locale, arguments: Seq[Any])(implicit formatter: Formatter): String =
     apply(path, locale, Quantity.One, arguments)
 
   def apply(path: Path, locale: Locale, quantity: Quantity): String =
-    get(path).map(_.apply(locale, quantity)).getOrElse(path.printPretty)
+    get(path).map(_.apply(locale, quantity)).getOrElse(path.printPlaceholder)
 
   def apply(path: Path, locale: Locale): String = apply(path, locale, Quantity.One)
 
@@ -21,7 +21,11 @@ final case class I18n(values: Segments[Translation]) extends AnyVal {
 
   def merge(i18n: I18n): Either[String, I18n] = values.merge(i18n.values)(_ ++ _).map(I18n.apply)
 
-  def supports(locale: Locale): Boolean = values.forall(_.supports(locale))
+  def missingTranslations(locale: Locale): Set[Path] =
+    values
+      .mapFilter(translation => if (!translation.supports(locale)) Some(translation) else None)
+      .toMap
+      .keySet
 }
 
 object I18n {

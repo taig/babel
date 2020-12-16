@@ -5,7 +5,9 @@ final case class Path(values: List[String]) {
 
   def print: String = values.mkString("/")
 
-  def printPretty: String = values.mkString("[", " / ", "]")
+  def printPretty: String = values.mkString(" / ")
+
+  def printPlaceholder: String = values.mkString("[", " / ", "]")
 }
 
 object Path {
