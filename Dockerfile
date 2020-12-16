@@ -1,7 +1,6 @@
-FROM        adoptopenjdk/openjdk12:alpine
+FROM        adoptopenjdk/openjdk11:alpine
 
-RUN         apk add --no-cache bash build-base git nodejs ruby-full ruby-dev
-RUN         gem install --no-document jekyll
+RUN         apk add --no-cache bash git nodejs
 
 # Install sbt
 RUN         wget -O /usr/local/bin/sbt https://git.io/sbt && chmod 0755 /usr/local/bin/sbt
@@ -29,8 +28,7 @@ ADD         ./project ./cache/project/
 ADD         ./build.sbt ./cache/
 RUN         mkdir -p ./cache/core/src/test/scala/ ./cache/website/docs/
 RUN         echo "class Test" > ./cache/core/src/test/scala/Test.scala
-RUN         echo "Lorem ipsum" > ./cache/website/docs/index.md
-RUN         cd ./cache/ && sbt -v ";set every sourceGenerators := List.empty;+test;website/makeMicrosite"
+RUN         cd ./cache/ && sbt -v ";set every sourceGenerators := List.empty;test"
 
 # Clean cache
 RUN         rm -r ./cache/
