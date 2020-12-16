@@ -52,7 +52,11 @@ object Loader {
       }
   }
 
-  def auto[F[_]: Sync: ContextShift](blocker: Blocker, resource: String, loader: ClassLoader)(
+  def auto[F[_]: Sync: ContextShift](
+      blocker: Blocker,
+      resource: String = "i18n",
+      loader: ClassLoader = getClass.getClassLoader
+  )(
       implicit parser: Parser[Dictionary]
   ): F[I18n] = {
     val path = blocker.delay {

@@ -4,7 +4,7 @@ final case class Text(default: String, quantities: Map[Quantity, String]) {
   def raw(quantity: Quantity): String = quantities.getOrElse(quantity, default)
 
   def apply(quantity: Quantity, arguments: Seq[Any])(implicit formatter: Formatter): String = {
-    if(arguments.isEmpty) raw(quantity) else formatter.format(raw(quantity), arguments)
+    if (arguments.isEmpty) raw(quantity) else formatter.format(raw(quantity), arguments)
   }
 
   def apply(arguments: Seq[Any])(implicit formatter: Formatter): String = apply(Quantity.One, arguments)
