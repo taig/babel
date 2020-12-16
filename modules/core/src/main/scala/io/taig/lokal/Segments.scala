@@ -93,4 +93,6 @@ object Segments {
   val Empty: Segments[Nothing] = Segments(Map.empty)
 
   def one[A](segment: String, value: A): Segments[A] = Segments(Map(segment -> Left(value)))
+
+  def of[A](values: (String, A)*): Segments[A] = Segments(values.toMap.view.mapValues(Left.apply).toMap)
 }

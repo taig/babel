@@ -1,7 +1,9 @@
 package io.taig.lokal
 
 trait Decoder[F[_], A] {
-  def decode(values: Segments[A]): Either[Decoder.Error, F[A]]
+  def decode(path: Path, values: Segments[A]): Either[Decoder.Error, F[A]]
+
+  final def decode(values: Segments[A]): Either[Decoder.Error, F[A]] = decode(Path.Empty, values)
 }
 
 object Decoder {

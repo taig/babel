@@ -1,35 +1,55 @@
 package io.taig.lokal
 
-import io.taig.lokal.CodecTest.{MyNestedTranslations, MyTranslations}
+import io.taig.lokal.CodecTest.{MyDeeplyNestedTranslations, MyNestedTranslations, MyTranslations}
 import munit.FunSuite
 
 final class CodecTest extends FunSuite {
-  val segments = Segments(
+  val deeplyNestedSegments: Segments[Text] = Segments.one("bar", Text.one("z"))
+
+  val segments: Segments[Text] = Segments(
     Map(
       "foo" -> Left(Text.one("x")),
-      "nested" -> Right(Segments.one("foobar", Text.one("z")))
+      "nested" -> Right(Segments(Map("foobar" -> Left(Text.one("y")), "deeplyNested" -> Right(deeplyNestedSegments))))
     )
   )
 
-  val translations = MyTranslations(
+  val deeplyNestedTranslations: MyDeeplyNestedTranslations[Text] =
+    MyDeeplyNestedTranslations(bar = Text.one("z"), opt = None)
+
+  val translations: MyTranslations[Text] = MyTranslations(
     foo = Text.one("x"),
-    bar = None,
-    nested = MyNestedTranslations(foobar = Text.one("z"))
+    nested = MyNestedTranslations(foobar = Text.one("y"), deeplyNested = deeplyNestedTranslations)
   )
 
   test("decode") {
-    val obtained = DerivedDecoder[Text, MyTranslations[Text]].decode(segments)
-    assertEquals(obtained, expected = Right(translations))
+    val obtained = DerivedDecoder[Text, MyDeeplyNestedTranslations[Text]].decode(Path.Empty, deeplyNestedSegments)
+    assertEquals(obtained, expected = Right(deeplyNestedTranslations))
   }
 
   test("encode") {
-    val obtained = DerivedEncoder[MyTranslations[Text], Text].encode(translations)
-    assertEquals(obtained, expected = segments)
+    val obtained = DerivedEncoder[MyDeeplyNestedTranslations[Text], Text].encode(deeplyNestedTranslations)
+    assertEquals(obtained, expected = deeplyNestedSegments)
   }
 
   test("semiauto") {
-    generic.semiauto.deriveEncoder[MyTranslations, Text]
-    generic.semiauto.deriveDecoder[MyTranslations, Text]
+    generic.semiauto.deriveDecoder[MyDeeplyNestedTranslations, Text]
+    generic.semiauto.deriveEncoder[MyDeeplyNestedTranslations, Text]
+
+    assertNoDiff(
+      compileErrors("generic.semiauto.deriveDecoder[MyTranslations, Text]"),
+      """|error: could not find implicit value for parameter decoder: io.taig.lokal.DerivedDecoder[io.taig.lokal.Text,io.taig.lokal.CodecTest.MyTranslations[io.taig.lokal.Text]]
+         |generic.semiauto.deriveDecoder[MyTranslations, Text]
+         |                              ^
+         |""".stripMargin
+    )
+
+    assertNoDiff(
+      compileErrors("generic.semiauto.deriveEncoder[MyTranslations, Text]"),
+      """|error: could not find implicit value for parameter encoder: io.taig.lokal.DerivedEncoder[io.taig.lokal.CodecTest.MyTranslations[io.taig.lokal.Text],io.taig.lokal.Text]
+         |generic.semiauto.deriveEncoder[MyTranslations, Text]
+         |                              ^
+         |""".stripMargin
+    )
   }
 
   test("auto") {
@@ -41,7 +61,9 @@ final class CodecTest extends FunSuite {
 }
 
 object CodecTest {
-  final case class MyTranslations[A](foo: A, bar: Option[A], nested: MyNestedTranslations[A])
+  final case class MyTranslations[A](foo: A, nested: MyNestedTranslations[A])
 
-  final case class MyNestedTranslations[A](foobar: A)
+  final case class MyNestedTranslations[A](foobar: A, deeplyNested: MyDeeplyNestedTranslations[A])
+
+  final case class MyDeeplyNestedTranslations[A](bar: A, opt: Option[A])
 }
