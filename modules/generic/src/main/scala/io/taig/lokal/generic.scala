@@ -7,7 +7,7 @@ object generic {
     }
 
     def deriveDecoder[F[_], A](implicit decoder: DerivedDecoder[A, F[A]]): Decoder[F, A] = new Decoder[F, A] {
-      override def decode(values: Segments[A]): Either[Decoder.Error, F[A]] = decoder.decode(values)
+      override def decode(values: Segments[A]): Either[Decoder.Error, F[A]] = decoder.decode(Path.Empty, values)
     }
   }
 
