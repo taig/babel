@@ -53,7 +53,7 @@ object circe {
 
   implicit val encoderDictionary: Encoder[Dictionary] = Encoder[Segments[Text]].contramap(_.values)
 
-  implicit def parserJson[A: Decoder]: Parser[A] = decode[A](_).leftMap(_.show)
+  implicit def parserJson[A: Decoder]: Parser[A] = decode[A](_).leftMap(error => Parser.Error(error.show))
 
   def printerJson[A: Encoder](printer: CircePrinter): Printer[A] = a => printer.print(Encoder[A].apply(a))
 

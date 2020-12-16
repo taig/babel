@@ -44,7 +44,8 @@ object Locale {
         Locale(language, country)
       }
 
-  implicit val parser: Parser[Locale] = Parser[String].emap(Locale.parseJavaLocaleFormat(_).toRight("Locale"))
+  implicit val parser: Parser[Locale] =
+    Parser[String].emap(Locale.parseJavaLocaleFormat(_).toRight(Parser.Error("Locale")))
 
   implicit val printer: Printer[Locale] = Printer[String].contramap(_.printLanguageTag)
 }
