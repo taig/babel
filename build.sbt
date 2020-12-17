@@ -5,7 +5,7 @@ val Version = new {
   val Circe = "0.13.0"
   val Classgraph = "4.8.95"
   val Fs2 = "2.4.6"
-  val Munit = "0.7.19"
+  val Munit = "0.7.20"
   val MunitCatsEffect = "0.11.0"
   val Shapeless = "2.3.3"
 }
