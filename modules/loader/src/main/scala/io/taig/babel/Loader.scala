@@ -40,21 +40,21 @@ object Loader {
   private def parse[F[_], A](value: String)(implicit F: MonadThrow[F], parser: Parser[A]): F[A] =
     F.fromEither(parser.parse(value).leftMap(reason => new RuntimeException(s"Parsing failure: $reason")))
 
-  /** Turn all `Some(Locale) -> Dictionaries` into `I18n`s with the `None -> Dictionaries` as fallbacks */
-  private def toI18n(values: Map[Option[Locale], Dictionary]): Either[String, Babel] = {
-    val fallbacks = values.getOrElse(None, Dictionary.Empty).toI18nUniversals
+  /** Turn all `Some(Locale) -> Dictionaries` into `Babel`s with the `None -> Dictionaries` as universal fallbacks */
+  private def toBabel(values: Map[Option[Locale], Dictionary]): Either[String, Babel] = {
+    val fallbacks = values.getOrElse(None, Dictionary.Empty).toBabelUniversals
 
     values
-      .collect { case (Some(locale), dictionary) => dictionary.toI18n(locale) }
+      .collect { case (Some(locale), dictionary) => dictionary.toBabel(locale) }
       .foldLeft(fallbacks.asRight[String]) {
-        case (Right(result), i18n) => result.merge(i18n)
-        case (left @ Left(_), _)   => left
+        case (Right(result), babel) => result.merge(babel)
+        case (left @ Left(_), _)    => left
       }
   }
 
   def auto[F[_]: Sync: ContextShift](
       blocker: Blocker,
-      resource: String = "i18n",
+      resource: String = "babel",
       loader: ClassLoader = getClass.getClassLoader
   )(
       implicit parser: Parser[Dictionary]
@@ -80,14 +80,14 @@ object Loader {
       .map { dictionaries =>
         val locales = dictionaries.keySet.collect { case Some(locale) => locale }
 
-        toI18n(dictionaries)
+        toBabel(dictionaries)
           .leftMap(new RuntimeException(_))
-          .flatMap { i18n =>
+          .flatMap { babel =>
             val missingTranslations = locales
-              .map(locale => locale -> i18n.missingTranslations(locale))
+              .map(locale => locale -> babel.missingTranslations(locale))
               .filter(_._2.nonEmpty)
 
-            if (missingTranslations.isEmpty) Right(i18n)
+            if (missingTranslations.isEmpty) Right(babel)
             else {
               val details = missingTranslations
                 .map {

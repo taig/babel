@@ -14,10 +14,10 @@ final case class Dictionary(values: Segments[Text]) extends AnyVal {
 
   def apply(path: Path): Option[String] = apply(path, quantity = 1)
 
-  def toI18n(locale: Locale): Babel =
+  def toBabel(locale: Locale): Babel =
     Babel(values.mapWithPath((path, text) => Translation.of(path.printPlaceholder)(locale -> text)))
 
-  def toI18nUniversals: Babel = Babel(values.map(Translation.universal))
+  def toBabelUniversals: Babel = Babel(values.map(Translation.universal))
 }
 
 object Dictionary {
