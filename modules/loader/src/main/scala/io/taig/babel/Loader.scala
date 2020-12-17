@@ -1,14 +1,16 @@
 package io.taig.babel
 
-import cats.effect.{Blocker, ContextShift, MonadThrow, Sync}
+import java.nio.file.{FileSystems, Files, Path => JPath}
+import java.util.Collections
+
+import scala.jdk.CollectionConverters._
+import scala.util.control.NoStackTrace
+
+import cats.effect.{Blocker, ContextShift, MonadThrow, Resource, Sync}
 import cats.syntax.all._
 import fs2.Stream
 import fs2.io.file.readAll
 import fs2.text.utf8Decode
-import java.nio.file.{Files, Paths, Path => JPath}
-
-import scala.jdk.CollectionConverters._
-import scala.util.control.NoStackTrace
 
 object Loader {
 
@@ -52,21 +54,32 @@ object Loader {
       }
   }
 
-  def auto[F[_]: Sync: ContextShift](
+  def auto[F[_]: ContextShift](
       blocker: Blocker,
       resource: String = "babel",
       loader: ClassLoader = getClass.getClassLoader
   )(
-      implicit parser: Parser[Dictionary]
+      implicit
+      F: Sync[F],
+      parser: Parser[Dictionary]
   ): F[Babel] = {
-    val path = blocker.delay {
-      val url = loader.getResource(resource)
-      Option(url).map(url => Paths.get(url.toURI))
-    }
+    val path = Resource
+      .liftF(blocker.delay(loader.getResource(resource)))
+      .flatMap { url =>
+        Option(url).map(_.toURI).traverse { uri =>
+          if (uri.getScheme == "jar") {
+            Resource
+              .fromAutoCloseableBlocking(blocker)(
+                F.delay(FileSystems.newFileSystem(uri, Collections.emptyMap(), loader))
+              )
+              .map(_.getPath(resource))
+          } else Resource.liftF(blocker.delay(JPath.of(url.toURI)))
+        }
+      }
+      .evalMap(_.liftTo[F](new IllegalArgumentException(s"Resource not found: $resource")))
 
     Stream
-      .eval(path)
-      .evalMap(_.liftTo[F](new IllegalArgumentException(s"Resource not found: $resource")))
+      .resource(path)
       .flatMap(list(blocker, _, "json"))
       .compile
       .toList
