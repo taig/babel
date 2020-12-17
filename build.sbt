@@ -3,6 +3,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 val Version = new {
   val CatsEffect = "2.3.0"
   val Circe = "0.13.0"
+  val Classgraph = "4.8.95"
   val Fs2 = "2.4.6"
   val Munit = "0.7.19"
   val MunitCatsEffect = "0.11.0"
@@ -54,7 +55,8 @@ lazy val loader = project
   .settings(sonatypePublishSettings)
   .settings(
     libraryDependencies ++=
-      "co.fs2" %% "fs2-io" % Version.Fs2 ::
+      "io.github.classgraph" % "classgraph" % Version.Classgraph ::
+        "co.fs2" %% "fs2-io" % Version.Fs2 ::
         "org.typelevel" %% "cats-effect" % Version.CatsEffect ::
         Nil,
     name := "babel-loader"
