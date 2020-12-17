@@ -19,7 +19,7 @@ final case class Babel(values: Segments[Translation]) extends AnyVal {
 
   def only(locale: Locale): Dictionary = Dictionary(values.mapFilter(_.get(locale).toOption))
 
-  def merge(babael: Babel): Either[String, Babel] = values.merge(babael.values)(_ ++ _).map(Babel.apply)
+  def merge(babel: Babel): Either[String, Babel] = values.merge(babel.values)(_ ++ _).map(Babel.apply)
 
   def missingTranslations(locale: Locale): Set[Path] =
     values
