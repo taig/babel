@@ -9,7 +9,7 @@ import scala.jdk.CollectionConverters._
 import scala.util.control.NoStackTrace
 
 import cats.effect.syntax.all._
-import cats.effect.{Blocker, ConcurrentEffect, ContextShift, IO, MonadThrow, Resource}
+import cats.effect.{ApplicativeThrow, Blocker, ConcurrentEffect, ContextShift, IO, MonadThrow, Resource}
 import cats.syntax.all._
 import fs2.Stream
 import fs2.concurrent.Queue
@@ -84,41 +84,39 @@ object Loader {
       }
   }
 
+  def verifyAllMissingLocales[F[_]: ApplicativeThrow](babel: Babel): F[Unit] =
+    verifyMissingLocales(babel, babel.locales)
+
+  def verifyMissingLocales[F[_]](babel: Babel, locales: Set[Locale])(implicit F: ApplicativeThrow[F]): F[Unit] = {
+    val missingTranslations = locales
+      .map(locale => locale -> babel.missingTranslations(locale))
+      .filter { case (_, paths) => paths.nonEmpty }
+
+    if (missingTranslations.isEmpty) F.unit
+    else {
+      val details = missingTranslations.map {
+        case (locale, paths) =>
+          locale.printLanguageTag + ":\n" + paths.map(path => s" - ${path.printPretty}").mkString("\n")
+      }
+
+      val message = s"Missing translations\n${details.mkString("\n")}"
+
+      F.raiseError(new RuntimeException(message) with NoStackTrace)
+    }
+  }
+
   def auto[F[_]: ConcurrentEffect: ContextShift](
       blocker: Blocker,
       resource: String = "babel",
       extension: String = "json"
   )(
       implicit parser: Parser[Dictionary]
-  ): F[Babel] = {
+  ): F[Babel] =
     list(blocker, resource, extension)
       .evalMap { case (locale, content) => parse[F, Dictionary](content).tupleLeft(locale) }
       .compile
       .toList
       .map(_.toMap)
-      .map { dictionaries =>
-        val locales = dictionaries.keySet.collect { case Some(locale) => locale }
-
-        toBabel(dictionaries)
-          .leftMap(new RuntimeException(_))
-          .flatMap { babel =>
-            val missingTranslations = locales
-              .map(locale => locale -> babel.missingTranslations(locale))
-              .filter(_._2.nonEmpty)
-
-            if (missingTranslations.isEmpty) Right(babel)
-            else {
-              val details = missingTranslations
-                .map {
-                  case (locale, paths) =>
-                    locale.printLanguageTag + ":\n" + paths.map(path => s" - ${path.printPretty}").mkString("\n")
-                }
-                .mkString("\n")
-
-              Left(new RuntimeException(s"Missing translations\n$details") with NoStackTrace)
-            }
-          }
-      }
+      .map(toBabel(_).leftMap(new RuntimeException(_)))
       .rethrow
-  }
 }
