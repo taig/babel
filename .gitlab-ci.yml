@@ -41,13 +41,13 @@ formatting:
   stage: test
   image: $IMAGE:latest
   script:
-    - sbt scalafmtCheckAll
+    - $SBT scalafmtCheckAll
 
 unit tests:
   stage: test
   image: $IMAGE:latest
   script:
-    - sbt test
+    - $SBT test
 
 artifacts:
   stage: deploy
@@ -56,4 +56,4 @@ artifacts:
     - master
     - tags
   script:
-    - sbt publishAndRelease
+    - $SBT publishAndRelease
