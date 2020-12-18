@@ -5,8 +5,8 @@ stages:
   - deploy
 
 variables:
-  CONTAINER_REGISTRY: registry.gitlab.com
-  CONTAINER_IMAGE: $CONTAINER_REGISTRY/taig-github/babel
+  REGISTRY: registry.gitlab.com
+  IMAGE: $REGISTRY/taig-github/babel
   DOCKER_DRIVER: overlay2
   SBT: sbt -v -sbt-launch-dir ./cache/launchers -Dsbt.global.base=./cache/sbt -Dsbt.boot.directory=./cache/boot -Dsbt.ivy.home=./cache/ivy -Dsbt.coursier.home=./cache/coursier -Dmode=strict
 
@@ -23,10 +23,10 @@ docker:
   services:
     - docker:dind
   script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CONTAINER_REGISTRY
-    - docker pull $CONTAINER_IMAGE:latest || true
-    - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:latest .
-    - docker push $CONTAINER_IMAGE:latest
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $REGISTRY
+    - docker pull $IMAGE:latest || true
+    - docker build --cache-from $IMAGE:latest --tag $IMAGE:latest .
+    - docker push $IMAGE:latest
   cache: {}
 
 dependencies:
@@ -39,19 +39,19 @@ dependencies:
 
 formatting:
   stage: test
-  image: $CONTAINER_IMAGE:latest
+  image: $IMAGE:latest
   script:
     - sbt scalafmtCheckAll
 
 unit tests:
   stage: test
-  image: $CONTAINER_IMAGE:latest
+  image: $IMAGE:latest
   script:
     - sbt test
 
 artifacts:
   stage: deploy
-  image: $CONTAINER_IMAGE:latest
+  image: $IMAGE:latest
   only:
     - master
     - tags
