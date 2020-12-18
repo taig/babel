@@ -14,6 +14,8 @@ final case class Translation(values: Map[Locale, Text], fallback: Either[String,
 
   def apply(locale: Locale): String = apply(locale, quantity = 1)
 
+  def locales: Set[Locale] = values.keySet
+
   def ++(translation: Translation): Translation = Translation(
     values ++ translation.values,
     translation.fallback match {

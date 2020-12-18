@@ -73,6 +73,12 @@ final case class Segments[+A](branches: Map[String, Either[A, Segments[A]]]) {
       }
       .map(Segments[A1])
 
+  def values[B >: A]: Set[B] =
+    branches.values.flatMap {
+      case Left(value)     => Set(value)
+      case Right(segments) => segments.values
+    }.toSet
+
   // TODO tailrec
   def toMap: Map[Path, A] = {
     val builder = Map.newBuilder[Path, A]
