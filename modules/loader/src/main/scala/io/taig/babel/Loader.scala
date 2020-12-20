@@ -94,9 +94,8 @@ object Loader {
 
     if (missingTranslations.isEmpty) F.unit
     else {
-      val details = missingTranslations.map {
-        case (locale, paths) =>
-          locale.printLanguageTag + ":\n" + paths.map(path => s" - ${path.printPretty}").mkString("\n")
+      val details = missingTranslations.map { case (locale, paths) =>
+        locale.printLanguageTag + ":\n" + paths.map(path => s" - ${path.printPretty}").mkString("\n")
       }
 
       val message = s"Missing translations\n${details.mkString("\n")}"
@@ -109,8 +108,8 @@ object Loader {
       blocker: Blocker,
       resource: String = "babel",
       extension: String = "json"
-  )(
-      implicit parser: Parser[Dictionary]
+  )(implicit
+      parser: Parser[Dictionary]
   ): F[Babel] =
     list(blocker, resource, extension)
       .evalMap { case (locale, content) => parse[F, Dictionary](content).tupleLeft(locale) }

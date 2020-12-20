@@ -14,8 +14,7 @@ object DerivedDecoder {
     override def decode(path: Path, segments: Segments[A]): Either[Decoder.Error, HNil] = Right(HNil)
   }
 
-  implicit def hcons[K <: Symbol, A, T <: HList](
-      implicit
+  implicit def hcons[K <: Symbol, A, T <: HList](implicit
       key: Witness.Aux[K],
       tail: DerivedDecoder[A, T]
   ): DerivedDecoder[A, FieldType[K, A] :: T] = new DerivedDecoder[A, FieldType[K, A] :: T] {
@@ -35,8 +34,7 @@ object DerivedDecoder {
     }
   }
 
-  implicit def nested[F[_], K <: Symbol, A, T <: HList](
-      implicit
+  implicit def nested[F[_], K <: Symbol, A, T <: HList](implicit
       key: Witness.Aux[K],
       decoder: Decoder[F, A],
       tail: DerivedDecoder[A, T]
@@ -57,8 +55,8 @@ object DerivedDecoder {
     }
   }
 
-  implicit def optional[K <: Symbol, A, T <: HList](
-      implicit key: Witness.Aux[K],
+  implicit def optional[K <: Symbol, A, T <: HList](implicit
+      key: Witness.Aux[K],
       tail: DerivedDecoder[A, T]
   ): DerivedDecoder[A, FieldType[K, Option[A]] :: T] = new DerivedDecoder[A, FieldType[K, Option[A]] :: T] {
     override def decode(path: Path, segments: Segments[A]): Either[Decoder.Error, FieldType[K, Option[A]] :: T] = {
@@ -77,8 +75,8 @@ object DerivedDecoder {
     }
   }
 
-  implicit def decoderLabelledGeneric[A, B, C <: HList](
-      implicit generic: LabelledGeneric.Aux[B, C],
+  implicit def decoderLabelledGeneric[A, B, C <: HList](implicit
+      generic: LabelledGeneric.Aux[B, C],
       decoder: DerivedDecoder[A, C]
   ): DerivedDecoder[A, B] = new DerivedDecoder[A, B] {
     override def decode(path: Path, segments: Segments[A]): Either[Decoder.Error, B] =

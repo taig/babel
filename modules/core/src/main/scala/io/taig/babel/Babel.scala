@@ -4,8 +4,8 @@ final case class Babel(values: Segments[Translation]) extends AnyVal {
   @inline
   def get(path: Path): Option[Translation] = values.getLeaf(path)
 
-  def apply(path: Path, locale: Locale, quantity: Int, arguments: Seq[Any])(
-      implicit formatter: Formatter
+  def apply(path: Path, locale: Locale, quantity: Int, arguments: Seq[Any])(implicit
+      formatter: Formatter
   ): String =
     get(path).map(_.apply(locale, quantity, arguments)).getOrElse(path.printPlaceholder)
 

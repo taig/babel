@@ -14,8 +14,7 @@ object DerivedEncoder {
     override def encode(value: HNil): Segments[A] = Segments.Empty
   }
 
-  implicit def hcons[K <: Symbol, A, T <: HList](
-      implicit
+  implicit def hcons[K <: Symbol, A, T <: HList](implicit
       key: Witness.Aux[K],
       tail: DerivedEncoder[T, A]
   ): DerivedEncoder[FieldType[K, A] :: T, A] = new DerivedEncoder[FieldType[K, A] :: T, A] {
@@ -23,8 +22,7 @@ object DerivedEncoder {
       Segments.one(key.value.name, value.head) ++ tail.encode(value.tail)
   }
 
-  implicit def nested[F[_], K <: Symbol, A, T <: HList](
-      implicit
+  implicit def nested[F[_], K <: Symbol, A, T <: HList](implicit
       head: Encoder[F, A],
       tail: DerivedEncoder[T, A]
   ): DerivedEncoder[FieldType[K, F[A]] :: T, A] = new DerivedEncoder[FieldType[K, F[A]] :: T, A] {
@@ -32,8 +30,7 @@ object DerivedEncoder {
       field[K](head.encode(value.head)) ++ tail.encode(value.tail)
   }
 
-  implicit def optional[K <: Symbol, A, T <: HList](
-      implicit
+  implicit def optional[K <: Symbol, A, T <: HList](implicit
       key: Witness.Aux[K],
       tail: DerivedEncoder[T, A]
   ): DerivedEncoder[FieldType[K, Option[A]] :: T, A] =
@@ -44,8 +41,7 @@ object DerivedEncoder {
         )
     }
 
-  implicit def decoderLabelledGeneric[A, B <: HList, C](
-      implicit
+  implicit def decoderLabelledGeneric[A, B <: HList, C](implicit
       generic: LabelledGeneric.Aux[A, B],
       encoder: DerivedEncoder[B, C]
   ): DerivedEncoder[A, C] =

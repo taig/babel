@@ -9,10 +9,9 @@ final class LocaleJvmTest extends FunSuite {
     JLocale.getAvailableLocales.toList
       .map(locale => Locale.fromJavaLocale(locale).map((locale, _)))
       .collect { case Some(value) => value }
-      .foreach {
-        case (jLocale, locale) =>
-          assertEquals(obtained = jLocale.getLanguage, expected = locale.toJavaLocale.getLanguage)
-          assertEquals(obtained = jLocale.getCountry, expected = locale.toJavaLocale.getCountry)
+      .foreach { case (jLocale, locale) =>
+        assertEquals(obtained = jLocale.getLanguage, expected = locale.toJavaLocale.getLanguage)
+        assertEquals(obtained = jLocale.getCountry, expected = locale.toJavaLocale.getCountry)
       }
   }
 }
