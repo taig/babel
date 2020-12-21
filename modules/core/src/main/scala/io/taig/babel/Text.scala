@@ -12,6 +12,12 @@ final case class Text(default: String, quantities: Map[Quantity, String]) {
   def apply(quantity: Int): String = raw(quantity)
 
   def apply(): String = default
+
+  override def toString: String = if (quantities.isEmpty) s""""$default""""
+  else {
+    val details = quantities.map { case (quantity, value) => s"""${quantity.value}: "$value"""" }.mkString(", ")
+    s"""{$details, *: "$default"}"""
+  }
 }
 
 object Text {

@@ -87,12 +87,52 @@ String formatting instances but no default is provided. Depend on either `babel-
 
 For each language a separate file must be created in the `resources/babel` folder and the name of the `Locale` as filename.
 
-`resources/en.json`
+`resources/babel/en.json`
 
 ```json
 {
   "greeting": "Good afternoon"
 }
+```
+
+`resources/babel/de.json`
+
+```json
+{
+  "greeting": "Guten Tag"
+}
+```
+
+`resources/babel/de-AT.json`
+
+```json
+{
+  "greeting": "Grüß Gott"
+}
+```
+
+In addition to that, it is possible to provide language agnostic fallbacks in the  `*.json` file.
+
+`resources/babel/*.json`
+
+```json
+{
+  "greeting": "Hi"
+}
+```
+
+### Loading translations into a `Babel`
+
+```scala
+import cats.effect.Blocker
+import io.taig.babel.{Babel, Loader}
+import io.taig.babel.circe._
+
+def loadTranslations[F[_]](blocker: Blocker): F[Babel] = Loader.auto(blocker)
+```
+
+```
+> Babel(greeting ➞ {de-AT: "Grüß Gott", de: "Guten Tag", en: "Good afternoon", *: "Hi"})
 ```
 
 ## Cookbook

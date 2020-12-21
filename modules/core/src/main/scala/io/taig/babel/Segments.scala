@@ -93,6 +93,13 @@ final case class Segments[+A](branches: Map[String, Either[A, Segments[A]]]) {
 
     builder.result()
   }
+
+  override def toString: String = branches
+    .map {
+      case (key, Left(value))     => s"$key ➞ $value"
+      case (key, Right(segments)) => s"$key ➞ $segments"
+    }
+    .mkString(", ")
 }
 
 object Segments {

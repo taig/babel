@@ -31,6 +31,11 @@ final case class Translation(values: Map[Locale, Text], fallback: Either[String,
   def add(locale: Locale, text: Text): Translation = Translation(values + (locale -> text), fallback)
 
   def supports(locale: Locale): Boolean = get(locale).isRight
+
+  override def toString: String = {
+    s"""{${values.map { case (locale, text) => s"$locale: $text" }.mkString(", ")}, """ +
+      s"""*: ${fallback.map(_.toString).merge}}"""
+  }
 }
 
 object Translation {
