@@ -6,7 +6,7 @@ val Version = new {
   val Classgraph = "4.8.97"
   val Fs2 = "2.4.6"
   val Munit = "0.7.20"
-  val MunitCatsEffect = "0.11.0"
+  val MunitCatsEffect = "0.12.0"
   val Shapeless = "2.3.3"
 }
 
