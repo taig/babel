@@ -3,7 +3,7 @@ package io.taig.babel
 trait Decoder[F[_], A] {
   def decode(path: Path, values: Segments[A]): Either[Decoder.Error, F[A]]
 
-  final def decode(values: Segments[A]): Either[Decoder.Error, F[A]] = decode(Path.Empty, values)
+  final def decode(values: Segments[A]): Either[Decoder.Error, F[A]] = decode(Path.Root, values)
 }
 
 object Decoder {

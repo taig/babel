@@ -36,7 +36,7 @@ final case class Segments[+A](branches: Map[String, Either[A, Segments[A]]]) {
         case (segment, Left(value))     => segment -> Left(f(path / segment, value))
       })
 
-    go(Path.Empty, this)
+    go(Path.Root, this)
   }
 
   def mapFilter[B](f: A => Option[B]): Segments[B] =
@@ -89,7 +89,7 @@ final case class Segments[+A](branches: Map[String, Either[A, Segments[A]]]) {
         case (segment, Right(segments)) => go(path / segment, segments.branches)
       }
 
-    go(Path.Empty, branches)
+    go(Path.Root, branches)
 
     builder.result()
   }

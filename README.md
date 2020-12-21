@@ -124,15 +124,46 @@ In addition to that, it is possible to provide language agnostic fallbacks in th
 ### Loading translations into a `Babel`
 
 ```scala
-import cats.effect.Blocker
 import io.taig.babel.{Babel, Loader}
 import io.taig.babel.circe._
 
-def loadTranslations[F[_]](blocker: Blocker): F[Babel] = Loader.auto(blocker)
+val babel = Loader.auto[IO](blocker).unsafeRunSync()
 ```
 
 ```
 > Babel(greeting ➞ {de-AT: "Grüß Gott", de: "Guten Tag", en: "Good afternoon", *: "Hi"})
+```
+
+```scala
+babel(Path.Root / "greeting", Locales.de)
+```
+
+```
+> Guten Tag
+```
+
+```scala
+babel(Path.Root / "greeting", Locales.de_AT)
+```
+
+```
+> Grüß Gott
+```
+
+```scala
+babel(Path.Root / "greeting", Locales.de_CH)
+```
+
+```
+> Guten Tag
+```
+
+```scala
+babel(Path.Root / "greeting", Locales.fr)
+```
+
+```
+> Hi
 ```
 
 ## Cookbook

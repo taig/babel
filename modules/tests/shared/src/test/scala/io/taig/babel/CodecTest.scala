@@ -22,7 +22,7 @@ final class CodecTest extends FunSuite {
   )
 
   test("decode") {
-    val obtained = DerivedDecoder[Text, MyDeeplyNestedTranslations[Text]].decode(Path.Empty, deeplyNestedSegments)
+    val obtained = DerivedDecoder[Text, MyDeeplyNestedTranslations[Text]].decode(Path.Root, deeplyNestedSegments)
     assertEquals(obtained, expected = Right(deeplyNestedTranslations))
   }
 

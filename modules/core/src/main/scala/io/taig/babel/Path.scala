@@ -11,12 +11,12 @@ final case class Path(values: List[String]) {
 }
 
 object Path {
-  val Empty: Path = Path(List.empty)
+  val Root: Path = Path(List.empty)
 
   def one(head: String): Path = Path(List(head))
 
   def parse(value: String): Path = value.split('/') match {
-    case Array("")   => Empty
+    case Array("")   => Root
     case Array(head) => one(head)
     case segments    => apply(segments.toList)
   }
