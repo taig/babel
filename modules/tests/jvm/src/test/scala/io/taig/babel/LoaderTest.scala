@@ -2,12 +2,15 @@ package io.taig.babel
 
 import cats.effect.{Blocker, IO}
 import cats.syntax.all._
-import io.taig.babel.circe._
 import munit.CatsEffectSuite
 
-final class LoaderTest extends CatsEffectSuite {
+abstract class LoaderTest extends CatsEffectSuite {
+  implicit def parser: Parser[Dictionary]
+
+  def extension: String
+
   test("auto") {
-    val obtained = Blocker[IO].use(blocker => Loader.auto[IO](blocker))
+    val obtained = Blocker[IO].use(blocker => Loader.auto[IO](blocker, extension = extension))
     val expected = Babel(
       Segments(
         Map(
@@ -32,7 +35,9 @@ final class LoaderTest extends CatsEffectSuite {
 
   test("missing locales") {
     val obtained = Blocker[IO]
-      .use { blocker => Loader.auto[IO](blocker).flatTap(Loader.verifyMissingLocales[IO](_, Set(Locales.fr))) }
+      .use { blocker =>
+        Loader.auto[IO](blocker, extension = extension).flatTap(Loader.verifyMissingLocales[IO](_, Set(Locales.fr)))
+      }
       .attempt
       .map(_.leftMap(_.getMessage))
 
