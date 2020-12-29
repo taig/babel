@@ -107,7 +107,7 @@ object Loader {
   def auto[F[_]: ConcurrentEffect: ContextShift](
       blocker: Blocker,
       resource: String = "babel",
-      extension: String = "json"
+      extension: String = "conf"
   )(implicit
       parser: Parser[Dictionary]
   ): F[Babel] =
