@@ -6,7 +6,7 @@ import io.circe.parser._
 import io.circe.{Decoder, DecodingFailure, Encoder, Json, JsonObject, KeyDecoder, KeyEncoder}
 import io.circe.{Printer => CircePrinter}
 
-object circe {
+trait circe {
   implicit def keyDecoderParser[A: Parser]: KeyDecoder[A] = KeyDecoder.instance(Parser[A].parse(_).toOption)
 
   implicit def keyEncoderPrinter[A: Printer]: KeyEncoder[A] = KeyEncoder.instance(Printer[A].print)
@@ -53,9 +53,11 @@ object circe {
 
   implicit val encoderDictionary: Encoder[Dictionary] = Encoder[Segments[Text]].contramap(_.values)
 
-  implicit def parserJson[A: Decoder]: Parser[A] = decode[A](_).leftMap(error => Parser.Error(error.show))
+  implicit def parserJson[A: Decoder]: Parser[A] = decode[A](_).leftMap(error => Parser.Error(error.show, cause = None))
 
   def printerJson[A: Encoder](printer: CircePrinter): Printer[A] = a => printer.print(Encoder[A].apply(a))
 
   implicit def printerJsonNoSpaces[A: Encoder]: Printer[A] = printerJson[A](CircePrinter.noSpaces)
 }
+
+object circe extends circe

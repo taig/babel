@@ -7,8 +7,8 @@ val Version = new {
   val Fs2 = "2.5.0"
   val Munit = "0.7.20"
   val MunitCatsEffect = "0.12.0"
+  val Sconfig = "1.3.6"
   val Shapeless = "2.3.3"
-  val TypesafeConfig = "1.4.1"
 }
 
 noPublishSettings
@@ -88,15 +88,17 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
   )
   .dependsOn(core)
 
-lazy val hocon = project
+lazy val hocon = crossProject(JSPlatform, JVMPlatform)
+  .crossType(CrossType.Pure)
   .in(file("modules/hocon"))
   .settings(sonatypePublishSettings)
   .settings(
     libraryDependencies ++=
-      "com.typesafe" % "config" % Version.TypesafeConfig ::
+      "org.ekrich" %%% "sconfig" % Version.Sconfig ::
         Nil,
     name := "babel-hocon"
   )
+  .dependsOn(circe)
 
 lazy val tests = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Full)
@@ -110,7 +112,7 @@ lazy val tests = crossProject(JSPlatform, JVMPlatform)
         Nil,
     testFrameworks += new TestFramework("munit.Framework")
   )
-  .dependsOn(core, circe, generic, formatterPrintf)
+  .dependsOn(core, circe, hocon, generic, formatterPrintf)
   .jvmConfigure(_.dependsOn(loader, formatterMessageFormat))
   .jsSettings(
     scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))

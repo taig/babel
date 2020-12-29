@@ -2,7 +2,8 @@ package io.taig.babel
 
 import cats.effect.{Blocker, IO}
 import cats.syntax.all._
-import io.taig.babel.circe._
+//import io.taig.babel.circe._
+import io.taig.babel.hocon._
 import munit.CatsEffectSuite
 
 final class LoaderTest extends CatsEffectSuite {

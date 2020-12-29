@@ -12,9 +12,10 @@ trait Parser[A] {
 }
 
 object Parser {
-  final case class Error(tpe: String) extends Exception(s"Failed to parse: $tpe")
+  final case class Error(tpe: String, cause: Option[Throwable])
+      extends Exception(s"Failed to parse: $tpe", cause.orNull)
 
   implicit val string: Parser[String] = Right.apply[Parser.Error, String]
 
-  implicit val int: Parser[Int] = _.toIntOption.toRight(Error("Int"))
+  implicit val int: Parser[Int] = _.toIntOption.toRight(Error("Int", None))
 }
