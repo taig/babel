@@ -8,6 +8,7 @@ val Version = new {
   val Munit = "0.7.20"
   val MunitCatsEffect = "0.12.0"
   val Shapeless = "2.3.3"
+  val TypesafeConfig = "1.4.1"
 }
 
 noPublishSettings
@@ -86,6 +87,16 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
     name := "babel-circe"
   )
   .dependsOn(core)
+
+lazy val hocon = project
+  .in(file("modules/hocon"))
+  .settings(sonatypePublishSettings)
+  .settings(
+    libraryDependencies ++=
+      "com.typesafe" % "config" % Version.TypesafeConfig ::
+        Nil,
+    name := "babel-hocon"
+  )
 
 lazy val tests = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Full)
