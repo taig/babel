@@ -131,7 +131,8 @@ val babel = Loader.auto[IO](blocker).unsafeRunSync()
 babel(Path.Root / "greeting", Locales.de)
 ```
 
-```
+```shell
+# Exact match "de"
 > Guten Tag
 ```
 
@@ -139,7 +140,8 @@ babel(Path.Root / "greeting", Locales.de)
 babel(Path.Root / "greeting", Locales.de_AT)
 ```
 
-```
+```shell
+# Exact match "de-AT"
 > Grüß Gott
 ```
 
@@ -147,7 +149,8 @@ babel(Path.Root / "greeting", Locales.de_AT)
 babel(Path.Root / "greeting", Locales.de_CH)
 ```
 
-```
+```shell
+# Language match "de"
 > Guten Tag
 ```
 
@@ -155,7 +158,8 @@ babel(Path.Root / "greeting", Locales.de_CH)
 babel(Path.Root / "greeting", Locales.fr)
 ```
 
-```
+```shell
+# Fallback
 > Hi
 ```
 
