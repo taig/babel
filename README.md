@@ -19,9 +19,10 @@ Dependency-free core module, that contains all data class definitions, type clas
 ```scala
 "io.taig" %%% "babel-core" % "x.y.z" 
 ```
-JSON serialization and deserialization
+Serialization formats
 
 ```scala
+"io.taig" %%% "babel-hocon" % "x.y.z"
 "io.taig" %%% "babel-circe" % "x.y.z"
 ```
 
@@ -50,7 +51,7 @@ Default setup which is assumed in the documentation below
 
 ```scala
 "io.taig" %% "babel-loader" % "x.y.z"
-"io.taig" %%% "babel-circe" % "x.y.z"
+"io.taig" %%% "babel-hocon" % "x.y.z"
 "io.taig" %%% "babel-generic" % "x.y.z"
 "io.taig" %%% "babel-formatter-printf" % "x.y.z"
 ```
@@ -87,45 +88,37 @@ String formatting instances but no default is provided. Depend on either `babel-
 
 For each language a separate file must be created in the `resources/babel` folder and the name of the `Locale` as filename.
 
-`resources/babel/en.json`
+`resources/babel/en.conf`
 
-```json
-{
-  "greeting": "Good afternoon"
-}
+```hocon
+greeting = "Good afternoon"
 ```
 
-`resources/babel/de.json`
+`resources/babel/de.conf`
 
-```json
-{
-  "greeting": "Guten Tag"
-}
+```hocon
+greeting = "Guten Tag"
 ```
 
-`resources/babel/de-AT.json`
+`resources/babel/de-AT.conf`
 
-```json
-{
-  "greeting": "Grüß Gott"
-}
+```hocon
+greeting = "Grüß Gott"
 ```
 
-In addition to that, it is possible to provide language agnostic fallbacks in the  `*.json` file.
+In addition to that, it is possible to provide language agnostic fallbacks in the  `*.conf` file.
 
-`resources/babel/*.json`
+`resources/babel/*.conf`
 
-```json
-{
-  "greeting": "Hi"
-}
+```hocon
+greeting = "Hi"
 ```
 
 ### Loading translations into a `Babel`
 
 ```scala
 import io.taig.babel.{Babel, Loader}
-import io.taig.babel.circe._
+import io.taig.babel.hocon._
 
 val babel = Loader.auto[IO](blocker).unsafeRunSync()
 ```
