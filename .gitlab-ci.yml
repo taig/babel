@@ -37,23 +37,23 @@ dependencies:
     <<: *cache
     policy: pull-push
 
-formatting:
-  stage: test
-  image: $IMAGE:latest
-  script:
-    - $SBT scalafmtCheckAll
-
-unit tests:
-  stage: test
-  image: $IMAGE:latest
-  script:
-    - $SBT test
+#formatting:
+#  stage: test
+#  image: $IMAGE:latest
+#  script:
+#    - $SBT scalafmtCheckAll
+#
+#unit tests:
+#  stage: test
+#  image: $IMAGE:latest
+#  script:
+#    - $SBT test
 
 artifacts:
   stage: deploy
   image: $IMAGE:latest
-  only:
-    - master
-    - tags
   script:
     - $SBT ci-release
+#  only:
+#    - master
+#    - tags
