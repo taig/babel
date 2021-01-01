@@ -56,4 +56,4 @@ artifacts:
     - master
     - tags
   script:
-    - $SBT publishAndRelease
+    - $SBT ci-release
