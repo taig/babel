@@ -17,25 +17,25 @@
 Dependency-free core module, that contains all data class definitions, type classes and pre-defined locales
 
 ```scala
-"io.taig" %%% "babel-core" % "x.y.z" 
+"net.slozzer" %%% "babel-core" % "x.y.z" 
 ```
 Serialization formats
 
 ```scala
-"io.taig" %%% "babel-hocon" % "x.y.z"
-"io.taig" %%% "babel-circe" % "x.y.z"
+"net.slozzer" %%% "babel-hocon" % "x.y.z"
+"net.slozzer" %%% "babel-circe" % "x.y.z"
 ```
 
 Reading serialized language definitions from resources (JVM only)
 
 ```scala
-"io.taig" %% "babel-loader" % "x.y.z"
+"net.slozzer" %% "babel-loader" % "x.y.z"
 ```
 
 Codecs to populate custom translation data classes
 
 ```scala
-"io.taig" %%% "babel-generic" % "x.y.z"
+"net.slozzer" %%% "babel-generic" % "x.y.z"
 ```
 
 String formatting choices, pick one or role your own
@@ -43,17 +43,17 @@ String formatting choices, pick one or role your own
 > Please note that `java.util.MessageFormat` is not available for Scala.js, so the `printf` module is recommended
 
 ```scala
-"io.taig" %%% "babel-formatter-printf" % "x.y.z"
-"io.taig" %% "babel-formatter-message-format" % "x.y.z"
+"net.slozzer" %%% "babel-formatter-printf" % "x.y.z"
+"net.slozzer" %% "babel-formatter-message-format" % "x.y.z"
 ```
 
 Default setup which is assumed in the documentation below
 
 ```scala
-"io.taig" %% "babel-loader" % "x.y.z"
-"io.taig" %%% "babel-hocon" % "x.y.z"
-"io.taig" %%% "babel-generic" % "x.y.z"
-"io.taig" %%% "babel-formatter-printf" % "x.y.z"
+"net.slozzer" %% "babel-loader" % "x.y.z"
+"net.slozzer" %%% "babel-hocon" % "x.y.z"
+"net.slozzer" %%% "babel-generic" % "x.y.z"
+"net.slozzer" %%% "babel-formatter-printf" % "x.y.z"
 ```
 
 ## Overview
@@ -61,7 +61,7 @@ Default setup which is assumed in the documentation below
 ### Data classes
 
 - `Locale`, `Language`, `Country`  
-Basic data classes in the fashion of `java.util.Locale`. It is possible to convert between `java.util.Locale` and `io.taig.babel.Locale`.
+Basic data classes in the fashion of `java.util.Locale`. It is possible to convert between `java.util.Locale` and `net.slozzer.babel.Locale`.
 - `Text`, `Quantity`  
 `Text` holds the actual `String` value of a translation as well as a `Map` of `Quantity` to describe plural forms
 - `Segments`, `Path`  
@@ -117,8 +117,8 @@ greeting = "Hi"
 ### Loading translations into a `Babel`
 
 ```scala
-import io.taig.babel.{Babel, Loader}
-import io.taig.babel.hocon._
+import net.slozzer.babel.{Babel, Loader}
+import net.slozzer.babel.hocon._
 
 val babel = Loader.auto[IO](blocker).unsafeRunSync()
 ```
@@ -175,7 +175,7 @@ import java.util.{Locale => JavaLocale}
 import scala.jdk.CollectionConverters._
 
 import cats.Defer
-import io.taig.babel.Locale
+import net.slozzer.babel.Locale
 import org.http4s.HttpRoutes
 import org.http4s.headers.`Accept-Language`
 
