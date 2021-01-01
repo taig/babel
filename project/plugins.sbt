@@ -1,4 +1,4 @@
-addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.5.3")
+addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.5.5")
 
 addSbtPlugin("io.taig" % "sbt-houserules" % "0.3.2")
 
