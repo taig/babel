@@ -17,9 +17,6 @@ ThisBuild / organization := "net.slozzer"
 
 ThisBuild / dynverVTagPrefix := false
 
-//Global / git.useGitDescribe := true
-//Global / git.formattedShaVersion := git.formattedShaVersion.value.map(_.take(8))
-
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/core"))
