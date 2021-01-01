@@ -1,5 +1,7 @@
-FROM        adoptopenjdk/openjdk11:alpine
+FROM        adoptopenjdk/openjdk11:ubuntu
 
+RUN         apt update
+RUN         apt install -y git nodejs
 RUN         apk add --no-cache bash git gnupg nodejs
 
 # Install sbt
