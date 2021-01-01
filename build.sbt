@@ -15,10 +15,14 @@ noPublishSettings
 
 ThisBuild / organization := "net.slozzer"
 
+ThisBuild / dynverVTagPrefix := false
+
+//Global / git.useGitDescribe := true
+//Global / git.formattedShaVersion := git.formattedShaVersion.value.map(_.take(8))
+
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/core"))
-  .settings(sonatypePublishSettings)
   .settings(
     name := "babel-core",
     sourceGenerators in Compile += Def.task {
@@ -36,7 +40,6 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
 lazy val formatterPrintf = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/formatter-printf"))
-  .settings(sonatypePublishSettings)
   .settings(
     name := "babel-formatter-printf"
   )
@@ -47,7 +50,6 @@ lazy val formatterPrintf = crossProject(JSPlatform, JVMPlatform)
 
 lazy val formatterMessageFormat = project
   .in(file("modules/formatter-message-format"))
-  .settings(sonatypePublishSettings)
   .settings(
     name := "babel-formatter-message-format"
   )
@@ -55,7 +57,6 @@ lazy val formatterMessageFormat = project
 
 lazy val loader = project
   .in(file("modules/loader"))
-  .settings(sonatypePublishSettings)
   .settings(
     libraryDependencies ++=
       "io.github.classgraph" % "classgraph" % Version.Classgraph ::
@@ -69,7 +70,6 @@ lazy val loader = project
 lazy val generic = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/generic"))
-  .settings(sonatypePublishSettings)
   .settings(
     libraryDependencies ++=
       "com.chuusai" %%% "shapeless" % Version.Shapeless ::
@@ -81,7 +81,6 @@ lazy val generic = crossProject(JSPlatform, JVMPlatform)
 lazy val circe = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/circe"))
-  .settings(sonatypePublishSettings)
   .settings(
     libraryDependencies ++=
       "io.circe" %%% "circe-parser" % Version.Circe ::
@@ -93,7 +92,6 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
 lazy val hocon = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/hocon"))
-  .settings(sonatypePublishSettings)
   .settings(
     libraryDependencies ++=
       "org.ekrich" %%% "sconfig" % Version.Sconfig ::
