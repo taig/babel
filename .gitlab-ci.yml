@@ -6,7 +6,7 @@ stages:
 
 variables:
   REGISTRY: registry.gitlab.com
-  IMAGE: $REGISTRY/taig-github/babel
+  IMAGE: $REGISTRY/slozzer/babel
   DOCKER_DRIVER: overlay2
   SBT: sbt -v -sbt-launch-dir ./cache/launchers -Dsbt.global.base=./cache/sbt -Dsbt.boot.directory=./cache/boot -Dsbt.ivy.home=./cache/ivy -Dsbt.coursier.home=./cache/coursier -Dmode=strict
 
