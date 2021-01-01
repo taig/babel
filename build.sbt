@@ -13,6 +13,8 @@ val Version = new {
 
 noPublishSettings
 
+ThisBuild / organization := "net.slozzer"
+
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/core"))

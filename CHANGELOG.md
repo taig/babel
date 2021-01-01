@@ -1,7 +1,7 @@
 # Changelog
 
-# 0.0.1
+# 0.0.1-SNAPSHOT
 
-_2020-12-30_
+_2021-01-01_
 
  - Initial release
