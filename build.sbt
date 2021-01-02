@@ -13,9 +13,19 @@ val Version = new {
 
 noPublishSettings
 
-ThisBuild / organization := "net.slozzer"
-
 ThisBuild / dynverVTagPrefix := false
+ThisBuild / homepage := Some(url("https://github.com/slozzer/babel/"))
+ThisBuild / licenses := List("MIT" -> url("https://raw.githubusercontent.com/slozzer/babel/master/LICENSE"))
+ThisBuild / organization := "net.slozzer"
+ThisBuild / organizationHomepage := Some(url("https://slozzer.net/"))
+ThisBuild / developers := List(
+  Developer(
+    "taig",
+    "Niklas Klein",
+    "mail@taig.io",
+    url("https://taig.io/")
+  )
+)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
