@@ -1,7 +1,7 @@
 FROM        adoptopenjdk/openjdk11:ubuntu
 
 RUN         apt update
-RUN         apt install -y git gnugp2 nodejs
+RUN         apt install -y git gnupg2 nodejs
 
 # Install sbt
 RUN         curl -Ls https://git.io/sbt > /usr/local/bin/sbt && chmod 0755 /usr/local/bin/sbt
