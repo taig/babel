@@ -205,7 +205,7 @@ final class LocalesMiddleware[F[_]: Defer](locales: Set[Locale], fallback: Local
 }
 ```
 
-## Adopters
+<hr />
 
 <a href="https://slozzer.net/"><img src="https://i.imgur.com/zJlOKhO.png" width="400" alt="slozzer Logo" /></a>
 
