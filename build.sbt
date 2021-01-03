@@ -133,9 +133,9 @@ lazy val sampleBackend = project
   .settings(
     libraryDependencies ++=
       "org.http4s" %% "http4s-dsl" % Version.Http4s ::
-      "org.http4s" %% "http4s-blaze-server" % Version.Http4s ::
-      "org.slf4j" % "slf4j-simple" % Version.Slf4j ::
-      Nil,
+        "org.http4s" %% "http4s-blaze-server" % Version.Http4s ::
+        "org.slf4j" % "slf4j-simple" % Version.Slf4j ::
+        Nil,
     name := "babel-sample-backend"
   )
   .dependsOn(formatterPrintf.jvm, generic.jvm, hocon.jvm, loader)
