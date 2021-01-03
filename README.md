@@ -1,6 +1,10 @@
 # Babel
 
 > String-based internationalization (i18n) for Scala applications
+> 
+> [![GitLab CI](https://gitlab.com/slozzer/babel/badges/master/pipeline.svg?style=flat-square)](https://gitlab.com/slozzer/babel/pipelines)
+[![Maven Central](https://img.shields.io/maven-central/v/net.slozzer/babel-core_2.13.svg?style=flat-square)](https://search.maven.org/search?q=g:net.slozzer%20AND%20a:babel-*)
+[![License](https://img.shields.io/github/license/slozzer/babel?style=flat-square)](LICENSE)
 
 ## Features
 
