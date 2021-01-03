@@ -204,3 +204,9 @@ final class LocalesMiddleware[F[_]: Defer](locales: Set[Locale], fallback: Local
     }
 }
 ```
+
+## Adopters
+
+<a href="https://slozzer.net/"><img src="https://i.imgur.com/zJlOKhO.png" width="400" alt="slozzer Logo" /></a>
+
+Babel is developed and maintained under the [slozzer](https://slozzer.net/) organization.
