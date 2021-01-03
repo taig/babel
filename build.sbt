@@ -127,6 +127,14 @@ lazy val tests = crossProject(JSPlatform, JVMPlatform)
     scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
   )
 
+lazy val sampleCore = crossProject(JVMPlatform, JSPlatform)
+  .crossType(CrossType.Pure)
+  .in(file("modules/sample/core"))
+  .settings(noPublishSettings)
+  .settings(
+    name := "babel-sample-core"
+  )
+
 lazy val sampleBackend = project
   .in(file("modules/sample/backend"))
   .settings(noPublishSettings)
@@ -138,4 +146,15 @@ lazy val sampleBackend = project
         Nil,
     name := "babel-sample-backend"
   )
-  .dependsOn(formatterPrintf.jvm, generic.jvm, hocon.jvm, loader)
+  .dependsOn(sampleCore.jvm, formatterPrintf.jvm, generic.jvm, hocon.jvm, loader)
+
+lazy val sampleFrontend = project
+  .in(file("modules/sample/frontend"))
+  .enablePlugins(ScalaJSPlugin)
+  .settings(noPublishSettings)
+  .settings(
+    name := "babel-sample-frontend"
+  )
+  .dependsOn(formatterPrintf.js, generic.js, circe.js)
+
+addCommandAlias("start", ";sampleFrontend/fastOptJS;sampleBackend/reStart")

@@ -46,6 +46,7 @@ final class SampleRoutes[F[_]: Applicative: Defer](i18ns: I18n[Translation]) ext
          |<body>
          |  <h1>${i18ns.index.headline(locale)}</h1>
          |  <p>${i18ns.index.message(locale, Seq(0))}</p>
+         |  <button>${i18ns.index.label(locale)}</button>
          |</body>
          |</html>""".stripMargin
     ).map(_.withContentType(`Content-Type`(MediaType.text.html)))
