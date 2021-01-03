@@ -5,10 +5,12 @@ val Version = new {
   val Circe = "0.13.0"
   val Classgraph = "4.8.98"
   val Fs2 = "2.5.0"
+  val Http4s = "0.21.15"
   val Munit = "0.7.20"
   val MunitCatsEffect = "0.12.0"
   val Sconfig = "1.3.6"
   val Shapeless = "2.3.3"
+  val Slf4j = "1.7.30"
 }
 
 noPublishSettings
@@ -112,11 +114,11 @@ lazy val tests = crossProject(JSPlatform, JVMPlatform)
   .in(file("modules/tests"))
   .settings(noPublishSettings)
   .settings(
-    name := "babel-tests",
     libraryDependencies ++=
       "org.scalameta" %%% "munit" % Version.Munit % "test" ::
         "org.typelevel" %%% "munit-cats-effect-2" % Version.MunitCatsEffect % "test" ::
         Nil,
+    name := "babel-tests",
     testFrameworks += new TestFramework("munit.Framework")
   )
   .dependsOn(core, circe, hocon, generic, formatterPrintf)
@@ -124,3 +126,16 @@ lazy val tests = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(
     scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
   )
+
+lazy val sampleBackend = project
+  .in(file("modules/sample/backend"))
+  .settings(noPublishSettings)
+  .settings(
+    libraryDependencies ++=
+      "org.http4s" %% "http4s-dsl" % Version.Http4s ::
+      "org.http4s" %% "http4s-blaze-server" % Version.Http4s ::
+      "org.slf4j" % "slf4j-simple" % Version.Slf4j ::
+      Nil,
+    name := "babel-sample-backend"
+  )
+  .dependsOn(formatterPrintf.jvm, generic.jvm, hocon.jvm, loader)
