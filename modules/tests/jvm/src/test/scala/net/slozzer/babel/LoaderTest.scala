@@ -17,13 +17,13 @@ abstract class LoaderTest extends CatsEffectSuite {
         Map(
           "greeting" -> Left(
             Translation(
-              Map(Locales.de -> Text.one("Guten Tag"), Locales.de_AT -> Text.one("Grüß Gott")),
-              Right(Text.one("Hi"))
+              Map(Locales.de -> Quantities.one("Guten Tag"), Locales.de_AT -> Quantities.one("Grüß Gott")),
+              Right(Quantities.one("Hi"))
             )
           ),
           "farewell" -> Left(
             Translation(
-              Map(Locales.de -> Text.one("Auf Wiedersehen"), Locales.de_AT -> Text.one("Grüß Gott")),
+              Map(Locales.de -> Quantities.one("Auf Wiedersehen"), Locales.de_AT -> Quantities.one("Grüß Gott")),
               Left("[farewell]")
             )
           )

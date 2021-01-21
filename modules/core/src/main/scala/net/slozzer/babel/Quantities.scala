@@ -1,6 +1,6 @@
 package net.slozzer.babel
 
-final case class Text(default: String, quantities: Map[Quantity, String]) {
+final case class Quantities(default: String, quantities: Map[Quantity, String]) {
   def raw(quantity: Int): String = quantities.getOrElse(Quantity(quantity), default)
 
   def apply(quantity: Int, arguments: Seq[Any])(implicit formatter: Formatter): String =
@@ -19,6 +19,6 @@ final case class Text(default: String, quantities: Map[Quantity, String]) {
   }
 }
 
-object Text {
-  def one(value: String): Text = Text(value, Map.empty)
+object Quantities {
+  def one(value: String): Quantities = Quantities(value, Map.empty)
 }

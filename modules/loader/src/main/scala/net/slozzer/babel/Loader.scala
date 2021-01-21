@@ -72,50 +72,50 @@ object Loader {
   private def parse[F[_], A](value: String)(implicit F: MonadThrow[F], parser: Parser[A]): F[A] =
     F.fromEither(parser.parse(value).leftMap(reason => new RuntimeException(s"Parsing failure: $reason")))
 
-  /** Turn all `Some(Locale) -> Dictionaries` into `Babel`s with the `None -> Dictionaries` as universal fallbacks */
-  private def toBabel(values: Map[Option[Locale], Dictionary]): Either[String, Babel] = {
-    val fallbacks = values.getOrElse(None, Dictionary.Empty).toBabelUniversals
-
-    values
-      .collect { case (Some(locale), dictionary) => dictionary.toBabel(locale) }
-      .foldLeft(fallbacks.asRight[String]) {
-        case (Right(result), babel) => result.merge(babel)
-        case (left @ Left(_), _)    => left
-      }
-  }
-
-  def verifyAllMissingLocales[F[_]: ApplicativeThrow](babel: Babel): F[Unit] =
-    verifyMissingLocales(babel, babel.locales)
-
-  def verifyMissingLocales[F[_]](babel: Babel, locales: Set[Locale])(implicit F: ApplicativeThrow[F]): F[Unit] = {
-    val missingTranslations = locales
-      .map(locale => locale -> babel.missingTranslations(locale))
-      .filter { case (_, paths) => paths.nonEmpty }
-
-    if (missingTranslations.isEmpty) F.unit
-    else {
-      val details = missingTranslations.map { case (locale, paths) =>
-        locale.printLanguageTag + ":\n" + paths.map(path => s" - ${path.printPretty}").mkString("\n")
-      }
-
-      val message = s"Missing translations\n${details.mkString("\n")}"
-
-      F.raiseError(new RuntimeException(message) with NoStackTrace)
-    }
-  }
-
-  def auto[F[_]: ConcurrentEffect: ContextShift](
-      blocker: Blocker,
-      resource: String = "babel",
-      extension: String = "conf"
-  )(implicit
-      parser: Parser[Dictionary]
-  ): F[Babel] =
-    list(blocker, resource, extension)
-      .evalMap { case (locale, content) => parse[F, Dictionary](content).tupleLeft(locale) }
-      .compile
-      .toList
-      .map(_.toMap)
-      .map(toBabel(_).leftMap(new RuntimeException(_)))
-      .rethrow
+//  /** Turn all `Some(Locale) -> Dictionaries` into `Babel`s with the `None -> Dictionaries` as universal fallbacks */
+//  private def toBabel(values: Map[Option[Locale], Dictionary]): Either[String, Babel] = {
+//    val fallbacks = values.getOrElse(None, Dictionary.Empty).toBabelUniversals
+//
+//    values
+//      .collect { case (Some(locale), dictionary) => dictionary.toBabel(locale) }
+//      .foldLeft(fallbacks.asRight[String]) {
+//        case (Right(result), babel) => result.merge(babel)
+//        case (left @ Left(_), _)    => left
+//      }
+//  }
+//
+//  def verifyAllMissingLocales[F[_]: ApplicativeThrow](babel: Babel): F[Unit] =
+//    verifyMissingLocales(babel, babel.locales)
+//
+//  def verifyMissingLocales[F[_]](babel: Babel, locales: Set[Locale])(implicit F: ApplicativeThrow[F]): F[Unit] = {
+//    val missingTranslations = locales
+//      .map(locale => locale -> babel.missingTranslations(locale))
+//      .filter { case (_, paths) => paths.nonEmpty }
+//
+//    if (missingTranslations.isEmpty) F.unit
+//    else {
+//      val details = missingTranslations.map { case (locale, paths) =>
+//        locale.printLanguageTag + ":\n" + paths.map(path => s" - ${path.printPretty}").mkString("\n")
+//      }
+//
+//      val message = s"Missing translations\n${details.mkString("\n")}"
+//
+//      F.raiseError(new RuntimeException(message) with NoStackTrace)
+//    }
+//  }
+//
+//  def auto[F[_]: ConcurrentEffect: ContextShift](
+//      blocker: Blocker,
+//      resource: String = "babel",
+//      extension: String = "conf"
+//  )(implicit
+//      parser: Parser[Dictionary]
+//  ): F[Babel] =
+//    list(blocker, resource, extension)
+//      .evalMap { case (locale, content) => parse[F, Dictionary](content).tupleLeft(locale) }
+//      .compile
+//      .toList
+//      .map(_.toMap)
+//      .map(toBabel(_).leftMap(new RuntimeException(_)))
+//      .rethrow
 }

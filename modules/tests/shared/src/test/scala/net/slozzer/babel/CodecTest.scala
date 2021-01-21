@@ -4,36 +4,36 @@ import CodecTest._
 import munit.FunSuite
 
 final class CodecTest extends FunSuite {
-  val deeplyNestedSegments: Segments[Text] = Segments.one("bar", Text.one("z"))
+  val deeplyNestedSegments: Segments[Quantities] = Segments.one("bar", Quantities.one("z"))
 
-  val segments: Segments[Text] = Segments(
+  val segments: Segments[Quantities] = Segments(
     Map(
-      "foo" -> Left(Text.one("x")),
-      "nested" -> Right(Segments(Map("foobar" -> Left(Text.one("y")), "deeplyNested" -> Right(deeplyNestedSegments))))
+      "foo" -> Left(Quantities.one("x")),
+      "nested" -> Right(Segments(Map("foobar" -> Left(Quantities.one("y")), "deeplyNested" -> Right(deeplyNestedSegments))))
     )
   )
 
-  val deeplyNestedTranslations: MyDeeplyNestedTranslations[Text] =
-    MyDeeplyNestedTranslations(bar = Text.one("z"), opt = None)
+  val deeplyNestedTranslations: MyDeeplyNestedTranslations[Quantities] =
+    MyDeeplyNestedTranslations(bar = Quantities.one("z"), opt = None)
 
-  val translations: MyTranslations[Text] = MyTranslations(
-    foo = Text.one("x"),
-    nested = MyNestedTranslations(foobar = Text.one("y"), deeplyNested = deeplyNestedTranslations)
+  val translations: MyTranslations[Quantities] = MyTranslations(
+    foo = Quantities.one("x"),
+    nested = MyNestedTranslations(foobar = Quantities.one("y"), deeplyNested = deeplyNestedTranslations)
   )
 
   test("decode") {
-    val obtained = DerivedDecoder[Text, MyDeeplyNestedTranslations[Text]].decode(Path.Root, deeplyNestedSegments)
+    val obtained = DerivedDecoder[Quantities, MyDeeplyNestedTranslations[Quantities]].decode(Path.Root, deeplyNestedSegments)
     assertEquals(obtained, expected = Right(deeplyNestedTranslations))
   }
 
   test("encode") {
-    val obtained = DerivedEncoder[MyDeeplyNestedTranslations[Text], Text].encode(deeplyNestedTranslations)
+    val obtained = DerivedEncoder[MyDeeplyNestedTranslations[Quantities], Quantities].encode(deeplyNestedTranslations)
     assertEquals(obtained, expected = deeplyNestedSegments)
   }
 
   test("semiauto") {
-    generic.semiauto.deriveDecoder[MyDeeplyNestedTranslations, Text]
-    generic.semiauto.deriveEncoder[MyDeeplyNestedTranslations, Text]
+    generic.semiauto.deriveDecoder[MyDeeplyNestedTranslations, Quantities]
+    generic.semiauto.deriveEncoder[MyDeeplyNestedTranslations, Quantities]
 
     assertNoDiff(
       compileErrors("generic.semiauto.deriveDecoder[MyTranslations, Text]"),
@@ -55,8 +55,8 @@ final class CodecTest extends FunSuite {
   test("auto") {
     import generic.auto._
 
-    Encoder[MyTranslations, Text]
-    Decoder[MyTranslations, Text]
+    Encoder[MyTranslations, Quantities]
+    Decoder[MyTranslations, Quantities]
   }
 }
 

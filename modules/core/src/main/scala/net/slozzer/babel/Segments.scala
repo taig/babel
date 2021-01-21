@@ -23,11 +23,10 @@ final case class Segments[+A](branches: Map[String, Either[A, Segments[A]]]) {
 
   def getLeaf(path: Path): Option[A] = get(path).collect { case Left(value) => value }
 
-  def map[B](f: A => B): Segments[B] =
-    Segments(branches.view.mapValues {
-      case Right(segments) => Right(segments.map(f))
-      case Left(value)     => Left(f(value))
-    }.toMap)
+  def map[B](f: A => B): Segments[B] = Segments(branches.view.mapValues {
+    case Right(segments) => Right(segments.map(f))
+    case Left(value)     => Left(f(value))
+  }.toMap)
 
   def mapWithPath[B](f: (Path, A) => B): Segments[B] = {
     def go(path: Path, segments: Segments[A]): Segments[B] =
@@ -55,29 +54,27 @@ final case class Segments[+A](branches: Map[String, Either[A, Segments[A]]]) {
   def ++[A1 >: A](segments: Segments[A1]): Segments[A1] = Segments(branches ++ segments.branches)
 
   // TODO tailrec and error message
-  def merge[A1 >: A](segments: Segments[A1])(f: (A1, A1) => A1): Either[String, Segments[A1]] =
-    branches
-      .foldLeft[Either[String, Map[String, Either[A1, Segments[A1]]]]](Right(segments.branches)) {
-        case (Right(branches), pair @ (key, left)) =>
-          branches.get(key) match {
-            case Some(right) =>
-              (left, right) match {
-                case (Left(left), Left(right)) => Right(branches + (key -> Left(f(left, right))))
-                case (Right(left), Right(right)) =>
-                  left.merge(right)(f).map(result => branches + (key -> Right(result)))
-                case _ => Left("Can not merge a node with a leaf")
-              }
-            case None => Right(branches + pair)
-          }
-        case (error @ Left(_), _) => error
-      }
-      .map(Segments[A1])
+  def merge[A1 >: A](segments: Segments[A1])(f: (A1, A1) => A1): Either[String, Segments[A1]] = branches
+    .foldLeft[Either[String, Map[String, Either[A1, Segments[A1]]]]](Right(segments.branches)) {
+      case (Right(branches), pair @ (key, left)) =>
+        branches.get(key) match {
+          case Some(right) =>
+            (left, right) match {
+              case (Left(left), Left(right)) => Right(branches + (key -> Left(f(left, right))))
+              case (Right(left), Right(right)) =>
+                left.merge(right)(f).map(result => branches + (key -> Right(result)))
+              case _ => Left("Can not merge a node with a leaf")
+            }
+          case None => Right(branches + pair)
+        }
+      case (error @ Left(_), _) => error
+    }
+    .map(Segments[A1])
 
-  def values[B >: A]: Set[B] =
-    branches.values.flatMap {
-      case Left(value)     => Set(value)
-      case Right(segments) => segments.values
-    }.toSet
+  def values[B >: A]: Set[B] = branches.values.flatMap {
+    case Left(value)     => Set(value)
+    case Right(segments) => segments.values
+  }.toSet
 
   // TODO tailrec
   def toMap: Map[Path, A] = {
