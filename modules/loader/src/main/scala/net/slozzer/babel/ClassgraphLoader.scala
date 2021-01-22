@@ -9,22 +9,20 @@ import java.net.URI
 import java.nio.file.{FileSystem, FileSystemNotFoundException, FileSystems, Path => JPath}
 import java.util.Collections
 import scala.jdk.CollectionConverters._
+import java.nio.file.Files
 
 final class ClassgraphLoader[F[_]: Sync: ContextShift](fileSystems: MVar2[F, Set[FileSystem]])(blocker: Blocker)
     extends Loader[F] {
-  override def scan(name: String): F[Map[Option[Locale], JPath]] = {
-    val (base, extension) = name.indexOf('.') match {
-      case -1    => (name, None)
-      case index => (name.substring(0, index), Some(name.substring(index)))
-    }
-
+  override def scan(base: String): F[Set[JPath]] =
     blocker
-      .delay(new ClassGraph().acceptPathsNonRecursive(base).scan())
+      .delay(new ClassGraph().acceptPaths(base).scan())
       .flatMap(_.getAllResources.asScala.toList.traverse(resource => createPath(resource.getURI)))
-      .map(paths => extension.fold(paths)(extension => paths.filter(_.toString.endsWith(extension))))
-      .flatMap(_.traverse(path => locale(path).tupleRight(path)))
-      .map(_.toMap)
-  }
+      .map(_.toSet)
+
+  override def filter(paths: Set[JPath], name: String): F[Map[Option[Locale], JPath]] =
+    paths.toList
+      .filterA(path => blocker.delay(Files.isRegularFile(path)))
+      .map(_.map(path => locale(path).tupleRight(path)).collect { case Right(result) => result }.toMap)
 
   def createPath(uri: URI): F[JPath] =
     if (uri.getScheme === "file") blocker.delay(JPath.of(uri))
@@ -39,26 +37,21 @@ final class ClassgraphLoader[F[_]: Sync: ContextShift](fileSystems: MVar2[F, Set
           .flatMap(blocker.delay(JPath.of(uri)).tupleLeft)
       }
 
-  def locale(path: JPath): F[Option[Locale]] = {
+  def locale(path: JPath): Either[String, Option[Locale]] =
     Option(path.getFileName())
-      .liftTo[F](new IllegalArgumentException(s"Invalid file $path"))
+      .toRight("Invalid path")
       .map(_.toString)
-      .flatMap { fileName =>
-        val name = fileName.indexOf('.') match {
+      .map { fileName =>
+        fileName.indexOf('.') match {
           case -1    => fileName
           case index => fileName.substring(0, index)
         }
-
-        name match {
-          case "*" => none[Locale].pure[F]
-          case tag =>
-            Locale
-              .parseLanguageTag(tag)
-              .liftTo[F](new IllegalArgumentException("Not a a valid language tag"))
-              .map(_.some)
-        }
       }
-  }
+      .flatMap {
+        case Loader.Wildcard => none[Locale].asRight
+        case name            => Locale.parseLanguageTag(name).toRight(s"Invalid language tag: $name").map(_.some)
+
+      }
 }
 
 object ClassgraphLoader {
