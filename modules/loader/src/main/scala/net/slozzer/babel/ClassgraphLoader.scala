@@ -13,20 +13,21 @@ import scala.jdk.CollectionConverters._
 final class ClassgraphLoader[F[_]: Sync: ContextShift](fileSystems: MVar2[F, Set[FileSystem]])(blocker: Blocker)
     extends Loader[F] {
   override def scan(name: String): F[Set[JPath]] = {
-    val base = name.indexOf('.') match {
-      case -1    => name
-      case index => name.substring(0, index)
+    val (base, extension) = name.indexOf('.') match {
+      case -1    => (name, None)
+      case index => (name.substring(0, index), Some(name.substring(index)))
     }
 
     blocker
       .delay(new ClassGraph().acceptPathsNonRecursive(base).scan())
       .flatMap(_.getAllResources.asScala.toList.traverse(resource => createPath(resource.getURI)))
+      .map(paths => extension.fold(paths)(extension => paths.filter(_.toString.endsWith(extension))))
       .map(_.toSet)
   }
 
   override def filter(paths: Set[JPath], name: String): Map[Option[Locale], JPath] = ???
 
-  def createPath(uri: URI): F[JPath] = {
+  def createPath(uri: URI): F[JPath] =
     if (uri.getScheme === "file") blocker.delay(JPath.of(uri))
     else
       fileSystems.modify { fileSystems =>
@@ -38,7 +39,6 @@ final class ClassgraphLoader[F[_]: Sync: ContextShift](fileSystems: MVar2[F, Set
           }
           .flatMap(blocker.delay(JPath.of(uri)).tupleLeft)
       }
-  }
 }
 
 object ClassgraphLoader {
