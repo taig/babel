@@ -1,11 +1,10 @@
 package net.slozzer.babel.sample.backend
 
 import scala.concurrent.ExecutionContext
-
 import cats.syntax.all._
 import cats.effect.{Blocker, ConcurrentEffect, ExitCode, IO, IOApp, Resource, Timer}
 import cats.{Applicative, Defer}
-import net.slozzer.babel.{Decoder, Loader, Locale, Locales, Translation}
+import net.slozzer.babel.{ClassgraphLoader, Decoder, Loader, Locale, Locales, Translation}
 import org.http4s.dsl.Http4sDsl
 import org.http4s.implicits._
 import org.http4s.server.Server
@@ -20,7 +19,8 @@ object SampleApp extends IOApp {
   override def run(args: List[String]): IO[ExitCode] =
     (for {
       blocker <- Blocker[IO]
-      result <- Resource.liftF(Loader.scan[IO](blocker, "i18n.conf"))
+      loader <- ClassgraphLoader[IO](blocker)
+      result <- Resource.liftF(loader.scan("i18n.conf"))
       _ = println(result)
 //      babel <- Resource.liftF(Loader.auto[IO](blocker)).evalTap(Loader.verifyAllMissingLocales[IO])
 //      i18ns <- Resource.liftF(IO.fromEither(Decoder[I18n, Translation].decode(babel.values)))

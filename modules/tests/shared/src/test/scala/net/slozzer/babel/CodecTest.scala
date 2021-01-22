@@ -9,7 +9,9 @@ final class CodecTest extends FunSuite {
   val segments: Segments[Quantities] = Segments(
     Map(
       "foo" -> Left(Quantities.one("x")),
-      "nested" -> Right(Segments(Map("foobar" -> Left(Quantities.one("y")), "deeplyNested" -> Right(deeplyNestedSegments))))
+      "nested" -> Right(
+        Segments(Map("foobar" -> Left(Quantities.one("y")), "deeplyNested" -> Right(deeplyNestedSegments)))
+      )
     )
   )
 
@@ -22,7 +24,8 @@ final class CodecTest extends FunSuite {
   )
 
   test("decode") {
-    val obtained = DerivedDecoder[Quantities, MyDeeplyNestedTranslations[Quantities]].decode(Path.Root, deeplyNestedSegments)
+    val obtained =
+      DerivedDecoder[Quantities, MyDeeplyNestedTranslations[Quantities]].decode(Path.Root, deeplyNestedSegments)
     assertEquals(obtained, expected = Right(deeplyNestedTranslations))
   }
 

@@ -1,52 +1,25 @@
 package net.slozzer.babel
 
-import cats.effect.{Blocker, IO}
-import cats.syntax.all._
-import net.slozzer.babel.Locales
+import cats.effect.{IO, Resource}
 import munit.CatsEffectSuite
 
+import java.nio.file.{Path => JPath}
+
 abstract class LoaderTest extends CatsEffectSuite {
-  implicit def parser: Parser[Dictionary]
+  def loader: Resource[IO, Loader[IO]]
 
-  def extension: String
+  val Root: JPath = JPath
+    .of(".")
+    .resolve("modules/tests/jvm/target/scala-2.13/test-classes/")
+    .toAbsolutePath
 
-  test("auto") {
-    val obtained = Blocker[IO].use(blocker => Loader.auto[IO](blocker, extension = extension))
-    val expected = Babel(
-      Segments(
-        Map(
-          "greeting" -> Left(
-            Translation(
-              Map(Locales.de -> Quantities.one("Guten Tag"), Locales.de_AT -> Quantities.one("Grüß Gott")),
-              Right(Quantities.one("Hi"))
-            )
-          ),
-          "farewell" -> Left(
-            Translation(
-              Map(Locales.de -> Quantities.one("Auf Wiedersehen"), Locales.de_AT -> Quantities.one("Grüß Gott")),
-              Left("[farewell]")
-            )
-          )
-        )
+  test("scan") {
+    loader.use { loader =>
+      val run = loader.scan("loader-1.conf").map(_.map(Root.relativize))
+      assertIO(
+        obtained = run,
+        returns = Set(JPath.of("loader-1/*.conf"), JPath.of("loader-1/de.conf"), JPath.of("loader-1/de-AT.conf"))
       )
-    )
-
-    assertIO(obtained, expected)
-  }
-
-  test("missing locales") {
-    val obtained = Blocker[IO]
-      .use { blocker =>
-        Loader.auto[IO](blocker, extension = extension).flatTap(Loader.verifyMissingLocales[IO](_, Set(Locales.fr)))
-      }
-      .attempt
-      .map(_.leftMap(_.getMessage))
-
-    val expected =
-      """Missing translations
-        |fr:
-        | - farewell""".stripMargin
-
-    assertIO(obtained, Left(expected))
+    }
   }
 }
