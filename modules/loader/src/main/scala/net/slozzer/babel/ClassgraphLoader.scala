@@ -12,7 +12,7 @@ import scala.jdk.CollectionConverters._
 
 final class ClassgraphLoader[F[_]: Sync: ContextShift](fileSystems: MVar2[F, Set[FileSystem]])(blocker: Blocker)
     extends Loader[F] {
-  override def scan(name: String): F[Set[JPath]] = {
+  override def scan(name: String): F[Map[Option[Locale], JPath]] = {
     val (base, extension) = name.indexOf('.') match {
       case -1    => (name, None)
       case index => (name.substring(0, index), Some(name.substring(index)))
@@ -22,10 +22,9 @@ final class ClassgraphLoader[F[_]: Sync: ContextShift](fileSystems: MVar2[F, Set
       .delay(new ClassGraph().acceptPathsNonRecursive(base).scan())
       .flatMap(_.getAllResources.asScala.toList.traverse(resource => createPath(resource.getURI)))
       .map(paths => extension.fold(paths)(extension => paths.filter(_.toString.endsWith(extension))))
-      .map(_.toSet)
+      .flatMap(_.traverse(path => locale(path).tupleRight(path)))
+      .map(_.toMap)
   }
-
-  override def filter(paths: Set[JPath], name: String): Map[Option[Locale], JPath] = ???
 
   def createPath(uri: URI): F[JPath] =
     if (uri.getScheme === "file") blocker.delay(JPath.of(uri))
@@ -39,6 +38,27 @@ final class ClassgraphLoader[F[_]: Sync: ContextShift](fileSystems: MVar2[F, Set
           }
           .flatMap(blocker.delay(JPath.of(uri)).tupleLeft)
       }
+
+  def locale(path: JPath): F[Option[Locale]] = {
+    Option(path.getFileName())
+      .liftTo[F](new IllegalArgumentException(s"Invalid file $path"))
+      .map(_.toString)
+      .flatMap { fileName =>
+        val name = fileName.indexOf('.') match {
+          case -1    => fileName
+          case index => fileName.substring(0, index)
+        }
+
+        name match {
+          case "*" => none[Locale].pure[F]
+          case tag =>
+            Locale
+              .parseLanguageTag(tag)
+              .liftTo[F](new IllegalArgumentException("Not a a valid language tag"))
+              .map(_.some)
+        }
+      }
+  }
 }
 
 object ClassgraphLoader {
