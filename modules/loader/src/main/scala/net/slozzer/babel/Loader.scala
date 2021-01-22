@@ -2,18 +2,44 @@ package net.slozzer.babel
 
 import java.net.URI
 import java.nio.charset.StandardCharsets
-import java.nio.file.{FileSystems, Path => JPath}
+import java.nio.file.{FileSystem, FileSystems, Path => JPath}
 import java.util.Collections
 
 import scala.jdk.CollectionConverters._
 import scala.util.control.NoStackTrace
 
+import cats.effect.concurrent.{MVar, MVar2, Ref}
 import cats.effect.syntax.all._
-import cats.effect.{ApplicativeThrow, Blocker, ConcurrentEffect, ContextShift, IO, MonadThrow, Resource}
+import cats.effect.{ApplicativeThrow, Blocker, Concurrent, ConcurrentEffect, ContextShift, IO, MonadThrow, Resource, Sync}
 import cats.syntax.all._
 import fs2.Stream
 import fs2.concurrent.Queue
 import io.github.classgraph.ClassGraph
+
+abstract class Loader[F[_]] {
+  /** Scan the resources for i18n-compatible files
+   *
+   * A `name` such as `babel/i18n.conf` will find the files `babel/i18n/en.conf`, `babel/i18n/de.conf` and so on.
+   */
+  def scan(name: String): F[Map[Option[Locale], Path]]
+
+  def filter(paths: List[JPath], name: String): Map[Option[Locale], Path]
+}
+
+final class ClassgraphLoader[F[_]](fileSystems: MVar2[F, Set[FileSystem]])(implicit F: Sync[F]) extends Loader[F] {
+  override def scan(name: String): F[Map[Option[Locale], Path]] = ???
+
+  override def filter(paths: List[JPath], name: String): Map[Option[Locale], Path] = ???
+}
+
+object ClassgraphLoader {
+  def apply[F[_]: Concurrent: ContextShift](blocker: Blocker) =
+    Resource.make(MVar.of[F, Set[FileSystem]](Set.empty)) { fileSystems =>
+      fileSystems.use { fileSystems =>
+        fileSystems.toList.traverse_(fileSystem => blocker.delay(fileSystem.close()))
+      }
+    }
+}
 
 object Loader {
 
@@ -71,6 +97,25 @@ object Loader {
 
   private def parse[F[_], A](value: String)(implicit F: MonadThrow[F], parser: Parser[A]): F[A] =
     F.fromEither(parser.parse(value).leftMap(reason => new RuntimeException(s"Parsing failure: $reason")))
+
+  def scan[F[_]](blocker: Blocker, name: String): F[Map[Option[Locale], Path]] = {
+    val x = name.indexOf('.') match {
+      case -1 =>
+        new ClassGraph().acceptPathsNonRecursive(name).scan()
+      case index =>
+        val path = name.substring(0, index)
+        val pattern = name.substring(index + 1, name.length)
+        new ClassGraph().acceptPathsNonRecursive(path).scan()
+    }
+
+    println(x.getAllResources.asScala.toList
+      .mapFilter(resource => try { Some(resource.getURI) } catch { case _: IllegalArgumentException => None } )
+      .map(JPath.of)
+    )
+    filter(???, name)
+
+    ???
+  }
 
 //  /** Turn all `Some(Locale) -> Dictionaries` into `Babel`s with the `None -> Dictionaries` as universal fallbacks */
 //  private def toBabel(values: Map[Option[Locale], Dictionary]): Either[String, Babel] = {

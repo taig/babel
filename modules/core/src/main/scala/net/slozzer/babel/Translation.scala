@@ -25,10 +25,13 @@ final case class Translation[A](fallback: Either[A, A], translations: Map[Locale
   def supports(locale: Locale): Boolean = get(locale).isRight
 
   def map[B](f: A => B): Translation[B] =
-    Translation(fallback match {
-      case Left(value) => Left(f(value))
-      case Right(value) => Right(f(value))
-    }, translations.view.mapValues(f).toMap)
+    Translation(
+      fallback match {
+        case Left(value)  => Left(f(value))
+        case Right(value) => Right(f(value))
+      },
+      translations.view.mapValues(f).toMap
+    )
 
   override def toString: String =
     s"""{${translations.map { case (locale, text) => s"$locale: $text" }.mkString(", ")}, """ +
