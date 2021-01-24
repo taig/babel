@@ -109,7 +109,7 @@ lazy val hocon = crossProject(JSPlatform, JVMPlatform)
         Nil,
     name := "babel-hocon"
   )
-  .dependsOn(core)
+  .dependsOn(circe)
 
 lazy val tests = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Full)

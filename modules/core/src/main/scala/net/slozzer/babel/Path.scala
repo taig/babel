@@ -23,5 +23,5 @@ object Path {
 
   implicit val printer: Printer[Path] = Printer[String].contramap(_.print)
 
-  implicit val parser: Parser[Path] = Parser[String].map(parse)
+//  implicit val parser: Parser[Path] = Parser[String].map(parse)
 }
