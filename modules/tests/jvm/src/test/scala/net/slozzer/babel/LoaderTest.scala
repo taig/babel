@@ -1,9 +1,10 @@
 package net.slozzer.babel
 
-import cats.effect.{IO, Resource}
-import munit.CatsEffectSuite
-
 import java.nio.file.{Path => JPath}
+
+import cats.effect.{IO, Resource}
+import cats.syntax.all._
+import munit.CatsEffectSuite
 
 abstract class LoaderTest extends CatsEffectSuite {
   def loader: Resource[IO, Loader[IO]]
@@ -16,9 +17,18 @@ abstract class LoaderTest extends CatsEffectSuite {
 
     loader.use { loader =>
       val obtained = loader.scan("loader-1").map(_.map(root.relativize))
-      val returns =
-        Set(JPath.of("*.conf"), JPath.of("de.conf"), JPath.of("de-AT.conf"), JPath.of("foo.txt"), JPath.of("bar.svg"))
+      val returns = Set("*.conf", "de.conf", "en.conf", "foo.txt", "bar.svg").map(JPath.of(_))
       assertIO(obtained, returns)
     }
+  }
+
+  test("filter") {
+    val paths = Set("i18n/en.conf", "i18n/de.conf", "i18n/fr.json", "babel/es.conf").map(JPath.of(_))
+    val obtained = Loader.filter(paths, PathFilter.extension("conf") && PathFilter.parent("i18n"))
+    val expected = Map(
+      Locales.en.some -> JPath.of("i18n/en.conf"),
+      Locales.de.some -> JPath.of("i18n/de.conf")
+    )
+    assertEquals(obtained, expected)
   }
 }
