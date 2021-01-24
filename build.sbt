@@ -5,8 +5,8 @@ val Version = new {
   val Circe = "0.13.0"
   val Classgraph = "4.8.98"
   val Fs2 = "2.5.0"
-  val Http4s = "0.21.15"
-  val Munit = "0.7.20"
+  val Http4s = "0.21.16"
+  val Munit = "0.7.21"
   val MunitCatsEffect = "0.12.0"
   val Sconfig = "1.3.6"
   val Shapeless = "2.3.3"
@@ -109,7 +109,7 @@ lazy val hocon = crossProject(JSPlatform, JVMPlatform)
         Nil,
     name := "babel-hocon"
   )
-  .dependsOn(circe)
+  .dependsOn(core)
 
 lazy val tests = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Full)

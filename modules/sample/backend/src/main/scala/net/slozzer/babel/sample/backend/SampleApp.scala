@@ -1,27 +1,33 @@
 package net.slozzer.babel.sample.backend
 
-import scala.concurrent.ExecutionContext
+import cats.effect.{Blocker, Concurrent, ConcurrentEffect, ContextShift, ExitCode, IO, IOApp, Resource, Timer}
 import cats.syntax.all._
-import cats.effect.{Blocker, ConcurrentEffect, ExitCode, IO, IOApp, Resource, Timer}
-import cats.{Applicative, Defer}
-import net.slozzer.babel.{ClassgraphLoader, Decoder, Loader, Locale, Locales, Translation}
-import org.http4s.dsl.Http4sDsl
-import org.http4s.implicits._
+import net.slozzer.babel.hocon._
+import net.slozzer.babel.{ClassgraphLoader, Locale, PathFilter}
+import org.ekrich.config.Config
+import org.http4s.HttpApp
 import org.http4s.server.Server
 import org.http4s.server.blaze.BlazeServerBuilder
-import org.http4s.{HttpApp, HttpRoutes, MediaType}
-import org.http4s.headers.`Content-Type`
+
+import scala.concurrent.ExecutionContext
 
 object SampleApp extends IOApp {
   def server[F[_]: ConcurrentEffect: Timer](context: ExecutionContext, app: HttpApp[F]): Resource[F, Server[F]] =
     BlazeServerBuilder[F](context).bindHttp(host = "0.0.0.0").withHttpApp(app).resource
 
+  def i18n[F[_]: Concurrent: ContextShift](blocker: Blocker): F[Map[Option[Locale], Config]] =
+    ClassgraphLoader[F](blocker).use { loader =>
+      loader
+        .scan("i18n")
+        .map(loader.filter(_, PathFilter.extension("conf")))
+        .flatMap(loader.parse[Config])
+    }
+
   override def run(args: List[String]): IO[ExitCode] =
     (for {
       blocker <- Blocker[IO]
-      loader <- ClassgraphLoader[IO](blocker)
-      result <- Resource.liftF(loader.scan("i18n.conf"))
-      _ = println(result)
+      i18ns <- Resource.liftF(i18n[IO](blocker))
+      _ = println(i18ns)
 //      babel <- Resource.liftF(Loader.auto[IO](blocker)).evalTap(Loader.verifyAllMissingLocales[IO])
 //      i18ns <- Resource.liftF(IO.fromEither(Decoder[I18n, Translation].decode(babel.values)))
 //      middleware = new LocalesMiddleware[IO](babel.locales, Locales.en)

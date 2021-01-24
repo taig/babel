@@ -1,14 +1,20 @@
 package net.slozzer.babel
 
-import cats.effect.{Blocker, Concurrent, ContextShift, Resource}
+import cats.effect.{Blocker, Concurrent, ContextShift, MonadThrow, Resource}
 import cats.syntax.all._
-
 import java.nio.file.{Path => JPath}
 
 abstract class Loader[F[_]] {
   def scan(base: String): F[Set[JPath]]
 
   final def filter(paths: Set[JPath], rule: PathFilter): Map[Option[Locale], JPath] = Loader.filter(paths, rule)
+
+  def load(paths: Map[Option[Locale], JPath]): F[Map[Option[Locale], Array[Byte]]]
+
+  final def parse[A: Parser](paths: Map[Option[Locale], JPath])(implicit F: MonadThrow[F]): F[Map[Option[Locale], A]] =
+    load(paths)
+      .map(_.toList.traverse { case (locale, bytes) => Parser[A].parse(bytes).tupleLeft(locale) }.map(_.toMap))
+      .rethrow
 }
 
 object Loader {

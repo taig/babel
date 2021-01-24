@@ -1,21 +1,12 @@
 package net.slozzer.babel
 
 import cats.implicits._
-import io.circe.syntax._
+import io.circe.Json
 import io.circe.parser._
-import io.circe.{
-  Decoder => CirceDecoder,
-  DecodingFailure,
-  Encoder => CirceEncoder,
-  Json,
-  JsonObject,
-  KeyDecoder,
-  KeyEncoder
-}
-import io.circe.{Printer => CircePrinter}
 
 trait circe {
-  implicit def decoderJson = ???
+  implicit val parserJson: Parser[Json] = Parser[String]
+    .emap(parse(_).leftMap(failure => Parser.Error.typeMismatch("Json", cause = Some(failure))))
 }
 
 //trait circe {

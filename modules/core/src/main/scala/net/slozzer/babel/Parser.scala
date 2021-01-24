@@ -1,10 +1,12 @@
 package net.slozzer.babel
 
+import java.nio.charset.{Charset, StandardCharsets}
+
 import simulacrum.typeclass
 
 @typeclass
 trait Parser[A] {
-  def parse(value: String): Either[Parser.Error, A]
+  def parse(bytes: Array[Byte]): Either[Parser.Error, A]
 
   final def map[B](f: A => B): Parser[B] = value => parse(value).map(f)
 
@@ -12,10 +14,25 @@ trait Parser[A] {
 }
 
 object Parser {
-  final case class Error(tpe: String, cause: Option[Throwable])
-      extends Exception(s"Failed to parse: $tpe", cause.orNull)
+  final case class Error(message: String, cause: Option[Throwable])
+      extends Exception(s"Parser failed: $message", cause.orNull)
 
-  implicit val string: Parser[String] = Right.apply[Parser.Error, String]
+  object Error {
+    def typeMismatch(tpe: String, cause: Option[Throwable]): Error = Error(s"Type mismatch [$tpe]", cause)
+  }
 
-  implicit val int: Parser[Int] = _.toIntOption.toRight(Error("Int", None))
+  def numeric[A](tpe: String, f: String => A): Parser[A] = text.emap { value =>
+    try Right(f(value))
+    catch {
+      case exception: NumberFormatException => Left(Error.typeMismatch(tpe, Some(exception)))
+    }
+  }
+
+  def string(charset: Charset): Parser[String] = bytes => Right(new String(bytes, charset))
+
+  implicit val bytes: Parser[Array[Byte]] = Right.apply[Parser.Error, Array[Byte]]
+
+  implicit val text: Parser[String] = string(StandardCharsets.UTF_8)
+
+  implicit val int: Parser[Int] = numeric("Int", _.toInt)
 }
