@@ -1,49 +1,93 @@
 package net.slozzer.babel
 
-import simulacrum.typeclass
+import scala.collection.mutable
 
-@typeclass
-trait Format[A] {
-  def format(value: A): String
-}
+sealed abstract class StringFormat1 {
+  def apply[A1](v1: A1)(implicit f1: Format[A1]): String
 
-object Format {
-  implicit val string: Format[String] = identity
-}
-
-trait StringFormat1 {
-  def apply[A](value: A)(implicit format: Format[A]): String
-
-  override def toString: String = apply[String]("$1")
+  override def toString: String = apply(StringFormat.marker(1))
 }
 
 object StringFormat1 {
-  val Marker = "$1"
-
-  def apply(s1: String, s2: String): StringFormat1 = new StringFormat1 {
-    override def apply[A](value: A)(implicit f1: Format[A]): String =
-      new StringBuilder().append(s1).append(f1.format(value)).append(s2).result()
-  }
-
-  implicit val decoder: Decoder[StringFormat1] = Decoder[String].emap { (value, _) =>
-    value.indexOf(Marker) match {
-      case -1 => Right(StringFormat0(value))
-      case index =>
-        val left = value.substring(0, index)
-        val right = value.substring(index + Marker.length, value.length)
-        Right(StringFormat1(left, right))
+  implicit val decoder: Decoder[StringFormat1] = StringFormat.decoder(1) { (head, segments) =>
+    new StringFormat1 {
+      override def apply[A1](v1: A1)(implicit f1: Format[A1]): String =
+        StringFormat.build(head, segments, Vector(f1.format(v1)))
     }
   }
 }
 
-trait StringFormat0 extends StringFormat1 {
-  def apply(): String
+trait StringFormat2 {
+  def apply[A1, A2](v1: A1, v2: A2)(implicit f1: Format[A1], f2: Format[A2]): String
+
+  override def toString: String = apply(StringFormat.marker(1), StringFormat.marker(2))
 }
 
-object StringFormat0 {
-  def apply(s0: String): StringFormat0 = new StringFormat0 {
-    override def apply(): String = s0
+object StringFormat2 {
+  implicit val decoder: Decoder[StringFormat2] = StringFormat.decoder(2) { (head, segments) =>
+    new StringFormat2 {
+      override def apply[A1, A2](v1: A1, v2: A2)(implicit f1: Format[A1], f2: Format[A2]): String =
+        StringFormat.build(head, segments, Vector(f1.format(v1), f2.format(v2)))
+    }
+  }
+}
 
-    override def apply[A](value: A)(implicit format: Format[A]): String = s0
+final case class StringFormat(head: String, segments: List[(Int, String)])
+
+object StringFormat {
+  def empty(head: String): StringFormat = StringFormat(head, Nil)
+
+  def of(head: String, segments: (Int, String)*): StringFormat = StringFormat(head, segments.toList)
+
+  def marker(value: Int): String = "$" + value
+
+  private val Regex = "\\$(\\d+)".r
+
+  def parse(value: String): StringFormat = {
+    val matches = Regex.findAllMatchIn(value).toVector
+
+    if (matches.isEmpty) StringFormat.empty(value)
+    else {
+      val result = mutable.ListBuffer.empty[(Int, String)]
+
+      matches.indices.foreach { index =>
+        val matsch = matches(index)
+        val identifier = matsch.group(1).toInt
+        val next = matches.lift(index + 1)
+        result.addOne(identifier -> value.substring(matsch.end, next.map(_.start).getOrElse(value.length)))
+      }
+
+      StringFormat(value.substring(0, matches.head.start), result.toList)
+    }
+  }
+
+  private[babel] def decoder[A](n: Int)(f: (String, Map[Int, String]) => A): Decoder[A] = Decoder[String].emap {
+    (value, path) =>
+      val format = parse(value)
+      val indices = format.segments.map { case (index, _) => index }
+      val duplicates = indices.diff(indices.distinct).distinct
+
+      if (indices.length > 1) {
+        val message = s"StringFormat$n may not have more than $n placeholders, found ${format.segments.length}"
+        Left(Decoder.Error(message, path, cause = None))
+      } else if (indices.exists(_ > n)) {
+        val offenders = indices.filter(_ > n).mkString(", ")
+        val message = s"StringFormat$n may not have placeholder indices higher than $n, found $offenders"
+        Left(Decoder.Error(message, path, cause = None))
+      } else if (duplicates.nonEmpty) {
+        val offenders = duplicates.mkString(", ")
+        val message = s"StringFormat$n may not have duplicate indices, found duplicates for $offenders"
+        Left(Decoder.Error(message, path, cause = None))
+      } else Right(f(format.head, format.segments.toMap))
+  }
+
+  private[babel] def build(head: String, segments: Map[Int, String], values: Vector[String]): String = {
+    val builder = new StringBuilder(head)
+
+    segments.foreach { case (index, segment) =>
+      builder.append(values(index - 1)).append(segment)
+    }
+
+    builder.result()
   }
 }
