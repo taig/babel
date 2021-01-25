@@ -155,7 +155,7 @@ i18ns(Locales.fr).greeting
 
 ## Sample
 
-Take a look at the client / server sample application that aims to showcase the librarie's features.
+Take a look at the client / server sample application that aims to showcase the library's features.
 
 ## Cookbook
 
