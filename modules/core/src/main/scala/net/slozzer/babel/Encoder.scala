@@ -1,9 +1,8 @@
 package net.slozzer.babel
 
-trait Encoder[F[_], A] {
-  def encode(value: F[A]): Segments[A]
-}
+import simulacrum.typeclass
 
-object Encoder {
-  def apply[F[_], A](implicit encoder: Encoder[F, A]): Encoder[F, A] = encoder
+@typeclass
+trait Encoder[A] {
+  def encode(value: A): Babel
 }

@@ -2,7 +2,7 @@ package net.slozzer.babel.sample.backend
 
 import cats.effect.{Blocker, Concurrent, ConcurrentEffect, ContextShift, ExitCode, IO, IOApp, Resource, Timer}
 import cats.syntax.all._
-import net.slozzer.babel.{Decoder, HoconLoader, Locales, Translations}
+import net.slozzer.babel.{Decoder, HoconLoader, Locales}
 import org.http4s.HttpApp
 import org.http4s.server.Server
 import org.http4s.server.blaze.BlazeServerBuilder
@@ -15,7 +15,8 @@ object SampleApp extends IOApp {
 
   def i18n[F[_]: Concurrent: ContextShift](blocker: Blocker) = {
     val loader = HoconLoader[F](blocker)
-    loader.load("i18n", Set(Locales.de, Locales.en))
+    loader
+      .load("i18n", Set(Locales.de, Locales.en))
       .map(Decoder[I18n].decodeAll)
       .rethrow
   }

@@ -18,7 +18,7 @@ final class HoconLoader[F[_]: Sync: ContextShift](blocker: Blocker) extends Load
       .map(Translations.from)
 
   def toBabel(config: Config): Either[Throwable, Babel] =
-    config.entrySet.asScala
+    config.root.entrySet.asScala
       .map(entry => entry.getKey -> entry.getValue)
       .toList
       .foldLeftM(Map.empty[String, Babel]) { case (result, (key, value)) =>
@@ -27,19 +27,19 @@ final class HoconLoader[F[_]: Sync: ContextShift](blocker: Blocker) extends Load
       .map(Babel.Object)
 
   def toBabel(value: AnyRef, path: Path): Either[Throwable, Babel] = value match {
-      case value: String => Babel.Value(value).asRight
-      case obj: java.util.Map[_, _] =>
-        obj.asScala.toList
-          .traverse { case (a, b) =>
-            val  key = a.asInstanceOf[String]
-            val  value = b.asInstanceOf[AnyRef]
-            toBabel(value, path / key).tupleLeft(key)
-          }
-          .map(Babel.from)
-      case value =>
-        val message = s"Unsupported type: ${value.getClass.getSimpleName} ${path.printPlaceholder}"
-        Left(new IllegalArgumentException(message))
-    }
+    case value: String => Babel.Value(value).asRight
+    case obj: java.util.Map[_, _] =>
+      obj.asScala.toList
+        .traverse { case (a, b) =>
+          val key = a.asInstanceOf[String]
+          val value = b.asInstanceOf[AnyRef]
+          toBabel(value, path / key).tupleLeft(key)
+        }
+        .map(Babel.from)
+    case value =>
+      val message = s"Unsupported type: ${value.getClass.getSimpleName} ${path.printPlaceholder}"
+      Left(new IllegalArgumentException(message))
+  }
 }
 
 object HoconLoader {
