@@ -1,63 +1,41 @@
 package net.slozzer.babel
 
+import cats.data.Chain
 import cats.implicits._
-import io.circe.syntax._
-import io.circe.parser._
-import io.circe.{Decoder, DecodingFailure, Encoder, Json, JsonObject, KeyDecoder, KeyEncoder}
-import io.circe.{Printer => CircePrinter}
+import io.circe.Json
+import io.circe.{parser => CirceParser}
 
 trait circe {
-  implicit def keyDecoderParser[A: Parser]: KeyDecoder[A] = KeyDecoder.instance(Parser[A].parse(_).toOption)
+  private def error(tpe: String, path: Chain[String]): Parser.Error =
+    Parser.Error(s"Unsupported JSON type: $tpe (${path.mkString_(".", ".", "")})", cause = None)
 
-  implicit def keyEncoderPrinter[A: Printer]: KeyEncoder[A] = KeyEncoder.instance(Printer[A].print)
+  def toBabel(json: Json, path: Chain[String]): Either[Parser.Error, Babel] =
+    json.fold(
+      Left(error("NULL", path)),
+      _ => Left(error("BOOLEAN", path)),
+      _ => Left(error("NUMBER", path)),
+      value => Right(Babel.Value(value)),
+      _ => Left(error("ARRAY", path)),
+      json =>
+        json.toMap.toList
+          .traverse { case (key, json) =>
+            toBabel(json, path :+ key).tupleLeft(key)
+          }
+          .map(values => Babel.Object(values.toMap))
+    )
 
-  implicit val decoderText: Decoder[Text] = Decoder.instance { cursor =>
-    cursor.as[String].map(Text(_, Map.empty)).orElse {
-      for {
-        default <- cursor.get[String]("*")
-        quantities <- cursor.as[JsonObject].map(_.remove("*")).flatMap(Json.fromJsonObject(_).as[Map[Quantity, String]])
-      } yield Text(default, quantities)
-    }
+  def toJson(babel: Babel): Json = babel match {
+    case Babel.Object(values) => Json.fromFields(values.fmap(toJson))
+    case Babel.Value(value)   => Json.fromString(value)
   }
 
-  implicit val encoderText: Encoder[Text] = Encoder.instance { text =>
-    if (text.quantities.isEmpty) text.default.asJson
-    else Json.obj("*" := text.default) deepMerge text.quantities.asJson
-  }
+  val parser: Parser = value =>
+    CirceParser
+      .parse(value)
+      .leftMap(failure => Parser.Error.typeMismatch("Json", cause = Some(failure)))
+      .flatMap(toBabel(_, Chain.empty))
 
-  implicit def decoderSegments[A: Decoder]: Decoder[Segments[A]] = Decoder.instance { cursor =>
-    cursor
-      .as[JsonObject]
-      .flatMap { obj =>
-        obj.toMap.foldLeft(Map.empty[String, Either[A, Segments[A]]].asRight[DecodingFailure]) {
-          case (Right(result), (key, json)) =>
-            json
-              .as[A]
-              .map(_.asLeft[Segments[A]])
-              .orElse(json.as[Segments[A]].map(_.asRight))
-              .map(value => result + (key -> value))
-          case (failure @ Left(_), _) => failure
-        }
-      }
-      .map(Segments[A])
-  }
-
-  implicit def encoderSegments[A: Encoder]: Encoder[Segments[A]] = Encoder.instance { values =>
-    values.branches.foldLeft(Json.obj()) {
-      case (json, (key, Right(segments))) => json deepMerge Json.obj(key := segments)
-      case (json, (key, Left(value)))     => json deepMerge Json.obj(key := value)
-    }
-  }
-
-  implicit val decoderDictionary: Decoder[Dictionary] = Decoder[Segments[Text]].map(Dictionary.apply)
-
-  implicit val encoderDictionary: Encoder[Dictionary] = Encoder[Segments[Text]].contramap(_.values)
-
-  implicit def parserJson[A: Decoder]: Parser[A] = decode[A](_).leftMap(error => Parser.Error(error.show, cause = None))
-
-  def printerJson[A: Encoder](printer: CircePrinter): Printer[A] = a => printer.print(Encoder[A].apply(a))
-
-  implicit def printerJsonNoSpaces[A: Encoder]: Printer[A] = printerJson[A](CircePrinter.noSpaces)
+  val printer: Printer = toJson(_).spaces2
 }
 
 object circe extends circe

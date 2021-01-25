@@ -26,9 +26,13 @@ object Locale {
   def apply(language: Language, country: Country): Locale = Locale(language, Some(country))
 
   def parse(value: String, separator: Char): Option[Locale] = value.split(separator) match {
-    case Array(language)          => Some(Locale(Language(language)))
-    case Array(language, country) => Some(Locale(Language(language), Country(country)))
-    case _                        => None
+    case Array(language) => Language.parse(language).map(Locale(_))
+    case Array(language, country) =>
+      for {
+        language <- Language.parse(language)
+        country <- Country.parse(country)
+      } yield Locale(language, country)
+    case _ => None
   }
 
   def parseLanguageTag(value: String): Option[Locale] = parse(value, '-')
@@ -43,9 +47,4 @@ object Locale {
         val country = Option(locale.getCountry).filter(_.nonEmpty).map(Country.apply)
         Locale(language, country)
       }
-
-  implicit val parser: Parser[Locale] =
-    Parser[String].emap(Locale.parseJavaLocaleFormat(_).toRight(Parser.Error("Locale", cause = None)))
-
-  implicit val printer: Printer[Locale] = Printer[String].contramap(_.printLanguageTag)
 }

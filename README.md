@@ -1,6 +1,6 @@
 # Babel
 
-> String-based internationalization (i18n) for Scala applications
+> Internationalization (i18n) for Scala applications
 > 
 > [![GitLab CI](https://gitlab.com/slozzer/babel/badges/master/pipeline.svg?style=flat-square)](https://gitlab.com/slozzer/babel/pipelines)
 [![Maven Central](https://img.shields.io/maven-central/v/net.slozzer/babel-core_2.13.svg?style=flat-square)](https://search.maven.org/search?q=g:net.slozzer%20AND%20a:babel-*)
@@ -10,10 +10,10 @@
 
 - First class support for plurals
 - Great fit for Scala.js clients, since `java.util.Locale` is not used
-- Translation definitions in either code or a supported serialization format (e.g. JSON)
-- Allows lifting translations into data classes: no more `String` key look-ups
-- Creating translation subsets that are only suitable for a specific language, which can be useful for clients that request all translations for a single language 
-- Open to arbitrary `String` formatting solutions (e.g. `String.format` or `java.util.MessageFormat`)
+- Translation definitions in [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format
+- Decode translations into data classes
+- Easily share translations of a specific language with the frontend in JSON format
+- Typesafe alternative to `String.format` or `java.util.MessageFormat` argument injection
 - Dependency-free `core` module
 
 ## Installation
@@ -26,69 +26,32 @@ Dependency-free core module, that contains all data class definitions, type clas
 Serialization formats
 
 ```scala
-"net.slozzer" %%% "babel-hocon" % "x.y.z"
 "net.slozzer" %%% "babel-circe" % "x.y.z"
 ```
 
-Reading serialized language definitions from resources (JVM only)
+Reading HOCON translation definitions from resources
 
 ```scala
 "net.slozzer" %% "babel-loader" % "x.y.z"
 ```
 
-Codecs to populate custom translation data classes
+Codecs to populate custom data classes from translation objects
 
 ```scala
 "net.slozzer" %%% "babel-generic" % "x.y.z"
-```
-
-String formatting choices, pick one or role your own
-
-> Please note that `java.util.MessageFormat` is not available for Scala.js, so the `printf` module is recommended
-
-```scala
-"net.slozzer" %%% "babel-formatter-printf" % "x.y.z"
-"net.slozzer" %% "babel-formatter-message-format" % "x.y.z"
 ```
 
 Default setup which is assumed in the documentation below
 
 ```scala
-"net.slozzer" %% "babel-loader" % "x.y.z"
-"net.slozzer" %%% "babel-hocon" % "x.y.z"
+"net.slozzer" %%% "babel-circe" % "x.y.z"
 "net.slozzer" %%% "babel-generic" % "x.y.z"
-"net.slozzer" %%% "babel-formatter-printf" % "x.y.z"
+"net.slozzer" %%% "babel-loader" % "x.y.z"
 ```
-
-## Overview
-
-### Data classes
-
-- `Locale`, `Language`, `Country`  
-Basic data classes in the fashion of `java.util.Locale`. It is possible to convert between `java.util.Locale` and `net.slozzer.babel.Locale`.
-- `Text`, `Quantity`  
-`Text` holds the actual `String` value of a translation as well as a `Map` of `Quantity` to describe plural forms
-- `Segments`, `Path`  
-`Segments` is a tree structure that mimics nested case classes. A `Path` can be used to identify a `Node` or a `Leaf` in such a tree.
-- `Dictionary`  
-A collection of `Text`s that are namespaced in `Segments`, so basically only translations of a single language,
-- `Translation`  
-A collection of `Text`s with their respective `Locale`s. This is the translation of one particular phrase into several languages.
-- `Babel`  
-The collection of all translations: namespaced in `Segment`s with `Translation`s in the leaves.
-
-### Type classes
-
-- `Formatter`: `(String, Seq[Any]) => String`  
-String formatting instances but no default is provided. Depend on either `babel-formatter-printf` or `babel-formatter-message-format` and import the instance explicitly.
-- `Printer`: `A => String`
-- `Parser`: `String => Either[Error, A]`  
-- `Encoder`: `F[A] => Segments[A]`  
-- `Decoder`: `Segments[A] => Either[Error, F[A]]`  
 
 ## Guide
 
-### Defining translations in JSON files
+### Defining translations in HOCON files
 
 For each language a separate file must be created in the `resources/babel` folder and the name of the `Locale` as filename.
 
@@ -110,7 +73,7 @@ greeting = "Guten Tag"
 greeting = "Grüß Gott"
 ```
 
-In addition to that, it is possible to provide language agnostic fallbacks in the  `*.conf` file.
+Use HOCON's advanced features to share and reuse translations
 
 `resources/babel/*.conf`
 
@@ -118,54 +81,81 @@ In addition to that, it is possible to provide language agnostic fallbacks in th
 greeting = "Hi"
 ```
 
+`resources/babel/es.conf`
+
+```hocon
+include "*"
+```
+
 ### Loading translations into a `Babel`
 
 ```scala
-import net.slozzer.babel.{Babel, Loader}
-import net.slozzer.babel.hocon._
+import net.slozzer.babel.Loader
 
-val babel = Loader.auto[IO](blocker).unsafeRunSync()
+val babel = Loader.default[IO](blocker).load("babel", Set(Locales.en, Locales.de, Locales.de_AT)).unsafeRunSync()
 ```
 
 ```
-> Babel(greeting ➞ {de-AT: "Grüß Gott", de: "Guten Tag", en: "Good afternoon", *: "Hi"})
+> Translations(Locales.en -> ..., Locales.de -> ..., Locales.de_AT -> ...)
+```
+
+### Decoding the `Babel` into a data class
+
+```scala
+import net.slozzer.babel.generic.auto._
+import net.slozzer.babel.{Decoder, Encoder, Quantities, StringFormat1}
+
+final case class I18n(greeting: String)
+
+object I18n {
+  implicit val decoder: Decoder[I18n] = deriveDecoder[I18n]
+}
+
+val i18ns = Loader.default[IO](blocker)
+  .load("babel", Set(Locales.en, Locales.de, Locales.de_AT))
+  .map(Decoder[I18n].decodeAll)
+  .rethrow
+  .flatMap { translations =>
+    translations
+      .get(Locales.en)
+      .liftTo[F](new IllegalStateException("Translations for en missing"))
+      .map(fallback => (translations - Locales.en).toDictionary(fallback))
+  }
+
+i18ns(Locales.de).greeting
+```
+
+```
+> "Guten Tag"
 ```
 
 ```scala
-babel(Path.Root / "greeting", Locales.de)
+i18ns(Locales.de_AT).greeting
 ```
 
-```shell
-# Exact match "de"
-> Guten Tag
 ```
-
-```scala
-babel(Path.Root / "greeting", Locales.de_AT)
-```
-
-```shell
-# Exact match "de-AT"
 > Grüß Gott
 ```
 
 ```scala
-babel(Path.Root / "greeting", Locales.de_CH)
+i18ns(Locales.de_CH).greeting
 ```
 
-```shell
-# Language match "de"
+```
 > Guten Tag
 ```
 
 ```scala
-babel(Path.Root / "greeting", Locales.fr)
+i18ns(Locales.fr).greeting
 ```
 
-```shell
-# Fallback
-> Hi
 ```
+> Good afternoon
+```
+
+## Sample
+
+Take a look at the client / server sample application that aims to showcase the library's features.
 
 ## Cookbook
 

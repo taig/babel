@@ -1,9 +1,17 @@
 package net.slozzer.babel
 
-trait Encoder[F[_], A] {
-  def encode(value: F[A]): Segments[A]
+import simulacrum.typeclass
+
+@typeclass
+trait Encoder[A] {
+  def encode(value: A): Babel
+
+  final def contramap[B](f: B => A): Encoder[B] = value => encode(f(value))
 }
 
 object Encoder {
-  def apply[F[_], A](implicit encoder: Encoder[F, A]): Encoder[F, A] = encoder
+  implicit val string: Encoder[String] = Babel.Value(_)
+
+  implicit def map[A](implicit encoder: Encoder[A]): Encoder[Map[String, A]] = values =>
+    Babel.Object(values.view.mapValues(encoder.encode).toMap)
 }

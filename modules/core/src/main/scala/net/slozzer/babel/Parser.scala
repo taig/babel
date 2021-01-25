@@ -1,21 +1,24 @@
 package net.slozzer.babel
 
-import simulacrum.typeclass
+abstract class Parser {
+  def parse(value: String): Either[Parser.Error, Babel]
 
-@typeclass
-trait Parser[A] {
-  def parse(value: String): Either[Parser.Error, A]
-
-  final def map[B](f: A => B): Parser[B] = value => parse(value).map(f)
-
-  final def emap[B](f: A => Either[Parser.Error, B]): Parser[B] = value => parse(value).flatMap(f)
+  final def parseAll(translations: Translations[String]): Either[Parser.Error, Translations[Babel]] =
+    translations.values.foldLeft[Either[Parser.Error, Translations[Babel]]](Right(Translations.Empty)) {
+      case (Right(babel), (locale, value)) =>
+        parse(value) match {
+          case Right(result)  => Right(babel ++ Translations.one(locale, result))
+          case left @ Left(_) => left.asInstanceOf[Either[Parser.Error, Translations[Babel]]]
+        }
+      case (left @ Left(_), _) => left
+    }
 }
 
 object Parser {
-  final case class Error(tpe: String, cause: Option[Throwable])
-      extends Exception(s"Failed to parse: $tpe", cause.orNull)
+  final case class Error(message: String, cause: Option[Throwable])
+      extends Exception(s"Parser failed: $message", cause.orNull)
 
-  implicit val string: Parser[String] = Right.apply[Parser.Error, String]
-
-  implicit val int: Parser[Int] = _.toIntOption.toRight(Error("Int", None))
+  object Error {
+    def typeMismatch(tpe: String, cause: Option[Throwable]): Error = Error(s"Type mismatch [$tpe]", cause)
+  }
 }

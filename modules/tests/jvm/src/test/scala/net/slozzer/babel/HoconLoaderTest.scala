@@ -1,9 +1,6 @@
 package net.slozzer.babel
-
-import hocon._
+import cats.effect.{Blocker, IO, Resource}
 
 final class HoconLoaderTest extends LoaderTest {
-  implicit override val parser: Parser[Dictionary] = parserConfig[Dictionary]
-
-  override val extension: String = "conf"
+  override val loader: Resource[IO, Loader[IO]] = Blocker[IO].map(HoconLoader[IO])
 }
