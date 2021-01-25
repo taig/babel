@@ -21,7 +21,7 @@ object SampleApp extends IOApp {
   val locales = Set(Locales.de, Locales.en)
 
   def i18n[F[_]: Concurrent: ContextShift](blocker: Blocker): F[Dictionary[I18n]] =
-    HoconLoader[F](blocker)
+    Loader.default[F](blocker)
       .load("i18n", locales)
       .map(Decoder[I18n].decodeAll)
       .rethrow
