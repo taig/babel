@@ -197,11 +197,3 @@ final class LocalesMiddleware[F[_]: Defer](locales: Set[Locale], fallback: Local
     }
 }
 ```
-
-<hr />
-
-<a href="https://slozzer.net/">
-  <img src="https://i.imgur.com/zJlOKhO.png" width="300" alt="slozzer: Mediation of certified locksmiths for emergency door opening with fixed price guarantee" />
-</a>
-
-Babel is developed and maintained under the [slozzer](https://slozzer.net/) organization.
