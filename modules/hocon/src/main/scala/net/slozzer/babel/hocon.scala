@@ -1,6 +1,6 @@
 package net.slozzer.babel
 
-import org.ekrich.config.{Config, ConfigFactory, ConfigRenderOptions}
+import org.ekrich.config.{ConfigFactory, ConfigRenderOptions}
 
 import scala.util.control.NonFatal
 

@@ -1,9 +1,15 @@
 package net.slozzer.babel.sample.backend
 
-final case class I18n[A](app: I18n.App[A], index: I18n.Index[A])
+import net.slozzer.babel.Decoder
+import net.slozzer.babel.generic
+
+//final case class I18n(app: I18n.App, index: I18n.Index)
+final case class I18n(yolo: String)
 
 object I18n {
-  final case class App[A](name: A)
+  final case class App(name: String)
 
-  final case class Index[A](title: A, headline: A, message: A, label: A)
+  final case class Index(title: String, headline: String, message: String, label: String)
+
+  implicit val decoder: Decoder[I18n] = generic.auto.derivedDecoder[I18n]
 }

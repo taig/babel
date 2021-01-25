@@ -3,8 +3,6 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 val Version = new {
   val CatsEffect = "2.3.1"
   val Circe = "0.13.0"
-  val Classgraph = "4.8.98"
-  val Fs2 = "2.5.0"
   val Http4s = "0.21.16"
   val Munit = "0.7.21"
   val MunitCatsEffect = "0.12.0"
@@ -66,17 +64,17 @@ lazy val formatterMessageFormat = project
   )
   .dependsOn(core.jvm % "compile->compile;test->test")
 
-lazy val loader = project
+lazy val loader = crossProject(JSPlatform, JVMPlatform)
+  .crossType(CrossType.Pure)
   .in(file("modules/loader"))
   .settings(
     libraryDependencies ++=
-      "io.github.classgraph" % "classgraph" % Version.Classgraph ::
-        "co.fs2" %% "fs2-io" % Version.Fs2 ::
-        "org.typelevel" %% "cats-effect" % Version.CatsEffect ::
+      "org.ekrich" %%% "sconfig" % Version.Sconfig ::
+        "org.typelevel" %%% "cats-effect" % Version.CatsEffect ::
         Nil,
     name := "babel-loader"
   )
-  .dependsOn(core.jvm)
+  .dependsOn(core)
 
 lazy val generic = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
@@ -123,8 +121,8 @@ lazy val tests = crossProject(JSPlatform, JVMPlatform)
     name := "babel-tests",
     testFrameworks += new TestFramework("munit.Framework")
   )
-  .dependsOn(core, circe, hocon, generic, formatterPrintf)
-  .jvmConfigure(_.dependsOn(loader, formatterMessageFormat))
+  .dependsOn(core, circe, hocon, generic, loader, formatterPrintf)
+  .jvmConfigure(_.dependsOn(formatterMessageFormat))
   .jsSettings(
     scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
   )
@@ -148,7 +146,7 @@ lazy val sampleBackend = project
         Nil,
     name := "babel-sample-backend"
   )
-  .dependsOn(sampleCore.jvm, formatterPrintf.jvm, generic.jvm, hocon.jvm, loader)
+  .dependsOn(sampleCore.jvm, formatterPrintf.jvm, generic.jvm, hocon.jvm, loader.jvm)
 
 lazy val sampleFrontend = project
   .in(file("modules/sample/frontend"))

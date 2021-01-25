@@ -2,8 +2,7 @@ package net.slozzer.babel
 
 import cats.data.Chain
 import cats.implicits._
-import io.circe.parser._
-import io.circe.{Json, Printer => CircePrinter}
+import io.circe.Json
 
 trait circe {
   val parser: Parser = new Parser {

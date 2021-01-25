@@ -6,8 +6,8 @@ object generic {
       override def encode(value: F[A]): Segments[A] = encoder.encode(value)
     }
 
-    def deriveDecoder[F[_], A](implicit decoder: DerivedDecoder[A, F[A]]): Decoder[F, A] = new Decoder[F, A] {
-      override def decode(path: Path, values: Segments[A]): Either[Decoder.Error, F[A]] = decoder.decode(path, values)
+    def deriveDecoder[A](implicit decoder: DerivedDecoder[A]): Decoder[A] = new Decoder[A] {
+      override def decode(babel: Babel, path: Path): Either[Decoder.Error, A] = decoder.decode(babel, path)
     }
   }
 
@@ -15,7 +15,6 @@ object generic {
     implicit def derivedEncoder[F[_], A](implicit encoder: DerivedEncoder[F[A], A]): Encoder[F, A] =
       semiauto.deriveEncoder(encoder)
 
-    implicit def derivedDecoder[F[_], A](implicit decoder: DerivedDecoder[A, F[A]]): Decoder[F, A] =
-      semiauto.deriveDecoder(decoder)
+    implicit def derivedDecoder[A](implicit decoder: DerivedDecoder[A]): Decoder[A] = semiauto.deriveDecoder(decoder)
   }
 }

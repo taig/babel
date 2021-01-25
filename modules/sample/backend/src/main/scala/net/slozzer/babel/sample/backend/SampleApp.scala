@@ -1,11 +1,8 @@
 package net.slozzer.babel.sample.backend
 
-import java.nio.charset.StandardCharsets
-
 import cats.effect.{Blocker, Concurrent, ConcurrentEffect, ContextShift, ExitCode, IO, IOApp, Resource, Timer}
 import cats.syntax.all._
-import net.slozzer.babel.hocon._
-import net.slozzer.babel.{Babel, ClassgraphLoader, PathFilter, Translations}
+import net.slozzer.babel.{Decoder, HoconLoader, Locales, Translations}
 import org.http4s.HttpApp
 import org.http4s.server.Server
 import org.http4s.server.blaze.BlazeServerBuilder
@@ -16,16 +13,12 @@ object SampleApp extends IOApp {
   def server[F[_]: ConcurrentEffect: Timer](context: ExecutionContext, app: HttpApp[F]): Resource[F, Server[F]] =
     BlazeServerBuilder[F](context).bindHttp(host = "0.0.0.0").withHttpApp(app).resource
 
-  def i18n[F[_]: Concurrent: ContextShift](blocker: Blocker): F[Translations[Babel]] =
-    ClassgraphLoader[F](blocker).use { loader =>
-      loader
-        .scan("i18n")
-        .map(loader.filter(_, PathFilter.extension("conf")))
-        .flatMap(loader.load)
-        .map(_.map(new String(_, StandardCharsets.UTF_8)))
-        .map(parser.parseAll)
-        .rethrow
-    }
+  def i18n[F[_]: Concurrent: ContextShift](blocker: Blocker) = {
+    val loader = HoconLoader[F](blocker)
+    loader.load("i18n", Set(Locales.de, Locales.en))
+      .map(Decoder[I18n].decodeAll)
+      .rethrow
+  }
 
   override def run(args: List[String]): IO[ExitCode] =
     (for {
