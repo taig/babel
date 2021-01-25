@@ -32,7 +32,7 @@ Serialization formats
 Reading HOCON translation definitions from resources
 
 ```scala
-"net.slozzer" %% "babel-loader" % "x.y.z"
+"net.slozzer" %%% "babel-loader" % "x.y.z"
 ```
 
 Codecs to populate custom data classes from translation objects
