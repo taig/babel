@@ -8,6 +8,8 @@ final case class Translations[+A](values: Map[Locale, A]) extends AnyVal {
   def ++[B >: A](translations: Translations[B]): Translations[B] = Translations(values ++ translations.values)
 
   def +[B >: A](value: (Locale, B)): Translations[B] = Translations(values + value)
+
+  def locales: Set[Locale] = values.keySet
 }
 
 object Translations {

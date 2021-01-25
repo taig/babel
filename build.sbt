@@ -46,24 +46,6 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
     }.taskValue
   )
 
-lazy val formatterPrintf = crossProject(JSPlatform, JVMPlatform)
-  .crossType(CrossType.Pure)
-  .in(file("modules/formatter-printf"))
-  .settings(
-    name := "babel-formatter-printf"
-  )
-  .jsSettings(
-    scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
-  )
-  .dependsOn(core % "compile->compile;test->test")
-
-lazy val formatterMessageFormat = project
-  .in(file("modules/formatter-message-format"))
-  .settings(
-    name := "babel-formatter-message-format"
-  )
-  .dependsOn(core.jvm % "compile->compile;test->test")
-
 lazy val loader = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/loader"))
@@ -121,11 +103,8 @@ lazy val tests = crossProject(JSPlatform, JVMPlatform)
     name := "babel-tests",
     testFrameworks += new TestFramework("munit.Framework")
   )
-  .dependsOn(core, circe, hocon, generic, loader, formatterPrintf)
-  .jvmConfigure(_.dependsOn(formatterMessageFormat))
-  .jsSettings(
-    scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
-  )
+  .dependsOn(core, circe, hocon, generic, loader)
+  .jsSettings(scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule)))
 
 lazy val sampleCore = crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Pure)
@@ -146,7 +125,7 @@ lazy val sampleBackend = project
         Nil,
     name := "babel-sample-backend"
   )
-  .dependsOn(sampleCore.jvm, formatterPrintf.jvm, generic.jvm, hocon.jvm, loader.jvm)
+  .dependsOn(sampleCore.jvm, generic.jvm, hocon.jvm, loader.jvm)
 
 lazy val sampleFrontend = project
   .in(file("modules/sample/frontend"))
@@ -155,6 +134,6 @@ lazy val sampleFrontend = project
   .settings(
     name := "babel-sample-frontend"
   )
-  .dependsOn(formatterPrintf.js, generic.js, circe.js)
+  .dependsOn(generic.js, circe.js)
 
 addCommandAlias("start", ";sampleFrontend/fastOptJS;sampleBackend/reStart")
