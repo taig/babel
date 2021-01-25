@@ -9,7 +9,11 @@ final case class Translations[+A](values: Map[Locale, A]) extends AnyVal {
 
   def +[B >: A](value: (Locale, B)): Translations[B] = Translations(values + value)
 
+  def -(locale: Locale): Translations[A] = Translations(values - locale)
+
   def locales: Set[Locale] = values.keySet
+
+  def toDictionary[B >: A](fallback: B): Dictionary[B] = Dictionary(this, fallback)
 }
 
 object Translations {
