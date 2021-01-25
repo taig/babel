@@ -121,7 +121,10 @@ val i18ns = Loader.default[IO](blocker)
       .liftTo[F](new IllegalStateException("Translations for en missing"))
       .map(fallback => (translations - Locales.en).toDictionary(fallback))
   }
+```
 
+
+```scala
 i18ns(Locales.de).greeting
 ```
 
@@ -134,7 +137,7 @@ i18ns(Locales.de_AT).greeting
 ```
 
 ```
-> Grüß Gott
+> "Grüß Gott"
 ```
 
 ```scala
@@ -142,7 +145,7 @@ i18ns(Locales.de_CH).greeting
 ```
 
 ```
-> Guten Tag
+> "Guten Tag"
 ```
 
 ```scala
@@ -150,7 +153,7 @@ i18ns(Locales.fr).greeting
 ```
 
 ```
-> Good afternoon
+> "Good afternoon"
 ```
 
 ## Sample
