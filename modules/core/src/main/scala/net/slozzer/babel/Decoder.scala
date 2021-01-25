@@ -33,11 +33,11 @@ object Decoder {
       Error(s"Type mismatch: expected $expected, got $actual", path, cause = None)
   }
 
-  implicit def map[A: Decoder]: Decoder[Map[String, A]] = {
+  implicit def map[A](implicit decoder: Decoder[A]): Decoder[Map[String, A]] = {
     case (Babel.Object(values), path) =>
       values.foldLeft[Either[Decoder.Error, Map[String, A]]](Right(Map.empty[String, A])) {
         case (Right(result), (key, babel)) =>
-          Decoder[A].decode(babel, path / key) match {
+          decoder.decode(babel, path / key) match {
             case Right(value)   => Right(result + (key -> value))
             case left @ Left(_) => left.asInstanceOf[Either[Decoder.Error, Map[String, A]]]
           }

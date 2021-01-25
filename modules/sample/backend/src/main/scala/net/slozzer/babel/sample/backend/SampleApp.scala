@@ -57,7 +57,7 @@ final class SampleRoutes[F[_]: Applicative: Defer](i18ns: Dictionary[I18n]) exte
          |</head>
          |<body>
          |  <h1>${i18n.index.headline}</h1>
-         |  <p>${i18n.index.message(0)}</p>
+         |  <p>${i18n.index.message(0)("0")}</p>
          |  <button>${i18n.index.label}</button>
          |</body>
          |</html>""".stripMargin

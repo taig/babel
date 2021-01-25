@@ -2,33 +2,31 @@ package net.slozzer.babel
 
 import scala.collection.mutable
 
-sealed abstract class StringFormat1 {
-  def apply[A1](v1: A1)(implicit f1: Format[A1]): String
+abstract class StringFormat1 {
+  def apply(v1: String): String
 
-  override def toString: String = apply(StringFormat.marker(1))
+  final override def toString: String = apply(StringFormat.marker(1))
 }
 
 object StringFormat1 {
-  implicit val decoder: Decoder[StringFormat1] = StringFormat.decoder(1) { (head, segments) =>
-    new StringFormat1 {
-      override def apply[A1](v1: A1)(implicit f1: Format[A1]): String =
-        StringFormat.build(head, segments, Vector(f1.format(v1)))
-    }
+  implicit val encoder: Encoder[StringFormat1] = Encoder[String].contramap(_.toString)
+
+  implicit val decoder: Decoder[StringFormat1] = StringFormat.decoder(1) { (head, segments) => v1 =>
+    StringFormat.build(head, segments, Vector(v1))
   }
 }
 
-trait StringFormat2 {
-  def apply[A1, A2](v1: A1, v2: A2)(implicit f1: Format[A1], f2: Format[A2]): String
+abstract class StringFormat2 {
+  def apply(v1: String, v2: String): String
 
-  override def toString: String = apply(StringFormat.marker(1), StringFormat.marker(2))
+  final override def toString: String = apply(StringFormat.marker(1), StringFormat.marker(2))
 }
 
 object StringFormat2 {
-  implicit val decoder: Decoder[StringFormat2] = StringFormat.decoder(2) { (head, segments) =>
-    new StringFormat2 {
-      override def apply[A1, A2](v1: A1, v2: A2)(implicit f1: Format[A1], f2: Format[A2]): String =
-        StringFormat.build(head, segments, Vector(f1.format(v1), f2.format(v2)))
-    }
+  implicit val encoder: Encoder[StringFormat2] = Encoder[String].contramap(_.toString)
+
+  implicit val decoder: Decoder[StringFormat2] = StringFormat.decoder(2) { (head, segments) => (v1, v2) =>
+    StringFormat.build(head, segments, Vector(v1, v2))
   }
 }
 
