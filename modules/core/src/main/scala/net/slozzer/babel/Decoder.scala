@@ -6,7 +6,9 @@ import scala.util.Try
 
 @typeclass
 trait Decoder[A] {
-  def decode(babel: Babel, path: Path): Either[Decoder.Error, A]
+  final def decode(babel: Babel): Either[Decoder.Error, A] = decode(babel, Path.Root)
+
+  protected[babel] def decode(babel: Babel, path: Path): Either[Decoder.Error, A]
 
   final def decodeAll(translations: Translations[Babel]): Either[Decoder.Error, Translations[A]] =
     translations.values.foldLeft[Either[Decoder.Error, Translations[A]]](Right(Translations.Empty)) {

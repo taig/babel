@@ -5,9 +5,7 @@ import shapeless.{::, HList, HNil, LabelledGeneric, Witness}
 import simulacrum.typeclass
 
 @typeclass
-trait DerivedDecoder[A] extends Decoder[A] {
-  override def decode(babel: Babel, path: Path): Either[Decoder.Error, A]
-}
+trait DerivedDecoder[A] extends Decoder[A]
 
 object DerivedDecoder {
   implicit val hnil: DerivedDecoder[HNil] = (_, _) => Right(HNil)

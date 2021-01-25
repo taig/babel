@@ -1,6 +1,7 @@
 package net.slozzer.babel
 
 import shapeless._
+import shapeless.labelled.FieldType
 import simulacrum.typeclass
 
 @typeclass
@@ -11,13 +12,15 @@ trait DerivedEncoder[A] extends Encoder[A] {
 object DerivedEncoder {
   implicit val hnil: DerivedEncoder[HNil] = _ => Babel.Empty
 
-//  implicit def hcons[K <: Symbol, A, T <: HList](implicit
-//      key: Witness.Aux[K],
-//      tail: DerivedEncoder[T, A]
-//  ): DerivedEncoder[FieldType[K, A] :: T, A] = new DerivedEncoder[FieldType[K, A] :: T, A] {
-//    override def encode(value: FieldType[K, A] :: T): Segments[A] =
-//      Segments.one(key.value.name, value.head) ++ tail.encode(value.tail)
-//  }
+  implicit def hcons[K <: Symbol, A, T <: HList](implicit
+      key: Witness.Aux[K],
+      head: Encoder[A],
+      tail: DerivedEncoder[T]
+  ): DerivedEncoder[FieldType[K, A] :: T] = (value: FieldType[K, A] :: T) =>
+    tail.encode(value.tail) match {
+      case Babel.Object(values) => Babel.Object(Map(key.value.name -> head.encode(value.head)) ++ values)
+      case Babel.Value(_)       => Babel.Empty
+    }
 
   implicit def encoderLabelledGeneric[A, B <: HList, C](implicit
       generic: LabelledGeneric.Aux[A, B],

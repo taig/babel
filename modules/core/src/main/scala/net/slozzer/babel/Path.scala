@@ -20,8 +20,4 @@ object Path {
     case Array(head) => one(head)
     case segments    => apply(segments.toList)
   }
-
-  implicit val printer: Printer[Path] = Printer[String].contramap(_.print)
-
-//  implicit val parser: Parser[Path] = Parser[String].map(parse)
 }

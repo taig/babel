@@ -6,6 +6,7 @@ val Version = new {
   val Http4s = "0.21.16"
   val Munit = "0.7.21"
   val MunitCatsEffect = "0.12.0"
+  val ScalajsDom = "1.1.0"
   val Sconfig = "1.3.6"
   val Shapeless = "2.3.3"
   val Slf4j = "1.7.30"
@@ -80,17 +81,6 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
   )
   .dependsOn(core)
 
-lazy val hocon = crossProject(JSPlatform, JVMPlatform)
-  .crossType(CrossType.Pure)
-  .in(file("modules/hocon"))
-  .settings(
-    libraryDependencies ++=
-      "org.ekrich" %%% "sconfig" % Version.Sconfig ::
-        Nil,
-    name := "babel-hocon"
-  )
-  .dependsOn(circe)
-
 lazy val tests = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Full)
   .in(file("modules/tests"))
@@ -103,7 +93,7 @@ lazy val tests = crossProject(JSPlatform, JVMPlatform)
     name := "babel-tests",
     testFrameworks += new TestFramework("munit.Framework")
   )
-  .dependsOn(core, circe, hocon, generic, loader)
+  .dependsOn(core, generic, loader)
   .jsSettings(scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule)))
 
 lazy val sampleCore = crossProject(JVMPlatform, JSPlatform)
@@ -113,27 +103,39 @@ lazy val sampleCore = crossProject(JVMPlatform, JSPlatform)
   .settings(
     name := "babel-sample-core"
   )
+  .dependsOn(core, generic)
 
 lazy val sampleBackend = project
   .in(file("modules/sample/backend"))
+  .enablePlugins(SbtWeb)
   .settings(noPublishSettings)
   .settings(
+    Assets / pipelineStages := Seq(scalaJSPipeline),
+    Assets / WebKeys.packagePrefix := "public/",
+    Compile / compile := ((Compile / compile) dependsOn scalaJSPipeline).value,
     libraryDependencies ++=
       "org.http4s" %% "http4s-dsl" % Version.Http4s ::
         "org.http4s" %% "http4s-blaze-server" % Version.Http4s ::
         "org.slf4j" % "slf4j-simple" % Version.Slf4j ::
         Nil,
-    name := "babel-sample-backend"
+    name := "babel-sample-backend",
+    Runtime / managedClasspath += (Assets / packageBin).value,
+    scalaJSProjects := Seq(sampleFrontend)
   )
-  .dependsOn(sampleCore.jvm, generic.jvm, hocon.jvm, loader.jvm)
+  .dependsOn(sampleCore.jvm, loader.jvm, circe.jvm)
 
 lazy val sampleFrontend = project
   .in(file("modules/sample/frontend"))
-  .enablePlugins(ScalaJSPlugin)
+  .enablePlugins(ScalaJSPlugin, ScalaJSWeb)
   .settings(noPublishSettings)
   .settings(
-    name := "babel-sample-frontend"
+    libraryDependencies ++=
+      "org.scala-js" %%% "scalajs-dom" % Version.ScalajsDom ::
+        "org.typelevel" %%% "cats-effect" % Version.CatsEffect ::
+        Nil,
+    name := "babel-sample-frontend",
+    scalaJSUseMainModuleInitializer := true
   )
-  .dependsOn(generic.js, circe.js)
+  .dependsOn(sampleCore.js, circe.js)
 
 addCommandAlias("start", ";sampleFrontend/fastOptJS;sampleBackend/reStart")

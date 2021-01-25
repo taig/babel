@@ -20,20 +20,19 @@ object Quantities {
       quantities.quantities.map { case (quantity, value) => String.valueOf(quantity.value) -> value }
   }
 
-  implicit def decoder[A: Decoder]: Decoder[Quantities[A]] = Decoder[Map[String, A]].emap {
-    (values, path) =>
-      values.get("*") match {
-        case Some(default) =>
-          (values - "*").foldLeft[Either[Decoder.Error, Map[Quantity, A]]](Right(Map.empty[Quantity, A])) {
+  implicit def decoder[A: Decoder]: Decoder[Quantities[A]] = Decoder[Map[String, A]].emap { (values, path) =>
+    values.get("*") match {
+      case Some(default) =>
+        (values - "*")
+          .foldLeft[Either[Decoder.Error, Map[Quantity, A]]](Right(Map.empty[Quantity, A])) {
             case (Right(quantities), (key, value)) =>
-              Try(key.toInt)
-                .toEither
-                .left
+              Try(key.toInt).toEither.left
                 .map(cause => Decoder.Error("Invalid key", path / key, Some(cause)))
                 .map(quantity => quantities + (Quantity(quantity) -> value))
-            case (left@Left(_), _) => left.asInstanceOf[Either[Decoder.Error, Map[Quantity, A]]]
-          }.map(Quantities(default, _))
-        case None => Left(Decoder.Error("Missing key: *", path, cause = None))
-      }
+            case (left @ Left(_), _) => left.asInstanceOf[Either[Decoder.Error, Map[Quantity, A]]]
+          }
+          .map(Quantities(default, _))
+      case None => Left(Decoder.Error("Missing key: *", path, cause = None))
+    }
   }
 }

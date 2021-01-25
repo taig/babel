@@ -14,4 +14,6 @@ object Babel {
   val Empty: Babel = Object(Map.empty)
 
   def from(values: Iterable[(String, Babel)]): Babel = Object(values.toMap)
+
+  def one(key: String, value: Babel): Babel = Object(Map(key -> value))
 }

@@ -1,6 +1,6 @@
 package net.slozzer.babel
 
-trait Parser {
+abstract class Parser {
   def parse(value: String): Either[Parser.Error, Babel]
 
   final def parseAll(translations: Translations[String]): Either[Parser.Error, Translations[Babel]] =
