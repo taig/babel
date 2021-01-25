@@ -5,18 +5,18 @@ import shapeless.{::, HList, HNil, LabelledGeneric, Witness}
 import simulacrum.typeclass
 
 @typeclass
-trait SemiautoDecoder[A] extends Decoder[A] {
+trait DerivedDecoder[A] extends Decoder[A] {
   override def decode(babel: Babel, path: Path): Either[Decoder.Error, A]
 }
 
-object SemiautoDecoder {
-  implicit val hnil: SemiautoDecoder[HNil] = (_, _) => Right(HNil)
+object DerivedDecoder {
+  implicit val hnil: DerivedDecoder[HNil] = (_, _) => Right(HNil)
 
   implicit def hcons[K <: Symbol, A, T <: HList](implicit
       key: Witness.Aux[K],
       head: Decoder[A],
-      tail: SemiautoDecoder[T]
-  ): SemiautoDecoder[FieldType[K, A] :: T] = {
+      tail: DerivedDecoder[T]
+  ): DerivedDecoder[FieldType[K, A] :: T] = {
     case (babel @ Babel.Object(values), path) =>
       val segment = key.value.name
 
@@ -33,7 +33,6 @@ object SemiautoDecoder {
 
   implicit def decoderLabelledGeneric[A, B <: HList](implicit
       generic: LabelledGeneric.Aux[A, B],
-      decoder: SemiautoDecoder[B]
-  ): SemiautoDecoder[A] = (babel, path) => decoder.decode(babel, path).map(generic.from)
-
+      decoder: DerivedDecoder[B]
+  ): DerivedDecoder[A] = (babel, path) => decoder.decode(babel, path).map(generic.from)
 }
