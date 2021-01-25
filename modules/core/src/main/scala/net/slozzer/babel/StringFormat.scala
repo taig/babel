@@ -30,6 +30,20 @@ object StringFormat2 {
   }
 }
 
+abstract class StringFormat3 {
+  def apply(v1: String, v2: String, v3: String): String
+
+  final override def toString: String = apply(StringFormat.marker(1), StringFormat.marker(2), StringFormat.marker(3))
+}
+
+object StringFormat3 {
+  implicit val encoder: Encoder[StringFormat3] = Encoder[String].contramap(_.toString)
+
+  implicit val decoder: Decoder[StringFormat3] = StringFormat.decoder(3) { (head, segments) => (v1, v2, v3) =>
+    StringFormat.build(head, segments, Vector(v1, v2, v3))
+  }
+}
+
 final case class StringFormat(head: String, segments: List[(Int, String)])
 
 object StringFormat {
