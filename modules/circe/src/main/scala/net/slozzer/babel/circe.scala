@@ -11,7 +11,7 @@ trait circe {
 
   def toBabel(json: Json, path: Chain[String]): Either[Parser.Error, Babel] =
     json.fold(
-      Left(error("NULL", path)),
+      Right(Babel.Null),
       _ => Left(error("BOOLEAN", path)),
       _ => Left(error("NUMBER", path)),
       value => Right(Babel.Value(value)),
@@ -27,6 +27,7 @@ trait circe {
   def toJson(babel: Babel): Json = babel match {
     case Babel.Object(values) => Json.fromFields(values.fmap(toJson))
     case Babel.Value(value)   => Json.fromString(value)
+    case Babel.Null           => Json.Null
   }
 
   val parser: Parser = value =>

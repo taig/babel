@@ -27,6 +27,7 @@ object DerivedDecoder {
         case None => Left(Decoder.Error("Missing key", path / segment, cause = None))
       }
     case (Babel.Value(_), path) => Left(Decoder.Error.typeMismatch(expected = "Object", actual = "Value", path))
+    case (Babel.Null, path)     => Left(Decoder.Error.typeMismatch(expected = "Object", actual = "Null", path))
   }
 
   implicit def decoderLabelledGeneric[A, B <: HList](implicit

@@ -10,7 +10,7 @@ trait DerivedEncoder[A] extends Encoder[A] {
 }
 
 object DerivedEncoder {
-  implicit val hnil: DerivedEncoder[HNil] = _ => Babel.Empty
+  implicit val hnil: DerivedEncoder[HNil] = _ => Babel.Null
 
   implicit def hcons[K <: Symbol, A, T <: HList](implicit
       key: Witness.Aux[K],
@@ -19,7 +19,7 @@ object DerivedEncoder {
   ): DerivedEncoder[FieldType[K, A] :: T] = (value: FieldType[K, A] :: T) =>
     tail.encode(value.tail) match {
       case Babel.Object(values) => Babel.Object(Map(key.value.name -> head.encode(value.head)) ++ values)
-      case Babel.Value(_)       => Babel.Empty
+      case _                    => Babel.one(key.value.name, head.encode(value.head))
     }
 
   implicit def encoderLabelledGeneric[A, B <: HList, C](implicit

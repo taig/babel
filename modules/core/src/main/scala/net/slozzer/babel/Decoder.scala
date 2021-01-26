@@ -46,11 +46,18 @@ object Decoder {
         case (left @ Left(_), _) => left
       }
     case (Babel.Value(_), path) => Left(Error.typeMismatch(expected = "Object", actual = "Value", path))
+    case (Babel.Null, path)     => Left(Error.typeMismatch(expected = "Object", actual = "Null", path))
   }
 
   implicit val string: Decoder[String] = {
     case (Babel.Value(value), _) => Right(value)
     case (Babel.Object(_), path) => Left(Error.typeMismatch(expected = "Value", actual = "Object", path))
+    case (Babel.Null, path)      => Left(Error.typeMismatch(expected = "Value", actual = "Null", path))
+  }
+
+  implicit def option[A](implicit decoder: Decoder[A]): Decoder[Option[A]] = {
+    case (Babel.Null, _) => Right(None)
+    case (babel, path)   => decoder.decode(babel, path).map(Some.apply)
   }
 
   def numeric[A](f: String => Try[A], tpe: String): Decoder[A] = Decoder[String].emap { (value, path) =>
