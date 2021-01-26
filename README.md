@@ -116,7 +116,8 @@ val i18ns = Loader.default[IO](blocker)
   .load("babel", Set(Locales.en, Locales.de, Locales.de_AT))
   .map(Decoder[I18n].decodeAll)
   .rethrow
-  .flatMap(_.toDictionary(Locales.en).liftTo[F](new IllegalStateException("Translations for en missing")))
+  .map(_.toDictionary(Locales.en))
+  .flatMap(_.liftTo[F](new IllegalStateException("Translations for en missing")))
 ```
 
 
