@@ -5,6 +5,9 @@ final case class Translations[+A](values: Map[Locale, A]) extends AnyVal {
 
   def map[B](f: A => B): Translations[B] = Translations(values.map { case (locale, value) => (locale, f(value)) })
 
+  def mapWithLocale[B](f: (Locale, A) => B): Translations[B] =
+    Translations(values.map { case (locale, value) => (locale, f(locale, value)) })
+
   def ++[B >: A](translations: Translations[B]): Translations[B] = Translations(values ++ translations.values)
 
   def +[B >: A](value: (Locale, B)): Translations[B] = Translations(values + value)
