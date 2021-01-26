@@ -79,7 +79,7 @@ object StringFormat {
       val indices = format.segments.map { case (index, _) => index }
       val duplicates = indices.diff(indices.distinct).distinct
 
-      if (indices.length > 1) {
+      if (indices.length > n) {
         val message = s"StringFormat$n may not have more than $n placeholders, found ${format.segments.length}"
         Left(Decoder.Error(message, path, cause = None))
       } else if (indices.exists(_ > n)) {
