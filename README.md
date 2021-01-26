@@ -165,6 +165,9 @@ Take a look at the [client / server sample application](https://github.com/slozz
 > sbt sampleBackend/run
 ```
 
+<img src="/asset/screenshot-en.png" alt="Screenshot English" width="641" />
+<img src="/asset/screenshot-de.png" alt="Screenshot German" width="641" />
+
 ## Cookbook
 
 ### Resolve the user's preferred language from the `Accept-Language` header in an http4s middleware
