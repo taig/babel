@@ -18,6 +18,8 @@ final case class Translations[+A](values: Map[Locale, A]) extends AnyVal {
 
   def toDictionary[B >: A](locale: Locale): Option[Dictionary[B]] =
     values.get(locale).map(value => Dictionary(this - locale, (locale, value)))
+
+  def toMap: Map[Locale, A] = values
 }
 
 object Translations {

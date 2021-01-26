@@ -24,6 +24,8 @@ final case class Dictionary[A](translations: Translations[A], fallback: (Locale,
   def toTranslations: Translations[A] = translations + fallback
 
   def locales: Set[Locale] = translations.locales + fallback._1
+
+  def toMap: Map[Locale, A] = translations.toMap + fallback
 }
 
 object Dictionary {
