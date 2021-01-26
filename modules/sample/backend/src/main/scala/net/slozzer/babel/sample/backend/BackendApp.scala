@@ -49,7 +49,7 @@ final class SampleRoutes[F[_]: Sync: ContextShift](blocker: Blocker, i18ns: Dict
            |<head>
            |  <meta charset="utf-8" />
            |  <title>${i18n.index.page.title} | ${i18n.app.name}</title>
-           |  ${i18n.index.page.description.map(value => s"""<meta name="description" content="$value"/>""")}
+           |  ${i18n.index.page.description.map(value => s"""<meta name="description" content="$value"/>""").orEmpty}
            |  <meta name="viewport" content="width=device-width, initial-scale=1" />
            |  <script src="/main.js"></script>
            |</head>

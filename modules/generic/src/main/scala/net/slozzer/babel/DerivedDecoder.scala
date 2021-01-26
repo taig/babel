@@ -22,7 +22,7 @@ object DerivedDecoder {
         case Some(value) =>
           for {
             head <- head.decode(value, path / segment)
-            tail <- tail.decode(babel, path / segment)
+            tail <- tail.decode(babel, path)
           } yield field[K](head) :: tail
         case None => Left(Decoder.Error("Missing key", path / segment, cause = None))
       }
