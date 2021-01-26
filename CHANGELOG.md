@@ -1,5 +1,12 @@
 # Changelog
 
+# 0.1.2
+
+_2021-01-26_
+
+ * Add cats module
+ * Improve sample app
+
 # 0.1.1
 
 _2021-01-26_
