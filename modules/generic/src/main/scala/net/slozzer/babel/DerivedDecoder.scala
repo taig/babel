@@ -17,15 +17,17 @@ object DerivedDecoder {
   ): DerivedDecoder[FieldType[K, A] :: T] = {
     case (babel @ Babel.Object(values), path) =>
       val segment = key.value.name
+      val step = path / segment
 
-      values.get(segment) match {
-        case Some(value) =>
-          for {
-            head <- head.decode(value, path / segment)
-            tail <- tail.decode(babel, path)
-          } yield field[K](head) :: tail
-        case None => Left(Decoder.Error("Missing key", path / segment, cause = None))
+      val left = values.get(segment) match {
+        case Some(value) => head.decode(value, step)
+        case None        => head.decode(Babel.Null, step).left.map(_ => Decoder.Error("Missing key", step, cause = None))
       }
+
+      for {
+        head <- left
+        tail <- tail.decode(babel, path)
+      } yield field[K](head) :: tail
     case (Babel.Value(_), path) => Left(Decoder.Error.typeMismatch(expected = "Object", actual = "Value", path))
     case (Babel.Null, path)     => Left(Decoder.Error.typeMismatch(expected = "Object", actual = "Null", path))
   }
