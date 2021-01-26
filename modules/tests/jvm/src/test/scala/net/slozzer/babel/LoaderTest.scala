@@ -1,6 +1,6 @@
 package net.slozzer.babel
 
-import cats.effect.{IO, Resource}
+import _root_.cats.effect.{IO, Resource}
 import munit.CatsEffectSuite
 
 abstract class LoaderTest extends CatsEffectSuite {
