@@ -17,4 +17,14 @@ object Encoder {
 
   implicit def option[A](implicit encoder: Encoder[A]): Encoder[Option[A]] =
     _.map(encoder.encode).getOrElse(Babel.Null)
+
+  implicit val double: Encoder[Double] = Encoder[String].contramap(String.valueOf)
+
+  implicit val float: Encoder[Float] = Encoder[String].contramap(String.valueOf)
+
+  implicit val int: Encoder[Int] = Encoder[String].contramap(String.valueOf)
+
+  implicit val long: Encoder[Long] = Encoder[String].contramap(String.valueOf)
+
+  implicit val short: Encoder[Short] = Encoder[String].contramap(String.valueOf)
 }
