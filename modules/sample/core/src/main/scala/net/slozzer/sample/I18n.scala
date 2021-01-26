@@ -8,7 +8,13 @@ final case class I18n(app: I18n.App, index: I18n.Index)
 object I18n {
   final case class App(name: String)
 
-  final case class Index(page: Page, headline: String, message: Quantities[StringFormat1], label: String)
+  final case class Index(
+      page: Page,
+      headline: String,
+      introduction: String,
+      message: Quantities[StringFormat1],
+      label: String
+  )
 
   final case class Page(title: String, description: Option[String])
 

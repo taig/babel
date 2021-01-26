@@ -18,7 +18,7 @@ object SampleApp extends IOApp {
   def server[F[_]: ConcurrentEffect: Timer](context: ExecutionContext, app: HttpApp[F]): Resource[F, Server[F]] =
     BlazeServerBuilder[F](context).bindHttp(host = "0.0.0.0").withHttpApp(app).resource
 
-  val locales = Set(Locales.de, Locales.en)
+  val locales = Set(Locales.en)
 
   def i18n[F[_]: Concurrent: ContextShift](blocker: Blocker): F[Dictionary[I18n]] =
     Loader
@@ -55,6 +55,7 @@ final class SampleRoutes[F[_]: Sync: ContextShift](blocker: Blocker, i18ns: Dict
            |</head>
            |<body>
            |  <h1>${i18n.index.headline}</h1>
+           |  <p>${i18n.index.introduction}</p>
            |  <p id="message">${i18n.index.message(0)("0")}</p>
            |  <button id="button">${i18n.index.label}</button>
            |</body>
