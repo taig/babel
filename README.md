@@ -118,9 +118,8 @@ val i18ns = Loader.default[IO](blocker)
   .rethrow
   .flatMap { translations =>
     translations
-      .get(Locales.en)
+      .toDictionary(Locales.en)
       .liftTo[F](new IllegalStateException("Translations for en missing"))
-      .map(fallback => (translations - Locales.en).toDictionary(fallback))
   }
 ```
 
