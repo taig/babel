@@ -36,6 +36,7 @@ final class HoconLoader[F[_]: Sync: ContextShift](blocker: Blocker) extends Load
           toBabel(value, path / key).tupleLeft(key)
         }
         .map(Babel.from)
+    case null => Right(Babel.Null)
     case value =>
       val message = s"Unsupported type: ${value.getClass.getSimpleName} ${path.printPlaceholder}"
       Left(new IllegalArgumentException(message))
