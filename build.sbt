@@ -1,8 +1,10 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 val Version = new {
+  val Cats = "2.3.1"
   val CatsEffect = "2.3.1"
   val Circe = "0.13.0"
+  val DisciplineMunit = "1.0.4"
   val Http4s = "0.21.16"
   val Munit = "0.7.21"
   val MunitCatsEffect = "0.12.0"
@@ -47,6 +49,17 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
     }.taskValue
   )
 
+lazy val cats = crossProject(JSPlatform, JVMPlatform)
+  .crossType(CrossType.Pure)
+  .in(file("modules/cats"))
+  .settings(
+    libraryDependencies ++=
+      "org.typelevel" %%% "cats-core" % Version.Cats ::
+        Nil,
+    name := "babel-cats"
+  )
+  .dependsOn(core)
+
 lazy val loader = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/loader"))
@@ -88,12 +101,15 @@ lazy val tests = crossProject(JSPlatform, JVMPlatform)
   .settings(
     libraryDependencies ++=
       "org.scalameta" %%% "munit" % Version.Munit % "test" ::
+        "org.typelevel" %%% "cats-laws" % Version.Cats % "test" ::
+        "org.typelevel" %%% "discipline-munit" % Version.DisciplineMunit % "test" ::
         "org.typelevel" %%% "munit-cats-effect-2" % Version.MunitCatsEffect % "test" ::
+        "org.scalameta" %%% "munit-scalacheck" % Version.Munit % "test" ::
         Nil,
     name := "babel-tests",
     testFrameworks += new TestFramework("munit.Framework")
   )
-  .dependsOn(core, generic, loader)
+  .dependsOn(cats, generic, loader)
   .jsSettings(scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule)))
 
 lazy val sampleCore = crossProject(JVMPlatform, JSPlatform)

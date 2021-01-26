@@ -24,6 +24,13 @@ Dependency-free core module, that contains all data class definitions, type clas
 ```scala
 "net.slozzer" %%% "babel-core" % "x.y.z" 
 ```
+
+Cats type class instances
+
+```scala
+"net.slozzer" %%% "babel-cats" % "x.y.z"
+```
+
 Serialization formats
 
 ```scala
