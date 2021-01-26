@@ -1,6 +1,6 @@
 addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.5.5")
 
-addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % "1.1.0")
+addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % "1.1.0-0.6")
 
 addSbtPlugin("io.taig" % "sbt-houserules" % "0.3.2")
 
