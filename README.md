@@ -54,7 +54,7 @@ Default setup which is assumed in the documentation below
 
 ### Defining translations in HOCON files
 
-For each language a separate file must be created in the `resources/babel` folder and the name of the `Locale` as filename.
+For each language a separate file must be created in the `resources` folder and the name of the `Locale` as filename. It is recommended to create a subdirectory for your language files, in the examples below we picked `babel`.
 
 `resources/babel/en.conf`
 
