@@ -26,12 +26,7 @@ object SampleApp extends IOApp {
       .load("i18n", locales)
       .map(Decoder[I18n].decodeAll)
       .rethrow
-      .flatMap { translations =>
-        translations
-          .get(Locales.en)
-          .liftTo[F](new IllegalStateException("Translations for en missing"))
-          .map(fallback => (translations - Locales.en).toDictionary(fallback))
-      }
+      .flatMap(_.toDictionary(Locales.en).liftTo[F](new IllegalStateException("Translations for en missing")))
 
   override def run(args: List[String]): IO[ExitCode] =
     (for {
