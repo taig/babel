@@ -51,7 +51,7 @@ documentation:
   stage: test
   image: $IMAGE:latest
   script:
-    - $SBT documentation/paradox
+    - $SBT -Dmode=tolerant documentation/paradox
     - mv ./modules/documentation/target/paradox/site/main/ ./website/
   artifacts:
     paths:
