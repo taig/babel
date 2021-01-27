@@ -47,6 +47,17 @@ unit tests:
   image: $IMAGE:latest
   script: $SBT test
 
+documentation:
+  stage: test
+  image: $IMAGE:latest
+  script:
+    - $SBT documentation/paradox
+    - mv ./modules/documentation/target/paradox/site/main/ ./website/
+  artifacts:
+    paths:
+      - ./website/
+    expire_in: 1 week
+
 artifacts:
   stage: deploy
   image: $IMAGE:latest

@@ -94,6 +94,27 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
   )
   .dependsOn(core)
 
+lazy val documentation = project
+  .in(file("modules/documentation"))
+  .enablePlugins(MdocPlugin, ParadoxPlugin)
+  .settings(
+    libraryDependencies ++=
+      "org.http4s" %% "http4s-blaze-server" % Version.Http4s ::
+        Nil,
+    mdocIn := sourceDirectory.value,
+    mdocVariables := Map(
+      "ORGANIZATION" -> organization.value,
+      "ARTIFACT" -> "babel",
+      "VERSION" -> version.value
+    ),
+    name := "babel-documentation",
+    Compile / paradox / sourceDirectory := mdocOut.value,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / "resources",
+    paradox := (Compile / paradox).dependsOn(mdoc.toTask("")).value,
+    paradoxTheme := Some(builtinParadoxTheme("generic"))
+  )
+  .dependsOn(core.jvm, loader.jvm, generic.jvm)
+
 lazy val tests = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Full)
   .in(file("modules/tests"))
