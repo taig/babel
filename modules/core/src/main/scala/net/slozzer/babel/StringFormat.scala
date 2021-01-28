@@ -5,7 +5,7 @@ import scala.collection.mutable
 abstract class StringFormat1 {
   def apply(v1: String): String
 
-  final override def toString: String = apply(StringFormat.marker(1))
+  final override def toString: String = apply(StringFormat.marker(0))
 }
 
 object StringFormat1 {
@@ -19,7 +19,7 @@ object StringFormat1 {
 abstract class StringFormat2 {
   def apply(v1: String, v2: String): String
 
-  final override def toString: String = apply(StringFormat.marker(1), StringFormat.marker(2))
+  final override def toString: String = apply(StringFormat.marker(0), StringFormat.marker(1))
 }
 
 object StringFormat2 {
@@ -33,7 +33,7 @@ object StringFormat2 {
 abstract class StringFormat3 {
   def apply(v1: String, v2: String, v3: String): String
 
-  final override def toString: String = apply(StringFormat.marker(1), StringFormat.marker(2), StringFormat.marker(3))
+  final override def toString: String = apply(StringFormat.marker(0), StringFormat.marker(1), StringFormat.marker(2))
 }
 
 object StringFormat3 {
