@@ -1,5 +1,12 @@
 # Changelog
 
+# 0.1.3
+
+_2021-01-28_
+
+ * Create paradox documentation microsite
+ * Update sconfig to 1.4.0 (#104)
+
 # 0.1.2
 
 _2021-01-26_
