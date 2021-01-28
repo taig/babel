@@ -1,5 +1,13 @@
 # Changelog
 
+# 0.1.4
+
+_2021-01-28_
+
+ * Change `StringFormat` encoding to `MessageFormat` style
+ * Add plurals section to docs
+ * Add argument section to docs
+
 # 0.1.3
 
 _2021-01-28_
