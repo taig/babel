@@ -61,7 +61,17 @@ documentation:
 artifacts:
   stage: deploy
   image: $IMAGE:latest
-  script:  $SBT ci-release
+  script: $SBT ci-release
   only:
     - master
     - tags
+
+pages:
+  stage: deploy
+  script:
+    - mv ./website/ ./public/
+  dependencies:
+    - documentation
+  artifacts:
+    paths:
+      - -/public/
