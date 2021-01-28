@@ -20,4 +20,6 @@ object Babel {
   def of(values: (String, Babel)*): Babel = from(values)
 
   def one(key: String, value: Babel): Babel = Object(Map(key -> value))
+
+  def text(value: String): Babel = Value(value)
 }
