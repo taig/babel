@@ -2,48 +2,6 @@ package net.slozzer.babel
 
 import scala.collection.mutable
 
-abstract class StringFormat1 {
-  def apply(v1: String): String
-
-  final override def toString: String = apply(StringFormat.marker(0))
-}
-
-object StringFormat1 {
-  implicit val encoder: Encoder[StringFormat1] = Encoder[String].contramap(_.toString)
-
-  implicit val decoder: Decoder[StringFormat1] = StringFormat.decoder(1) { (head, segments) => v1 =>
-    StringFormat.build(head, segments, Vector(v1))
-  }
-}
-
-abstract class StringFormat2 {
-  def apply(v1: String, v2: String): String
-
-  final override def toString: String = apply(StringFormat.marker(0), StringFormat.marker(1))
-}
-
-object StringFormat2 {
-  implicit val encoder: Encoder[StringFormat2] = Encoder[String].contramap(_.toString)
-
-  implicit val decoder: Decoder[StringFormat2] = StringFormat.decoder(2) { (head, segments) => (v1, v2) =>
-    StringFormat.build(head, segments, Vector(v1, v2))
-  }
-}
-
-abstract class StringFormat3 {
-  def apply(v1: String, v2: String, v3: String): String
-
-  final override def toString: String = apply(StringFormat.marker(0), StringFormat.marker(1), StringFormat.marker(2))
-}
-
-object StringFormat3 {
-  implicit val encoder: Encoder[StringFormat3] = Encoder[String].contramap(_.toString)
-
-  implicit val decoder: Decoder[StringFormat3] = StringFormat.decoder(3) { (head, segments) => (v1, v2, v3) =>
-    StringFormat.build(head, segments, Vector(v1, v2, v3))
-  }
-}
-
 final case class StringFormat(head: String, segments: List[(Int, String)])
 
 object StringFormat {

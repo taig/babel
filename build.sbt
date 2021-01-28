@@ -45,7 +45,9 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
       IO.write(countries, SourceGenerator.countries(pkg))
       val locales = (sourceManaged in Compile).value / "Locales.scala"
       IO.write(locales, SourceGenerator.locales(pkg))
-      Seq(languages, countries, locales)
+      val stringFormatN = (sourceManaged in Compile).value / "StringFormatN.scala"
+      IO.write(stringFormatN, SourceGenerator.stringFormatN(pkg))
+      Seq(languages, countries, locales, stringFormatN)
     }.taskValue
   )
 
