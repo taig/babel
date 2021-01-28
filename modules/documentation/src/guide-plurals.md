@@ -64,7 +64,7 @@ import cats.syntax.all._
 import net.slozzer.babel._
 import net.slozzer.babel.generic.auto._
 
-final case class I18n(bicycles: Quantities[String])
+final case class I18n(bicycles: Quantities[StringFormat1])
 
 val i18n = Blocker[IO].use { blocker =>
   Loader
@@ -83,5 +83,5 @@ i18n.bicycles(0)
 ```
 
 ```scala mdoc
-i18n.bicycles(9000000)
+i18n.bicycles(9000000)("9 million")
 ```
