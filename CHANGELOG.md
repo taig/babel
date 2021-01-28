@@ -1,5 +1,12 @@
 # Changelog
 
+# 0.1.5
+
+_2021-01-28_
+
+ * Fix `StringFormat.toString` to use 0-based-indices
+ * Fix plurals example in docs
+
 # 0.1.4
 
 _2021-01-28_
