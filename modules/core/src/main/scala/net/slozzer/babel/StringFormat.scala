@@ -51,9 +51,9 @@ object StringFormat {
 
   def of(head: String, segments: (Int, String)*): StringFormat = StringFormat(head, segments.toList)
 
-  def marker(value: Int): String = "$" + value
+  def marker(value: Int): String = s"{$value}"
 
-  private val Regex = "\\$(\\d+)".r
+  private val Regex = "\\{(\\d+)\\}".r
 
   def parse(value: String): StringFormat = {
     val matches = Regex.findAllMatchIn(value).toVector
@@ -82,9 +82,9 @@ object StringFormat {
       if (indices.length > n) {
         val message = s"StringFormat$n may not have more than $n placeholders, found ${format.segments.length}"
         Left(Decoder.Error(message, path, cause = None))
-      } else if (indices.exists(_ > n)) {
-        val offenders = indices.filter(_ > n).mkString(", ")
-        val message = s"StringFormat$n may not have placeholder indices higher than $n, found $offenders"
+      } else if (indices.exists(_ > n - 1)) {
+        val offenders = indices.filter(_ > n - 1).mkString(", ")
+        val message = s"StringFormat$n may not have placeholder indices higher than ${n - 1}, found $offenders"
         Left(Decoder.Error(message, path, cause = None))
       } else if (duplicates.nonEmpty) {
         val offenders = duplicates.mkString(", ")
@@ -97,7 +97,7 @@ object StringFormat {
     val builder = new StringBuilder(head)
 
     segments.foreach { case (index, segment) =>
-      builder.append(values(index - 1)).append(segment)
+      builder.append(values(index)).append(segment)
     }
 
     builder.result()
