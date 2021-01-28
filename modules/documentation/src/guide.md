@@ -4,37 +4,15 @@
 
 For each language a separate file must be created in the `resources` folder and the name of the `Locale` as filename. It is recommended to create a subdirectory for your language files, in the examples below we picked `babel`.
 
-`resources/babel/en.conf`
 
-```hocon
-greeting = "Good afternoon"
-```
+en.conf
+: @@snip [en.conf](/modules/documentation/resources/babel/en.conf)
 
-`resources/babel/de.conf`
+de.conf
+: @@snip [de.conf](/modules/documentation/resources/babel/de.conf)
 
-```hocon
-greeting = "Guten Tag"
-```
-
-`resources/babel/de-AT.conf`
-
-```hocon
-greeting = "Grüß Gott"
-```
-
-Use HOCON's advanced features to share and reuse translations
-
-`resources/babel/*.conf`
-
-```hocon
-greeting = "Hi"
-```
-
-`resources/babel/es.conf`
-
-```hocon
-include "*"
-```
+de-AT.conf
+: @@snip [de-AT.conf](/modules/documentation/resources/babel/de-AT.conf)
 
 ## Loading translations into a `Babel`
 
