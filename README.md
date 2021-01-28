@@ -7,4 +7,4 @@
 [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/net.slozzer/babel-core_2.13?server=https%3A%2F%2Foss.sonatype.org)](https://oss.sonatype.org/#nexus-search;gav~net.slozzer~babel-*~~~)
 [![License](https://img.shields.io/github/license/slozzer/babel?style=flat-square)](LICENSE)
 
-Please proceed to the [microsite](https://slozzer.gitlab.io/babel/) for more information.
+Please proceed to [babel.slozzer.net](https://babel.slozzer.net/) for more information.
