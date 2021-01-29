@@ -83,5 +83,9 @@ i18n.bicycles(0)
 ```
 
 ```scala mdoc
+i18n.bicycles(100)("100")
+```
+
+```scala mdoc
 i18n.bicycles(9000000)("9 million")
 ```
