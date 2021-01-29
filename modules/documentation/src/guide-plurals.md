@@ -58,7 +58,7 @@ import scala.concurrent.ExecutionContext.global
 implicit val contextShift: ContextShift[IO] = IO.contextShift(global)
 ```
 
-```scala mdoc
+```scala mdoc:to-string
 import cats.effect._
 import cats.syntax.all._
 import net.slozzer.babel._
@@ -88,4 +88,54 @@ i18n.bicycles(100)("100")
 
 ```scala mdoc
 i18n.bicycles(9000000)("9 million")
+```
+
+## Plural ranges
+
+Some languages have very complex plural rules. These can be mapped with quantity ranges.
+
+en.conf
+: @@snip [en.conf](/modules/documentation/resources/plurals-ranges/en.conf)
+
+```scala mdoc:invisible:reset
+import cats.effect.{ContextShift, IO}
+import scala.concurrent.ExecutionContext.global
+
+implicit val contextShift: ContextShift[IO] = IO.contextShift(global)
+```
+
+```scala mdoc:to-string
+import cats.effect._
+import cats.syntax.all._
+import net.slozzer.babel._
+import net.slozzer.babel.generic.auto._
+
+final case class I18n(ranges: Quantities[String])
+
+val i18n = Blocker[IO].use { blocker =>
+  Loader
+    .default[IO](blocker)
+    .load("plurals-ranges", Set(Locales.en))
+    .map(Decoder[I18n].decodeAll)
+    .rethrow
+    .map(_.withFallback(Locales.en))
+    .flatMap(_.liftTo[IO](new IllegalStateException("Translations for en missing")))
+    .map(_.apply(Locales.en))
+}.unsafeRunSync()
+```
+
+```scala mdoc
+i18n.ranges(0)
+```
+
+```scala mdoc
+i18n.ranges(1)
+```
+
+```scala mdoc
+i18n.ranges(9)
+i18n.ranges(10)
+i18n.ranges(11)
+i18n.ranges(20)
+i18n.ranges(21)
 ```
