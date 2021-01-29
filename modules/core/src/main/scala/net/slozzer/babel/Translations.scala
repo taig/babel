@@ -1,5 +1,6 @@
 package net.slozzer.babel
 
+/** A `Map`-like structure with `Locale`-keys */
 final case class Translations[+A](values: Map[Locale, A]) extends AnyVal {
   def get(locale: Locale): Option[A] = values.get(locale)
 

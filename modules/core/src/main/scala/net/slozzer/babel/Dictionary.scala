@@ -1,5 +1,6 @@
 package net.slozzer.babel
 
+/** A non-empty version of `Translations` that has a fallback translation */
 final case class Dictionary[A](translations: Translations[A], fallback: (Locale, A)) {
   def get(locale: Locale): (Locale, A) =
     translations
@@ -29,6 +30,8 @@ final case class Dictionary[A](translations: Translations[A], fallback: (Locale,
 }
 
 object Dictionary {
-  def of[A](fallback: (Locale, A), translations: (Locale, A)*): Dictionary[A] =
+  def from[A](fallback: (Locale, A), translations: Iterable[(Locale, A)]): Dictionary[A] =
     Dictionary(Translations.from(translations), fallback)
+
+  def of[A](fallback: (Locale, A), translations: (Locale, A)*): Dictionary[A] = Dictionary.from(fallback, translations)
 }
