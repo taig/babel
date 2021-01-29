@@ -1,7 +1,7 @@
 package net.slozzer.babel
 
 /** A `Map`-like structure with `Locale`-keys */
-final case class Translations[+A](values: Map[Locale, A]) extends AnyVal {
+final case class Translations[+A] private (values: Map[Locale, A]) extends AnyVal {
   def get(locale: Locale): Option[Translation[A]] =
     values
       .get(locale)
@@ -15,7 +15,7 @@ final case class Translations[+A](values: Map[Locale, A]) extends AnyVal {
   def mapWithLocale[B](f: (Locale, A) => B): Translations[B] =
     Translations(values.map { case (locale, value) => (locale, f(locale, value)) })
 
-  def ++[B >: A](translations: Translations[B]): Translations[B] = Translations(values ++ translations.values)
+  def concat[B >: A](translations: Translations[B]): Translations[B] = Translations(values ++ translations.values)
 
   def +[B >: A](translation: Translation[B]): Translations[B] = Translations(values + translation.toTuple)
 
@@ -37,6 +37,8 @@ final case class Translations[+A](values: Map[Locale, A]) extends AnyVal {
 
 object Translations {
   val Empty: Translations[Nothing] = Translations(Map.empty)
+
+  def apply[A](values: Map[Locale, A]): Translations[A] = new Translations[A](values)
 
   def from[A](values: Iterable[Translation[A]]): Translations[A] = Translations(values.map(_.toTuple).toMap)
 

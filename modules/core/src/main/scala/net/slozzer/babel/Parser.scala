@@ -7,7 +7,7 @@ abstract class Parser {
     translations.toList.foldLeft[Either[Parser.Error, Translations[Babel]]](Right(Translations.Empty)) {
       case (Right(babel), translation) =>
         parse(translation.value) match {
-          case Right(value)   => Right(babel ++ Translations.of(translation.as(value)))
+          case Right(value)   => Right(babel concat Translations.of(translation.as(value)))
           case left @ Left(_) => left.asInstanceOf[Either[Parser.Error, Translations[Babel]]]
         }
       case (left @ Left(_), _) => left

@@ -12,6 +12,8 @@ object cats {
 
   implicit def eqTranslation[A: Eq]: Eq[Translation[A]] = Eq.by(_.toTuple)
 
+  implicit def orderTranslation[A: Order]: Order[Translation[A]] = Order.by(_.toTuple)
+
   implicit val traverseTranslation: Traverse[Translation] = new Traverse[Translation] {
     override def traverse[G[_]: Applicative, A, B](fa: Translation[A])(f: A => G[B]): G[Translation[B]] =
       f(fa.value).map(fa.as)
@@ -21,7 +23,7 @@ object cats {
     override def foldRight[A, B](fa: Translation[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B] = f(fa.value, lb)
   }
 
-  implicit def eqTranslations[A: Eq]: Eq[Translations[A]] = Eq.by(_.values.toList.sortBy(_._1))
+  implicit def eqTranslations[A: Order]: Eq[Translations[A]] = Eq.by(_.toList.sorted)
 
   implicit val traverseTranslations: Traverse[Translations] = new Traverse[Translations] {
     override def map[A, B](fa: Translations[A])(f: A => B): Translations[B] = fa.map(f)
@@ -36,7 +38,13 @@ object cats {
       fa.toMap.toList.foldr(lb) { case ((_, a), b) => f(a, b) }
   }
 
-  implicit def eqNonEmptyTranslations[A: Eq]: Eq[NonEmptyTranslations[A]] = Eq.by(_.toMap.toList.sortBy(_._1))
+  implicit val monoidKTranslations: MonoidK[Translations] = new MonoidK[Translations] {
+    override def empty[A]: Translations[A] = Translations.Empty
+
+    override def combineK[A](x: Translations[A], y: Translations[A]): Translations[A] = x concat y
+  }
+
+  implicit def eqNonEmptyTranslations[A: Order]: Eq[NonEmptyTranslations[A]] = Eq.by(_.toList.sorted)
 
   implicit val traverseNonEmptyTranslations: Traverse[NonEmptyTranslations] = new Traverse[NonEmptyTranslations] {
     override def map[A, B](fa: NonEmptyTranslations[A])(f: A => B): NonEmptyTranslations[B] = fa.map(f)
@@ -51,5 +59,10 @@ object cats {
 
     override def foldRight[A, B](fa: NonEmptyTranslations[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B] =
       (fa.default :: fa.translations.toList).map(_.value).foldr(lb)(f)
+  }
+
+  implicit val semigroupKNonEmptyTranslations: SemigroupK[NonEmptyTranslations] = new SemigroupK[NonEmptyTranslations] {
+    override def combineK[A](x: NonEmptyTranslations[A], y: NonEmptyTranslations[A]): NonEmptyTranslations[A] =
+      x concatNet y
   }
 }
