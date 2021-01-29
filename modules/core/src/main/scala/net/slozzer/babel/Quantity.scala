@@ -25,16 +25,20 @@ object Quantity {
 
   def unsafeRange(start: Int, end: Int): Quantity = Range(start, end)
 
-  def range(start: Int, end: Int): Option[Quantity] = Option.when(end >= start)(unsafeRange(start, end))
+  def range(start: Int, end: Int): Option[Quantity] = if (start == end) Some(exact(start))
+  else if (end >= start) Some(unsafeRange(start, end))
+  else None
 
-  def parse(value: String): Either[String, Quantity] = value.split("-", 2) match {
-    case Array(value) => value.toIntOption.toRight(s"Not a valid integer: $value").map(exact)
-    case Array(start, end) =>
-      for {
-        start <- start.toIntOption.toRight(s"Not a valid integer: $start")
-        end <- end.toIntOption.toRight(s"Not a valid integer: $end")
-        range <- range(start, end).toRight("Invalid range values")
-      } yield range
-    case _ => Left("Invalid range")
-  }
+  private val regex = "^(-?\\d+)(?:-(-?\\d+))?$".r
+
+  def parse(value: String): Either[String, Quantity] =
+    regex.findFirstMatchIn(value).toRight("Invalid quantity").flatMap { matsch =>
+      matsch.group(1).toIntOption.toRight("Invalid integer").flatMap { start =>
+        Option(matsch.group(2)) match {
+          case Some(end) =>
+            end.toIntOption.toRight("Invalid integer").flatMap(range(start, _).toRight("Invalid range"))
+          case None => Right(exact(start))
+        }
+      }
+    }
 }
