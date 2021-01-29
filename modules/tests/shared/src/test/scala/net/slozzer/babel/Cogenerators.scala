@@ -13,6 +13,17 @@ object Cogenerators {
     (locale.language, locale.country)
   }
 
+  implicit val quantity: Cogen[Quantity] = Cogen[Either[Int, (Int, Int)]].contramap {
+    case Quantity.Exact(value)      => Left(value)
+    case Quantity.Range(start, end) => Right((start, end))
+  }
+
+  implicit def quantitiesElement[A: Cogen]: Cogen[Quantities.Element[A]] =
+    Cogen[(Quantity, A)].contramap(element => (element.quantity, element.value))
+
+  implicit def quantities[A: Cogen]: Cogen[Quantities[A]] =
+    Cogen[(A, List[Quantities.Element[A]])].contramap(quantities => (quantities.default, quantities.quantities))
+
   implicit def translation[A: Cogen]: Cogen[Translation[A]] = Cogen[(Locale, A)].contramap(_.toTuple)
 
   implicit def translations[A: Cogen]: Cogen[Translations[A]] =

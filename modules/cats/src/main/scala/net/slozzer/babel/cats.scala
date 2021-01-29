@@ -3,14 +3,40 @@ package net.slozzer.babel
 import _root_.cats._
 import _root_.cats.implicits._
 
-object cats {
-  implicit val orderLanguage: Order[Language] = Order.by(_.value)
+object cats extends cats
 
-  implicit val orderCountry: Order[Country] = Order.by(_.value)
+trait cats extends cats1 {
+  implicit val eqQuantity: Eq[Quantity] = Eq.fromUniversalEquals
 
-  implicit val orderLocale: Order[Locale] = Order.by(locale => (locale.language, locale.country))
+  implicit def eqQuantitiesElement[A: Eq]: Eq[Quantities.Element[A]] =
+    Eq.by(element => (element.quantity, element.value))
 
-  implicit def eqTranslation[A: Eq]: Eq[Translation[A]] = Eq.by(_.toTuple)
+  implicit val traverseQuantitiesElement: Traverse[Quantities.Element] = new Traverse[Quantities.Element] {
+    override def traverse[G[_]: Applicative, A, B](fa: Quantities.Element[A])(f: A => G[B]): G[Quantities.Element[B]] =
+      f(fa.value).map(fa.as)
+
+    override def foldLeft[A, B](fa: Quantities.Element[A], b: B)(f: (B, A) => B): B = f(b, fa.value)
+
+    override def foldRight[A, B](fa: Quantities.Element[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B] =
+      f(fa.value, lb)
+  }
+
+  implicit def eqQuantities[A: Eq]: Eq[Quantities[A]] = Eq.by(quantities => (quantities.default, quantities.quantities))
+
+  implicit val traverseQuantities: Traverse[Quantities] = new Traverse[Quantities] {
+    override def traverse[G[_]: Applicative, A, B](fa: Quantities[A])(f: A => G[B]): G[Quantities[B]] =
+      (f(fa.default), fa.quantities.traverse(_.traverse(f))).mapN(Quantities[B])
+
+    override def foldLeft[A, B](fa: Quantities[A], b: B)(f: (B, A) => B): B =
+      (fa.default +: fa.quantities.map(_.value)).foldl(b)(f)
+
+    override def foldRight[A, B](fa: Quantities[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B] =
+      (fa.default +: fa.quantities.map(_.value)).foldr(lb)(f)
+  }
+
+  implicit val semigroupKQuantities: SemigroupK[Quantities] = new SemigroupK[Quantities] {
+    override def combineK[A](x: Quantities[A], y: Quantities[A]): Quantities[A] = x ++ y
+  }
 
   implicit def orderTranslation[A: Order]: Order[Translation[A]] = Order.by(_.toTuple)
 
@@ -65,4 +91,14 @@ object cats {
     override def combineK[A](x: NonEmptyTranslations[A], y: NonEmptyTranslations[A]): NonEmptyTranslations[A] =
       x concatNet y
   }
+}
+
+trait cats1 {
+  implicit val orderLanguage: Order[Language] = Order.by(_.value)
+
+  implicit val orderCountry: Order[Country] = Order.by(_.value)
+
+  implicit val orderLocale: Order[Locale] = Order.by(locale => (locale.language, locale.country))
+
+  implicit def eqTranslation[A: Eq]: Eq[Translation[A]] = Eq.by(_.toTuple)
 }
