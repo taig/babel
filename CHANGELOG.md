@@ -1,5 +1,13 @@
 # Changelog
 
+# 0.1.6
+
+_2021-01-29_
+
+ * Generate `StringFormatN` boilerplate up to n=22
+ * Update munit-cats-effect-2 to 0.13.0 (#106)
+ * Minor doc enhancements
+
 # 0.1.5
 
 _2021-01-28_
