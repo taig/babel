@@ -17,8 +17,12 @@ final case class Translations[+A](values: Map[Locale, A]) extends AnyVal {
 
   def locales: Set[Locale] = values.keySet
 
-  def toDictionary[B >: A](locale: Locale): Option[Dictionary[B]] =
-    values.get(locale).map(value => Dictionary(this - locale, (locale, value)))
+  /** Convert to `NonEmptyTranslations` using the given `Locale` as the fallback
+    *
+    * @return `None` if the given `Locale` is not present in this collection, `Some` of `NonEmptyTranslations` otherwise
+    */
+  def withFallback[B >: A](locale: Locale): Option[NonEmptyTranslations[B]] =
+    values.get(locale).map(value => NonEmptyTranslations(this - locale, (locale, value)))
 
   def toMap: Map[Locale, A] = values
 }

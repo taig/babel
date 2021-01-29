@@ -75,7 +75,7 @@ val i18ns = Blocker[IO].use { blocker =>
     .load("cookbook-country", Set(Locales.en, Locales.de))
     .map(Decoder[I18n].decodeAll)
     .rethrow
-    .map(_.toDictionary(Locales.en))
+    .map(_.withFallback(Locales.en))
     .flatMap(_.liftTo[IO](new IllegalStateException("Translations for en missing")))
 }.unsafeRunSync()
 ```

@@ -46,7 +46,7 @@ object I18n {
 }
 
 val i18ns = IO.fromEither(Decoder[I18n].decodeAll(babels))
-  .map(_.toDictionary(Locales.en))
+  .map(_.withFallback(Locales.en))
   .flatMap(_.liftTo[IO](new IllegalStateException("Translations for en missing")))
   .unsafeRunSync()
 ```

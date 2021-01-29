@@ -16,6 +16,6 @@ object Cogenerators {
   implicit def translations[A: Cogen]: Cogen[Translations[A]] =
     Cogen.cogenMap[Locale, A].contramap(_.values)
 
-  implicit def dictionary[A: Cogen]: Cogen[Dictionary[A]] =
+  implicit def dictionary[A: Cogen]: Cogen[NonEmptyTranslations[A]] =
     Cogen[(Translations[A], (Locale, A))].contramap(dictionary => (dictionary.translations, dictionary.fallback))
 }

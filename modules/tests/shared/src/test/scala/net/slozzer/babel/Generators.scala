@@ -17,9 +17,9 @@ object Generators {
 
   def translations[A](value: Gen[A]): Gen[Translations[A]] = Gen.mapOf(localeA(value)).map(Translations.apply)
 
-  def dictionary[A](value: Gen[A]): Gen[Dictionary[A]] =
+  def dictionary[A](value: Gen[A]): Gen[NonEmptyTranslations[A]] =
     for {
       translations <- translations(value)
       fallback <- localeA(value)
-    } yield Dictionary(translations, fallback)
+    } yield NonEmptyTranslations(translations, fallback)
 }

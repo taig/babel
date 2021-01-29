@@ -26,7 +26,7 @@ val i18n = Blocker[IO].use { blocker =>
     .load("plurals", Set(Locales.en))
     .map(Decoder[I18n].decodeAll)
     .rethrow
-    .map(_.toDictionary(Locales.en))
+    .map(_.withFallback(Locales.en))
     .flatMap(_.liftTo[IO](new IllegalStateException("Translations for en missing")))
     .map(_.apply(Locales.en))
 }.unsafeRunSync()
@@ -72,7 +72,7 @@ val i18n = Blocker[IO].use { blocker =>
     .load("plurals-arguments", Set(Locales.en))
     .map(Decoder[I18n].decodeAll)
     .rethrow
-    .map(_.toDictionary(Locales.en))
+    .map(_.withFallback(Locales.en))
     .flatMap(_.liftTo[IO](new IllegalStateException("Translations for en missing")))
     .map(_.apply(Locales.en))
 }.unsafeRunSync()

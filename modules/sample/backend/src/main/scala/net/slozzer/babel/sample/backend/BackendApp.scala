@@ -20,13 +20,13 @@ object SampleApp extends IOApp {
 
   val locales = Set(Locales.en)
 
-  def i18n[F[_]: Concurrent: ContextShift](blocker: Blocker): F[Dictionary[I18n]] =
+  def i18n[F[_]: Concurrent: ContextShift](blocker: Blocker): F[NonEmptyTranslations[I18n]] =
     Loader
       .default[F](blocker)
       .load("i18n", locales)
       .map(Decoder[I18n].decodeAll)
       .rethrow
-      .flatMap(_.toDictionary(Locales.en).liftTo[F](new IllegalStateException("Translations for en missing")))
+      .flatMap(_.withFallback(Locales.en).liftTo[F](new IllegalStateException("Translations for en missing")))
 
   override def run(args: List[String]): IO[ExitCode] =
     (for {
@@ -38,7 +38,8 @@ object SampleApp extends IOApp {
     } yield ExitCode.Success).use(_ => IO.never)
 }
 
-final class SampleRoutes[F[_]: Sync: ContextShift](blocker: Blocker, i18ns: Dictionary[I18n]) extends Http4sDsl[F] {
+final class SampleRoutes[F[_]: Sync: ContextShift](blocker: Blocker, i18ns: NonEmptyTranslations[I18n])
+    extends Http4sDsl[F] {
   def routes(locale: Locale): HttpRoutes[F] = HttpRoutes.of[F] {
     case GET -> Root =>
       val i18n = i18ns(locale)
@@ -70,6 +71,10 @@ final class SampleRoutes[F[_]: Sync: ContextShift](blocker: Blocker, i18ns: Dict
 }
 
 object SampleRoutes {
-  def apply[F[_]: Sync: ContextShift](blocker: Blocker, i18ns: Dictionary[I18n], locale: Locale): HttpRoutes[F] =
+  def apply[F[_]: Sync: ContextShift](
+      blocker: Blocker,
+      i18ns: NonEmptyTranslations[I18n],
+      locale: Locale
+  ): HttpRoutes[F] =
     new SampleRoutes[F](blocker, i18ns).routes(locale)
 }
