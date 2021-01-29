@@ -28,7 +28,7 @@ import scala.concurrent.ExecutionContext.global
 implicit val contextShift: ContextShift[IO] = IO.contextShift(global)
 ```
 
-```scala mdoc
+```scala mdoc:to-string
 import cats.effect._
 import cats.syntax.all._
 import net.slozzer.babel._

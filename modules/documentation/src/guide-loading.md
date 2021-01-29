@@ -23,7 +23,7 @@ import scala.concurrent.ExecutionContext.global
 implicit val contextShift: ContextShift[IO] = IO.contextShift(global)
 ```
 
-```scala mdoc
+```scala mdoc:to-string
 import cats.effect._
 import net.slozzer.babel._
 
@@ -34,7 +34,7 @@ val babels = Blocker[IO].use { blocker =>
 
 ## Decoding the `Babel` into a data class
 
-```scala mdoc
+```scala mdoc:to-string
 import cats.syntax.all._
 import net.slozzer.babel.generic.auto._
 import net.slozzer.babel.{Decoder, Encoder, Quantities, StringFormat1}
