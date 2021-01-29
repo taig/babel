@@ -3,15 +3,9 @@ package net.slozzer.babel
 import _root_.cats._
 import _root_.cats.implicits._
 
-object cats {
-  implicit val orderLanguage: Order[Language] = Order.by(_.value)
+object cats extends cats
 
-  implicit val orderCountry: Order[Country] = Order.by(_.value)
-
-  implicit val orderLocale: Order[Locale] = Order.by(locale => (locale.language, locale.country))
-
-  implicit def eqTranslation[A: Eq]: Eq[Translation[A]] = Eq.by(_.toTuple)
-
+trait cats extends cats1 {
   implicit def orderTranslation[A: Order]: Order[Translation[A]] = Order.by(_.toTuple)
 
   implicit val traverseTranslation: Traverse[Translation] = new Traverse[Translation] {
@@ -65,4 +59,14 @@ object cats {
     override def combineK[A](x: NonEmptyTranslations[A], y: NonEmptyTranslations[A]): NonEmptyTranslations[A] =
       x concatNet y
   }
+}
+
+trait cats1 {
+  implicit val orderLanguage: Order[Language] = Order.by(_.value)
+
+  implicit val orderCountry: Order[Country] = Order.by(_.value)
+
+  implicit val orderLocale: Order[Locale] = Order.by(locale => (locale.language, locale.country))
+
+  implicit def eqTranslation[A: Eq]: Eq[Translation[A]] = Eq.by(_.toTuple)
 }

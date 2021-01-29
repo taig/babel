@@ -3,6 +3,11 @@ package net.slozzer.babel
 final case class Quantities[A](default: A, quantities: List[Quantities.Element[A]]) {
   def apply(quantity: Int): A = quantities.find(_.quantity.matches(quantity)).map(_.value).getOrElse(default)
 
+  def map[B](f: A => B): Quantities[B] = Quantities(f(default), quantities.map(_.map(f)))
+
+  def mapWithQuantity[B](f: (Option[Quantity], A) => B): Quantities[B] =
+    Quantities(f(None, default), quantities.map(_.mapWithQuantity((quantity, value) => f(Some(quantity), value))))
+
   override def toString: String =
     if (quantities.isEmpty) s""""$default"""" else s"""{${quantities.mkString(", ")}, *: "$default"}"""
 }
