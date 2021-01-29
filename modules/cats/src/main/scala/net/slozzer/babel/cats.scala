@@ -6,6 +6,38 @@ import _root_.cats.implicits._
 object cats extends cats
 
 trait cats extends cats1 {
+  implicit val eqQuantity: Eq[Quantity] = Eq.fromUniversalEquals
+
+  implicit def eqQuantitiesElement[A: Eq]: Eq[Quantities.Element[A]] =
+    Eq.by(element => (element.quantity, element.value))
+
+  implicit val traverseQuantitiesElement: Traverse[Quantities.Element] = new Traverse[Quantities.Element] {
+    override def traverse[G[_]: Applicative, A, B](fa: Quantities.Element[A])(f: A => G[B]): G[Quantities.Element[B]] =
+      f(fa.value).map(fa.as)
+
+    override def foldLeft[A, B](fa: Quantities.Element[A], b: B)(f: (B, A) => B): B = f(b, fa.value)
+
+    override def foldRight[A, B](fa: Quantities.Element[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B] =
+      f(fa.value, lb)
+  }
+
+  implicit def eqQuantities[A: Eq]: Eq[Quantities[A]] = Eq.by(quantities => (quantities.default, quantities.quantities))
+
+  implicit val traverseQuantities: Traverse[Quantities] = new Traverse[Quantities] {
+    override def traverse[G[_]: Applicative, A, B](fa: Quantities[A])(f: A => G[B]): G[Quantities[B]] =
+      (f(fa.default), fa.quantities.traverse(_.traverse(f))).mapN(Quantities[B])
+
+    override def foldLeft[A, B](fa: Quantities[A], b: B)(f: (B, A) => B): B =
+      (fa.default +: fa.quantities.map(_.value)).foldl(b)(f)
+
+    override def foldRight[A, B](fa: Quantities[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B] =
+      (fa.default +: fa.quantities.map(_.value)).foldr(lb)(f)
+  }
+
+  implicit val semigroupKQuantities: SemigroupK[Quantities] = new SemigroupK[Quantities] {
+    override def combineK[A](x: Quantities[A], y: Quantities[A]): Quantities[A] = x ++ y
+  }
+
   implicit def orderTranslation[A: Order]: Order[Translation[A]] = Order.by(_.toTuple)
 
   implicit val traverseTranslation: Traverse[Translation] = new Traverse[Translation] {

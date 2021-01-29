@@ -8,6 +8,9 @@ final case class Quantities[A](default: A, quantities: List[Quantities.Element[A
   def mapWithQuantity[B](f: (Option[Quantity], A) => B): Quantities[B] =
     Quantities(f(None, default), quantities.map(_.mapWithQuantity((quantity, value) => f(Some(quantity), value))))
 
+  def ++(quantities: Quantities[A]): Quantities[A] =
+    Quantities(quantities.default, this.quantities ++ quantities.quantities)
+
   override def toString: String =
     if (quantities.isEmpty) s""""$default"""" else s"""{${quantities.mkString(", ")}, *: "$default"}"""
 }
@@ -17,6 +20,8 @@ object Quantities {
 
   final case class Element[A](quantity: Quantity, value: A) {
     def map[B](f: A => B): Element[B] = copy(value = f(value))
+
+    def as[B](value: B): Element[B] = map(_ => value)
 
     def mapWithQuantity[B](f: (Quantity, A) => B): Element[B] = copy(value = f(quantity, value))
 
