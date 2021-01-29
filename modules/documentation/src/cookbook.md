@@ -1,8 +1,8 @@
 # Cookbook
 
-## Resolve the user's preferred language from the `Accept-Language` header in an http4s middleware
+## Resolve the preferred language from the `Accept-Language` header in an http4s middleware
 
-Uses Java's `Locale.LanguageRange.parse` to lift the `Accept-Language` header value into an ordered list of `Locale`s and aligns it with the `Locale`s that are supported by the application.
+Uses Java's `Locale.LanguageRange.parse` to lift the `Accept-Language` header value into an ordered list of `java.util.Locale`s and aligns it with the `Locale`s that are supported by the application.
 
 ```scala mdoc
 import java.util.{Locale => JavaLocale}
@@ -34,4 +34,56 @@ final class LocalesMiddleware[F[_]: Defer](locales: Set[Locale], fallback: Local
       routes(locale).run(request)
     }
 }
+```
+
+## Working with ADTs
+
+Add simple helper methods to your data classes to make them easier to use. This works especially well for ADT lookups.
+
+```scala mdoc:invisible
+import cats.effect.{ContextShift, IO}
+import scala.concurrent.ExecutionContext.global
+
+implicit val contextShift: ContextShift[IO] = IO.contextShift(global)
+```
+
+```scala mdoc:to-string
+import cats.effect._
+import cats.syntax.all._
+import net.slozzer.babel._
+import net.slozzer.babel.generic.auto._
+
+sealed abstract class Country extends Product with Serializable
+
+object Country {
+  final case object France extends Country
+  final case object Italy extends Country
+}
+
+final case class CountryI18n(france: String, italy: String) {
+  def apply(country: Country): String = country match {
+    case Country.France => france
+    case Country.Italy => italy
+  }
+}
+
+final case class I18n(country: CountryI18n)
+
+val i18ns = Blocker[IO].use { blocker =>
+  Loader
+    .default[IO](blocker)
+    .load("cookbook-country", Set(Locales.en, Locales.de))
+    .map(Decoder[I18n].decodeAll)
+    .rethrow
+    .map(_.toDictionary(Locales.en))
+    .flatMap(_.liftTo[IO](new IllegalStateException("Translations for en missing")))
+}.unsafeRunSync()
+```
+
+```scala mdoc
+i18ns(Locales.en).country(Country.Italy)
+```
+
+```scala mdoc
+i18ns(Locales.de).country(Country.France)
 ```
