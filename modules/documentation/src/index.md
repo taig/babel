@@ -4,6 +4,7 @@
 * [Guide](guide.md)
 * [Sample application](sample.md)
 * [Cookbook](cookbook.md)
+* [Changelog](changelog.md)
 
 @@@
 
