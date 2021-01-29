@@ -1,5 +1,16 @@
 # Changelog
 
+# 0.2.0
+
+_2021-01-29_
+
+ * Add `MonoidK` instance for `Translations`
+ * Add ``SemigroupK`` instance for `NonEmptyTranslations`
+ * Rename `Dictionaty` to `NonEmptyTranslations`
+ * Rename `Translations.toDictionary` to `.withFallback`
+ * Streamline collection APIs
+ * Improve docs
+
 # 0.1.6
 
 _2021-01-29_
