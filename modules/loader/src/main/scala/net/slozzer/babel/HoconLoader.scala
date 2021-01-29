@@ -13,7 +13,7 @@ final class HoconLoader[F[_]: Sync: ContextShift](blocker: Blocker) extends Load
         val resource = if (base.isEmpty) locale.printLanguageTag else s"$base/${locale.printLanguageTag}"
         blocker.delay(ConfigFactory.parseResourcesAnySyntax(resource)).tupleLeft(locale)
       }
-      .map(configs => configs.traverse { case (locale, config) => toBabel(config).tupleLeft(locale) })
+      .map(configs => configs.traverse { case (locale, config) => toBabel(config).map(Translation(locale, _)) })
       .rethrow
       .map(Translations.from)
 

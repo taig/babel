@@ -11,10 +11,10 @@ trait Decoder[A] {
   protected[babel] def decode(babel: Babel, path: Path): Either[Decoder.Error, A]
 
   final def decodeAll(translations: Translations[Babel]): Either[Decoder.Error, Translations[A]] =
-    translations.values.foldLeft[Either[Decoder.Error, Translations[A]]](Right(Translations.Empty)) {
-      case (Right(translations), (locale, babel)) =>
-        decode(babel, Path.Root) match {
-          case Right(value)   => Right(translations + (locale -> value))
+    translations.toList.foldLeft[Either[Decoder.Error, Translations[A]]](Right(Translations.Empty)) {
+      case (Right(translations), translation) =>
+        decode(translation.value, Path.Root) match {
+          case Right(value)   => Right(translations + translation.as(value))
           case left @ Left(_) => left.asInstanceOf[Either[Decoder.Error, Translations[A]]]
         }
       case (left @ Left(_), _) => left

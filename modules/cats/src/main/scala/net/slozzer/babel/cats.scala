@@ -10,13 +10,24 @@ object cats {
 
   implicit val orderLocale: Order[Locale] = Order.by(locale => (locale.language, locale.country))
 
+  implicit def eqTranslation[A: Eq]: Eq[Translation[A]] = Eq.by(_.toTuple)
+
+  implicit val traverseTranslation: Traverse[Translation] = new Traverse[Translation] {
+    override def traverse[G[_]: Applicative, A, B](fa: Translation[A])(f: A => G[B]): G[Translation[B]] =
+      f(fa.value).map(fa.as)
+
+    override def foldLeft[A, B](fa: Translation[A], b: B)(f: (B, A) => B): B = f(b, fa.value)
+
+    override def foldRight[A, B](fa: Translation[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B] = f(fa.value, lb)
+  }
+
   implicit def eqTranslations[A: Eq]: Eq[Translations[A]] = Eq.by(_.values.toList.sortBy(_._1))
 
   implicit val traverseTranslations: Traverse[Translations] = new Traverse[Translations] {
     override def map[A, B](fa: Translations[A])(f: A => B): Translations[B] = fa.map(f)
 
     override def traverse[G[_]: Applicative, A, B](fa: Translations[A])(f: A => G[B]): G[Translations[B]] =
-      fa.toMap.toList.traverse { case (locale, a) => f(a).tupleLeft(locale) }.map(Translations.from)
+      fa.toMap.toList.traverse { case (locale, a) => f(a).map(Translation(locale, _)) }.map(Translations.from)
 
     override def foldLeft[A, B](fa: Translations[A], b: B)(f: (B, A) => B): B =
       fa.toMap.toList.foldl(b) { case (b, (_, a)) => f(b, a) }
@@ -25,20 +36,20 @@ object cats {
       fa.toMap.toList.foldr(lb) { case ((_, a), b) => f(a, b) }
   }
 
-  implicit def eqDictionary[A: Eq]: Eq[NonEmptyTranslations[A]] = Eq.by(_.toMap.toList.sortBy(_._1))
+  implicit def eqNonEmptyTranslations[A: Eq]: Eq[NonEmptyTranslations[A]] = Eq.by(_.toMap.toList.sortBy(_._1))
 
-  implicit val traverseDictionary: Traverse[NonEmptyTranslations] = new Traverse[NonEmptyTranslations] {
+  implicit val traverseNonEmptyTranslations: Traverse[NonEmptyTranslations] = new Traverse[NonEmptyTranslations] {
     override def map[A, B](fa: NonEmptyTranslations[A])(f: A => B): NonEmptyTranslations[B] = fa.map(f)
 
     override def traverse[G[_]: Applicative, A, B](fa: NonEmptyTranslations[A])(
         f: A => G[B]
     ): G[NonEmptyTranslations[B]] =
-      (fa.translations.traverse(f), f(fa.fallback._2).tupleLeft(fa.fallback._1)).mapN(NonEmptyTranslations[B])
+      (f(fa.default.value).map(fa.default.as), fa.translations.traverse(f)).mapN(NonEmptyTranslations[B])
 
     override def foldLeft[A, B](fa: NonEmptyTranslations[A], b: B)(f: (B, A) => B): B =
-      (fa.fallback :: fa.translations.toMap.toList).map(_._2).foldl(b)(f)
+      (fa.default :: fa.translations.toList).map(_.value).foldl(b)(f)
 
     override def foldRight[A, B](fa: NonEmptyTranslations[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B] =
-      (fa.fallback :: fa.translations.toMap.toList).map(_._2).foldr(lb)(f)
+      (fa.default :: fa.translations.toList).map(_.value).foldr(lb)(f)
   }
 }

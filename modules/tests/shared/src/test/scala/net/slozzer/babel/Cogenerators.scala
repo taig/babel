@@ -13,9 +13,13 @@ object Cogenerators {
     (locale.language, locale.country)
   }
 
+  implicit def translation[A: Cogen]: Cogen[Translation[A]] = Cogen[(Locale, A)].contramap(_.toTuple)
+
   implicit def translations[A: Cogen]: Cogen[Translations[A]] =
     Cogen.cogenMap[Locale, A].contramap(_.values)
 
-  implicit def dictionary[A: Cogen]: Cogen[NonEmptyTranslations[A]] =
-    Cogen[(Translations[A], (Locale, A))].contramap(dictionary => (dictionary.translations, dictionary.fallback))
+  implicit def nonEmptyTranslations[A: Cogen]: Cogen[NonEmptyTranslations[A]] =
+    Cogen[(Translation[A], Translations[A])].contramap(translations =>
+      (translations.default, translations.translations)
+    )
 }

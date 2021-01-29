@@ -9,17 +9,17 @@ object Generators {
 
   val locale: Gen[Locale] = Gen.oneOf(Locales.All)
 
-  private def localeA[A](value: Gen[A]): Gen[(Locale, A)] =
+  def translation[A](value: Gen[A]): Gen[Translation[A]] =
     for {
       locale <- locale
       value <- value
-    } yield (locale, value)
+    } yield Translation(locale, value)
 
-  def translations[A](value: Gen[A]): Gen[Translations[A]] = Gen.mapOf(localeA(value)).map(Translations.apply)
+  def translations[A](value: Gen[A]): Gen[Translations[A]] = Gen.listOf(translation(value)).map(Translations.from)
 
-  def dictionary[A](value: Gen[A]): Gen[NonEmptyTranslations[A]] =
+  def nonEmptyTranslations[A](value: Gen[A]): Gen[NonEmptyTranslations[A]] =
     for {
+      default <- translation(value)
       translations <- translations(value)
-      fallback <- localeA(value)
-    } yield NonEmptyTranslations(translations, fallback)
+    } yield NonEmptyTranslations(default, translations)
 }

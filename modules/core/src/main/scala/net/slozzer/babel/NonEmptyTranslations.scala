@@ -1,39 +1,39 @@
 package net.slozzer.babel
 
 /** A non-empty version of `Translations` that has a fallback translation */
-final case class NonEmptyTranslations[A](translations: Translations[A], fallback: (Locale, A)) {
-  def get(locale: Locale): (Locale, A) =
-    translations
-      .get(locale)
-      .map((locale, _))
-      .orElse(translations.get(locale.withoutCountry).map((locale.withoutCountry, _)))
-      .getOrElse(fallback)
+final case class NonEmptyTranslations[A](default: Translation[A], translations: Translations[A]) {
+  def get(locale: Locale): Translation[A] = translations.get(locale).getOrElse(default)
 
-  def apply(locale: Locale): A = get(locale)._2
+  def apply(locale: Locale): A = get(locale).value
 
-  def map[B](f: A => B): NonEmptyTranslations[B] =
-    NonEmptyTranslations(translations.map(f), (fallback._1, f(fallback._2)))
+  def map[B](f: A => B): NonEmptyTranslations[B] = NonEmptyTranslations(default.map(f), translations.map(f))
 
   def mapWithLocale[B](f: (Locale, A) => B): NonEmptyTranslations[B] =
-    NonEmptyTranslations(translations.mapWithLocale(f), (fallback._1, f(fallback._1, fallback._2)))
+    NonEmptyTranslations(default.mapWithLocale(f), translations.mapWithLocale(f))
 
-  def ++[B >: A](dictionary: NonEmptyTranslations[B]): NonEmptyTranslations[B] =
-    NonEmptyTranslations(translations ++ dictionary.translations, dictionary.fallback)
+  def concat[B >: A](translations: Translations[B]): NonEmptyTranslations[B] =
+    NonEmptyTranslations(default, this.translations ++ translations)
 
-  def +[B >: A](value: (Locale, B)): NonEmptyTranslations[B] =
-    if (fallback._1 == value._1) copy(fallback = value) else copy(translations = translations + value)
+  def concatNet[B >: A](translations: NonEmptyTranslations[B]): NonEmptyTranslations[B] =
+    NonEmptyTranslations(translations.default, this.translations ++ translations.translations)
 
-  def toTranslations: Translations[A] = translations + fallback
+  def +[B >: A](translation: Translation[B]): NonEmptyTranslations[B] =
+    if (default.locale == translation.locale) copy(default = translation)
+    else copy(translations = translations + translation)
 
-  def locales: Set[Locale] = translations.locales + fallback._1
+  def toTranslations: Translations[A] = translations + default
 
-  def toMap: Map[Locale, A] = translations.toMap + fallback
+  def locales: Set[Locale] = translations.locales + default.locale
+
+  def toMap: Map[Locale, A] = translations.toMap + default.toTuple
+
+  def toList: List[Translation[A]] = toMap.map((Translation[A] _).tupled).toList
 }
 
 object NonEmptyTranslations {
-  def from[A](fallback: (Locale, A), translations: Iterable[(Locale, A)]): NonEmptyTranslations[A] =
-    NonEmptyTranslations(Translations.from(translations), fallback)
+  def from[A](default: Translation[A], translations: Iterable[Translation[A]]): NonEmptyTranslations[A] =
+    NonEmptyTranslations(default, Translations.from(translations))
 
-  def of[A](fallback: (Locale, A), translations: (Locale, A)*): NonEmptyTranslations[A] =
-    NonEmptyTranslations.from(fallback, translations)
+  def of[A](default: Translation[A], translations: Translation[A]*): NonEmptyTranslations[A] =
+    NonEmptyTranslations.from(default, translations)
 }

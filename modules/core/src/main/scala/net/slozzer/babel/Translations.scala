@@ -2,7 +2,13 @@ package net.slozzer.babel
 
 /** A `Map`-like structure with `Locale`-keys */
 final case class Translations[+A](values: Map[Locale, A]) extends AnyVal {
-  def get(locale: Locale): Option[A] = values.get(locale)
+  def get(locale: Locale): Option[Translation[A]] =
+    values
+      .get(locale)
+      .map(Translation(locale, _))
+      .orElse(values.get(locale.withoutCountry).map(Translation(locale.withoutCountry, _)))
+
+  def apply(locale: Locale): Option[A] = get(locale).map(_.value)
 
   def map[B](f: A => B): Translations[B] = Translations(values.map { case (locale, value) => (locale, f(value)) })
 
@@ -11,7 +17,7 @@ final case class Translations[+A](values: Map[Locale, A]) extends AnyVal {
 
   def ++[B >: A](translations: Translations[B]): Translations[B] = Translations(values ++ translations.values)
 
-  def +[B >: A](value: (Locale, B)): Translations[B] = Translations(values + value)
+  def +[B >: A](translation: Translation[B]): Translations[B] = Translations(values + translation.toTuple)
 
   def -(locale: Locale): Translations[A] = Translations(values - locale)
 
@@ -22,17 +28,17 @@ final case class Translations[+A](values: Map[Locale, A]) extends AnyVal {
     * @return `None` if the given `Locale` is not present in this collection, `Some` of `NonEmptyTranslations` otherwise
     */
   def withFallback[B >: A](locale: Locale): Option[NonEmptyTranslations[B]] =
-    values.get(locale).map(value => NonEmptyTranslations(this - locale, (locale, value)))
+    get(locale).map(NonEmptyTranslations(_, this - locale))
 
   def toMap: Map[Locale, A] = values
+
+  def toList: List[Translation[A]] = toMap.map((Translation[A] _).tupled).toList
 }
 
 object Translations {
   val Empty: Translations[Nothing] = Translations(Map.empty)
 
-  def from[A](values: Iterable[(Locale, A)]): Translations[A] = Translations(values.toMap)
+  def from[A](values: Iterable[Translation[A]]): Translations[A] = Translations(values.map(_.toTuple).toMap)
 
-  def of[A](values: (Locale, A)*): Translations[A] = from(values)
-
-  def one[A](locale: Locale, value: A): Translations[A] = Translations(Map(locale -> value))
+  def of[A](values: Translation[A]*): Translations[A] = from(values)
 }
