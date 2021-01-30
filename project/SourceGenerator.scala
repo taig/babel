@@ -81,19 +81,21 @@ object SourceGenerator {
        |// $$COVERAGE-ON$$""".stripMargin
 
   def stringFormat(n: Int): String = {
+    val indices = 0 until n
+
     s"""abstract class StringFormat$n {
-       |  def apply(${(1 to n).map(i => s"v$i: String").mkString(", ")}): String
+       |  def apply(${indices.map(i => s"v$i: String").mkString(", ")}): String
        |
        |  final override def toString: String =
-       |    apply(${(1 to n).map(i => s"StringFormat.marker($i)").mkString(", ")})
+       |    apply(${indices.map(i => s"StringFormat.marker($i)").mkString(", ")})
        |}
        |
        |object StringFormat$n {
        |  implicit val encoder: Encoder[StringFormat$n] = Encoder[String].contramap(_.toString)
        |
        |  implicit val decoder: Decoder[StringFormat$n] = StringFormat.decoder($n) { (head, segments) =>
-       |    (${(1 to n).map(i => s"v$i").mkString(", ")}) =>
-       |      StringFormat.build(head, segments, Vector(${(1 to n).map(i => s"v$i").mkString(", ")}))
+       |    (${indices.map(i => s"v$i").mkString(", ")}) =>
+       |      StringFormat.build(head, segments, Vector(${indices.map(i => s"v$i").mkString(", ")}))
        |  }
        |}""".stripMargin
   }
