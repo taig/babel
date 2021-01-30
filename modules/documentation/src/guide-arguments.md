@@ -6,7 +6,7 @@ Babel's `StringFormat` does not automatically render arbitrary types (as `String
 
 - Parameter placeholders are encoded in the style of `java.text.MessageFormat`, starting at index `0` (e.g. `{0}`, `{1}`, ...)
 - Each placeholder index may be used at most once (e.g. `"lorem {0} dolar {0}"` is not allowed)
-- The order of the placeholders may vary across translation (e.g. "The {0} {1} is fast" and "El {1} {0} es rapido")
+- The order of the placeholders may vary across translations (e.g. "The {0} {1} is fast" and "El {1} {0} es rapido")
 - There can not be more placeholders than arguments (e.g. `StringFormat1` can not be decoded when there is `{0}` and `{1}` as there is only 1 argument)
 - It is a decoding error to define placeholder indices that exceed the `StringFormatN` arity (e.g. `StringFormat2` may only use `{0}` and `{1}`, but not `{2}`)
 - Not all placeholders must be use (e.g. "Good afternoon, {0}. Today it's {1} degrees." and "Guten Tag, sehr geehrte Damen und Herren. Heute sind es {1} Grad.")
