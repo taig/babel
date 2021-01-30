@@ -1,3 +1,4 @@
+<!--- #main --->
 # Babel
 
 > Internationalization (i18n) for Scala applications
@@ -17,3 +18,6 @@
 - Easily share translations of a specific language with the frontend in JSON format
 - Typesafe alternative to `String.format` or `java.util.MessageFormat` argument injection
 - Dependency-free `core` module
+<!--- #main --->
+
+Please proceed to [babel.slozzer.net](https://babel.slozzer.net) for more information.
