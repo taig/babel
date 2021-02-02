@@ -1,15 +1,15 @@
 # Argument passing
 
-Babel has helpers like `StringFormat1`, `StringFormat2`, etc. to help you insert arguments into Strings. In that regard it is similar to `java.lang.String.format` or `java.text.MessageFormat.format` but provides better compile time checks.
+Babel has helpers like `StringFormat1`, `StringFormat2`, ..., `StringFormat22`. to help you inject arguments into Strings. In that regard it is similar to `java.lang.String.format` or `java.text.MessageFormat.format` but provides better compile time checks.
 
 Babel's `StringFormat` does not automatically render arbitrary types (as `String.format` does for numeric values). It only accepts `String` values, so the caller is responsible for converting the value to a renderable format beforehand.
 
 - Parameter placeholders are encoded in the style of `java.text.MessageFormat`, starting at index `0` (e.g. `{0}`, `{1}`, ...)
 - Each placeholder index may be used at most once (e.g. `"lorem {0} dolar {0}"` is not allowed)
-- The order of the placeholders may vary across translations (e.g. "The {0} {1} is fast" and "El {1} {0} es rapido")
-- There can not be more placeholders than arguments (e.g. `StringFormat1` can not be decoded when there is `{0}` and `{1}` as there is only 1 argument)
+- The order of the placeholders may vary across translations (e.g. `"The {0} {1} is fast"` and `"El {1} {0} es rapido"`)
+- There can not be more placeholders than arguments (e.g. `StringFormat1` can not be decoded when there is `{0}` and `{1}` as there is only 1 parameter)
 - It is a decoding error to define placeholder indices that exceed the `StringFormatN` arity (e.g. `StringFormat2` may only use `{0}` and `{1}`, but not `{2}`)
-- Not all placeholders must be use (e.g. "Good afternoon, {0}. Today it's {1} degrees." and "Guten Tag, sehr geehrte Damen und Herren. Heute sind es {1} Grad.")
+- Not all placeholders must be uses (e.g. `"Good afternoon, {0}. Today it's {1} degrees."` and `"Guten Tag, sehr geehrte Damen und Herren. Heute sind es {1} Grad."`)
 
 en.conf
 : @@snip [en.conf](/modules/documentation/resources/arguments/en.conf)
@@ -65,7 +65,7 @@ In the above example we have used `StringFormat2`, which means that exactly 2 ar
 i18ns(Locales.en).weather("Stockholm")
 ```
 
-However, it is allowed not to make use of all parameters when defining the translation.
+However, it is allowed to omit parameters.
 
 ```scala mdoc
 Decoder[StringFormat2]
