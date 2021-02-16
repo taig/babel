@@ -4,7 +4,7 @@ addSbtPlugin("com.lightbend.paradox" % "sbt-paradox" % "0.9.1")
 
 addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % "1.1.0")
 
-addSbtPlugin("io.taig" % "sbt-houserules" % "0.3.2")
+addSbtPlugin("io.taig" % "sbt-houserules" % "0.3.3")
 
 addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "1.0.0")
 
