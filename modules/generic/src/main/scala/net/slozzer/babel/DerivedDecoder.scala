@@ -2,15 +2,12 @@ package net.slozzer.babel
 
 import shapeless.labelled.{field, FieldType}
 import shapeless.{::, HList, HNil, LabelledGeneric, Witness}
-import simulacrum.typeclass
 
-import scala.annotation.nowarn
-
-@nowarn("msg=Unused import")
-@typeclass
 trait DerivedDecoder[A] extends Decoder[A]
 
 object DerivedDecoder {
+  def apply[A](implicit decoder: DerivedDecoder[A]): DerivedDecoder[A] = decoder
+
   implicit val hnil: DerivedDecoder[HNil] = (_, _) => Right(HNil)
 
   implicit def hcons[K <: Symbol, A, T <: HList](implicit

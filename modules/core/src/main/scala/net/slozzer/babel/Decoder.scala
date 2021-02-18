@@ -1,12 +1,5 @@
 package net.slozzer.babel
 
-import simulacrum.typeclass
-
-import scala.annotation.nowarn
-import scala.util.Try
-
-@nowarn("msg=Unused import")
-@typeclass
 trait Decoder[A] {
   final def decode(babel: Babel): Either[Decoder.Error, A] = decode(babel, Path.Root)
 
@@ -29,6 +22,8 @@ trait Decoder[A] {
 }
 
 object Decoder {
+  def apply[A](implicit decoder: Decoder[A]): Decoder[A] = decoder
+
   final case class Error(message: String, path: Path, cause: Option[Throwable])
       extends Exception(s"Failed to decode: $message ${path.printPlaceholder}", cause.orNull)
 

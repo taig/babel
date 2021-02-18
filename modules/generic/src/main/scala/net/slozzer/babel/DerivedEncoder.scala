@@ -2,17 +2,14 @@ package net.slozzer.babel
 
 import shapeless._
 import shapeless.labelled.FieldType
-import simulacrum.typeclass
 
-import scala.annotation.nowarn
-
-@nowarn("msg=Unused import")
-@typeclass
 trait DerivedEncoder[A] extends Encoder[A] {
   override def encode(value: A): Babel
 }
 
 object DerivedEncoder {
+  def apply[A](implicit encoder: DerivedEncoder[A]): DerivedEncoder[A] = encoder
+
   implicit val hnil: DerivedEncoder[HNil] = _ => Babel.Null
 
   implicit def hcons[K <: Symbol, A, T <: HList](implicit

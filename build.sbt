@@ -11,12 +11,15 @@ val Version = new {
   val ScalajsDom = "1.1.0"
   val Sconfig = "1.4.4"
   val Shapeless = "2.3.6"
+  val Scala213 = "2.13.5"
+  val Scala3 = "3.0.0"
   val Slf4j = "1.7.30"
 }
 
 noPublishSettings
 
-ThisBuild / scalaVersion := "2.13.5"
+ThisBuild / scalaVersion := Version.Scala3
+ThisBuild / crossScalaVersions := Version.Scala213 :: Version.Scala3 :: Nil
 
 ThisBuild / dynverVTagPrefix := false
 ThisBuild / homepage := Some(url("https://github.com/slozzer/babel/"))
