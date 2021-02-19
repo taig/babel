@@ -1,6 +1,6 @@
 addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.5.5")
 
-addSbtPlugin("com.lightbend.paradox" % "sbt-paradox" % "0.9.1")
+addSbtPlugin("com.lightbend.paradox" % "sbt-paradox" % "0.9.2")
 
 addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % "1.1.0")
 
