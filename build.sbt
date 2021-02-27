@@ -16,7 +16,7 @@ val Version = new {
 
 noPublishSettings
 
-ThisBuild / scalaVersion := "2.13.4"
+ThisBuild / scalaVersion := "2.13.5"
 
 ThisBuild / dynverVTagPrefix := false
 ThisBuild / homepage := Some(url("https://github.com/slozzer/babel/"))
