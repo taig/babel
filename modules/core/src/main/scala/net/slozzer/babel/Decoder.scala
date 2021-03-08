@@ -2,8 +2,10 @@ package net.slozzer.babel
 
 import simulacrum.typeclass
 
+import scala.annotation.nowarn
 import scala.util.Try
 
+@nowarn("msg=Unused import")
 @typeclass
 trait Decoder[A] {
   final def decode(babel: Babel): Either[Decoder.Error, A] = decode(babel, Path.Root)

@@ -2,6 +2,9 @@ package net.slozzer.babel
 
 import simulacrum.typeclass
 
+import scala.annotation.nowarn
+
+@nowarn("msg=Unused import")
 @typeclass
 trait Encoder[A] {
   def encode(value: A): Babel
