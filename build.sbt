@@ -36,19 +36,19 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/core"))
   .settings(
-    name := "babel-core",
-    sourceGenerators in Compile += Def.task {
+    Compile / sourceGenerators += Def.task {
       val pkg = s"${organization.value}.babel"
-      val languages = (sourceManaged in Compile).value / "Languages.scala"
+      val languages = (Compile / sourceManaged).value / "Languages.scala"
       IO.write(languages, SourceGenerator.languages(pkg))
-      val countries = (sourceManaged in Compile).value / "Countries.scala"
+      val countries = (Compile / sourceManaged).value / "Countries.scala"
       IO.write(countries, SourceGenerator.countries(pkg))
-      val locales = (sourceManaged in Compile).value / "Locales.scala"
+      val locales = (Compile / sourceManaged).value / "Locales.scala"
       IO.write(locales, SourceGenerator.locales(pkg))
-      val stringFormatN = (sourceManaged in Compile).value / "StringFormatN.scala"
+      val stringFormatN = (Compile / sourceManaged).value / "StringFormatN.scala"
       IO.write(stringFormatN, SourceGenerator.stringFormatN(pkg))
       Seq(languages, countries, locales, stringFormatN)
-    }.taskValue
+    }.taskValue,
+    name := "babel-core"
   )
 
 lazy val cats = crossProject(JSPlatform, JVMPlatform)
