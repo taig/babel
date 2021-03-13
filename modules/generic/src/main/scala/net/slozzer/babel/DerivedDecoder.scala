@@ -1,6 +1,6 @@
 package net.slozzer.babel
 
-import shapeless.labelled.{FieldType, field}
+import shapeless.labelled.{field, FieldType}
 import shapeless.{::, HList, HNil, LabelledGeneric, Witness}
 import simulacrum.typeclass
 

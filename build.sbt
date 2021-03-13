@@ -99,6 +99,7 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
 lazy val documentation = project
   .in(file("modules/documentation"))
   .enablePlugins(MdocPlugin, ParadoxPlugin)
+  .settings(noPublishSettings)
   .settings(
     libraryDependencies ++=
       "org.http4s" %% "http4s-blaze-server" % Version.Http4s ::
