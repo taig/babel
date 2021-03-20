@@ -3,7 +3,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 val Version = new {
   val Cats = "2.6.1"
   val CatsEffect = "3.1.1"
-  val Circe = "0.13.0"
+  val Circe = "0.14.0-M4"
   val DisciplineMunit = "1.0.9"
   val Http4s = "1.0.0-M21"
   val Munit = "0.7.26"
@@ -82,8 +82,7 @@ lazy val generic = crossProject(JSPlatform, JVMPlatform)
   .in(file("modules/generic"))
   .settings(
     libraryDependencies ++=
-      "com.chuusai" %%% "shapeless" % Version.Shapeless ::
-        Nil,
+      (if (scalaVersion.value == Version.Scala3) Nil else "com.chuusai" %%% "shapeless" % Version.Shapeless :: Nil),
     name := "babel-generic"
   )
   .dependsOn(core)

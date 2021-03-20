@@ -13,9 +13,9 @@ sealed abstract class Quantity extends Product with Serializable {
 }
 
 object Quantity {
-  final case class Exact private (value: Int) extends Quantity
+  final case class Exact(value: Int) extends Quantity
 
-  final case class Range private (start: Int, end: Int) extends Quantity
+  final case class Range(start: Int, end: Int) extends Quantity
 
   val Zero: Quantity = exact(0)
 

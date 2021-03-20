@@ -57,19 +57,17 @@ object Decoder {
     case (babel, path)   => decoder.decode(babel, path).map(Some.apply)
   }
 
-  def numeric[A](f: String => Try[A], tpe: String): Decoder[A] = Decoder[String].emap { (value, path) =>
-    f(value).toEither.left.map { throwable =>
-      Error(s"Invalid numeric conversion to $tpe", path, cause = Some(throwable))
-    }
+  def numeric[A](f: String => Option[A], tpe: String): Decoder[A] = Decoder[String].emap { (value, path) =>
+    f(value).toRight(Error(s"Invalid numeric conversion to $tpe", path, cause = None))
   }
 
-  implicit val double: Decoder[Double] = numeric(value => Try(value.toDouble), "Double")
+  implicit val double: Decoder[Double] = numeric(value => value.toDoubleOption, "Double")
 
-  implicit val float: Decoder[Float] = numeric(value => Try(value.toFloat), "Float")
+  implicit val float: Decoder[Float] = numeric(value => value.toFloatOption, "Float")
 
-  implicit val int: Decoder[Int] = numeric(value => Try(value.toInt), "Int")
+  implicit val int: Decoder[Int] = numeric(value => value.toIntOption, "Int")
 
-  implicit val long: Decoder[Long] = numeric(value => Try(value.toLong), "Long")
+  implicit val long: Decoder[Long] = numeric(value => value.toLongOption, "Long")
 
-  implicit val short: Decoder[Short] = numeric(value => Try(value.toShort), "Short")
+  implicit val short: Decoder[Short] = numeric(value => value.toShortOption, "Short")
 }
