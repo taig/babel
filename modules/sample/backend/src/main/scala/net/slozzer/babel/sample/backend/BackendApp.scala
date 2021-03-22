@@ -31,7 +31,7 @@ object SampleApp extends IOApp {
   override def run(args: List[String]): IO[ExitCode] =
     (for {
       blocker <- Blocker[IO]
-      i18ns <- Resource.liftF(i18n[IO](blocker))
+      i18ns <- Resource.eval(i18n[IO](blocker))
       middleware = new LocalesMiddleware[IO](locales, fallback = Locales.en)
       app = middleware(SampleRoutes[IO](blocker, i18ns, _)).orNotFound
       _ <- server[IO](ExecutionContext.global, app)
