@@ -1,6 +1,6 @@
 package net.slozzer.babel.sample.backend
 
-import cats.effect.{Blocker, Concurrent, ConcurrentEffect, ContextShift, ExitCode, IO, IOApp, Resource, Sync, Timer}
+import cats.effect.{Concurrent, ConcurrentEffect, ExitCode, IO, IOApp, Resource, Sync}
 import cats.syntax.all._
 import net.slozzer.babel._
 import net.slozzer.babel.circe._
@@ -13,14 +13,15 @@ import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.{HttpApp, HttpRoutes, MediaType, StaticFile}
 
 import scala.concurrent.ExecutionContext
+import cats.effect.Temporal
 
 object SampleApp extends IOApp {
-  def server[F[_]: ConcurrentEffect: Timer](context: ExecutionContext, app: HttpApp[F]): Resource[F, Server[F]] =
+  def server[F[_]: ConcurrentEffect: Temporal](context: ExecutionContext, app: HttpApp[F]): Resource[F, Server[F]] =
     BlazeServerBuilder[F](context).bindHttp(host = "0.0.0.0").withHttpApp(app).resource
 
   val locales = Set(Locales.en)
 
-  def i18n[F[_]: Concurrent: ContextShift](blocker: Blocker): F[NonEmptyTranslations[I18n]] =
+  def i18n[F[_]: Concurrent: ContextShift]: F[NonEmptyTranslations[I18n]] =
     Loader
       .default[F](blocker)
       .load("i18n", locales)
@@ -30,7 +31,7 @@ object SampleApp extends IOApp {
 
   override def run(args: List[String]): IO[ExitCode] =
     (for {
-      blocker <- Blocker[IO]
+      blocker <- Resource.unit[IO]
       i18ns <- Resource.eval(i18n[IO](blocker))
       middleware = new LocalesMiddleware[IO](locales, fallback = Locales.en)
       app = middleware(SampleRoutes[IO](blocker, i18ns, _)).orNotFound
@@ -71,9 +72,7 @@ final class SampleRoutes[F[_]: Sync: ContextShift](blocker: Blocker, i18ns: NonE
 }
 
 object SampleRoutes {
-  def apply[F[_]: Sync: ContextShift](
-      blocker: Blocker,
-      i18ns: NonEmptyTranslations[I18n],
+  def apply[F[_]: Sync: ContextShift](i18ns: NonEmptyTranslations[I18n],
       locale: Locale
   ): HttpRoutes[F] =
     new SampleRoutes[F](blocker, i18ns).routes(locale)

@@ -1,6 +1,6 @@
 package net.slozzer.babel.sample.frontend
 
-import cats.effect.{Async, ContextShift, ExitCode, IO, IOApp, Sync}
+import cats.effect.{Async, ExitCode, IO, IOApp, Sync}
 import cats.syntax.all._
 import net.slozzer.babel.Decoder
 import net.slozzer.babel.circe.parser

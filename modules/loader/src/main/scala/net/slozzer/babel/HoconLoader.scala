@@ -1,6 +1,6 @@
 package net.slozzer.babel
 
-import cats.effect.{Blocker, ContextShift, Sync}
+import cats.effect.Sync
 import cats.syntax.all._
 import org.ekrich.config.{Config, ConfigFactory}
 
@@ -11,7 +11,7 @@ final class HoconLoader[F[_]: Sync: ContextShift](blocker: Blocker) extends Load
     locales.toList
       .traverse { locale =>
         val resource = if (base.isEmpty) locale.printLanguageTag else s"$base/${locale.printLanguageTag}"
-        blocker.delay(ConfigFactory.parseResourcesAnySyntax(resource)).tupleLeft(locale)
+        Sync[F].blocking(ConfigFactory.parseResourcesAnySyntax(resource)).tupleLeft(locale)
       }
       .map(configs => configs.traverse { case (locale, config) => toBabel(config).map(Translation(locale, _)) })
       .rethrow
@@ -44,5 +44,5 @@ final class HoconLoader[F[_]: Sync: ContextShift](blocker: Blocker) extends Load
 }
 
 object HoconLoader {
-  def apply[F[_]: Sync: ContextShift](blocker: Blocker): Loader[F] = new HoconLoader[F](blocker)
+  def apply[F[_]: Sync: ContextShift]: Loader[F] = new HoconLoader[F](blocker)
 }
