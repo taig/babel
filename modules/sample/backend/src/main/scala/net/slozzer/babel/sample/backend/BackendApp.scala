@@ -1,6 +1,6 @@
 package net.slozzer.babel.sample.backend
 
-import cats.effect.{Blocker, Concurrent, ConcurrentEffect, ContextShift, ExitCode, IO, IOApp, Resource, Sync, Timer}
+import cats.effect._
 import cats.syntax.all._
 import net.slozzer.babel._
 import net.slozzer.babel.circe._
@@ -15,14 +15,14 @@ import org.http4s.{HttpApp, HttpRoutes, MediaType, StaticFile}
 import scala.concurrent.ExecutionContext
 
 object SampleApp extends IOApp {
-  def server[F[_]: ConcurrentEffect: Timer](context: ExecutionContext, app: HttpApp[F]): Resource[F, Server[F]] =
+  def server[F[_]: Async](context: ExecutionContext, app: HttpApp[F]): Resource[F, Server] =
     BlazeServerBuilder[F](context).bindHttp(host = "0.0.0.0").withHttpApp(app).resource
 
   val locales = Set(Locales.en)
 
-  def i18n[F[_]: Concurrent: ContextShift](blocker: Blocker): F[NonEmptyTranslations[I18n]] =
+  def i18n[F[_]: Sync]: F[NonEmptyTranslations[I18n]] =
     Loader
-      .default[F](blocker)
+      .default[F]
       .load("i18n", locales)
       .map(Decoder[I18n].decodeAll)
       .rethrow
@@ -30,16 +30,14 @@ object SampleApp extends IOApp {
 
   override def run(args: List[String]): IO[ExitCode] =
     (for {
-      blocker <- Blocker[IO]
-      i18ns <- Resource.eval(i18n[IO](blocker))
+      i18ns <- Resource.eval(i18n[IO])
       middleware = new LocalesMiddleware[IO](locales, fallback = Locales.en)
-      app = middleware(SampleRoutes[IO](blocker, i18ns, _)).orNotFound
+      app = middleware(SampleRoutes[IO](i18ns, _)).orNotFound
       _ <- server[IO](ExecutionContext.global, app)
     } yield ExitCode.Success).use(_ => IO.never)
 }
 
-final class SampleRoutes[F[_]: Sync: ContextShift](blocker: Blocker, i18ns: NonEmptyTranslations[I18n])
-    extends Http4sDsl[F] {
+final class SampleRoutes[F[_]: Sync](i18ns: NonEmptyTranslations[I18n]) extends Http4sDsl[F] {
   def routes(locale: Locale): HttpRoutes[F] = HttpRoutes.of[F] {
     case GET -> Root =>
       val i18n = i18ns(locale)
@@ -63,7 +61,7 @@ final class SampleRoutes[F[_]: Sync: ContextShift](blocker: Blocker, i18ns: NonE
            |</html>""".stripMargin
       ).map(_.withContentType(`Content-Type`(MediaType.text.html)))
     case GET -> Root / "main.js" =>
-      StaticFile.fromResource[F]("public/babel-sample-frontend-fastopt.js", blocker).getOrElseF(NotFound())
+      StaticFile.fromResource[F]("public/babel-sample-frontend-fastopt.js").getOrElseF(NotFound())
     case GET -> Root / "i18n.json" =>
       Ok(printer.print(Encoder[I18n].encode(i18ns(locale))))
         .map(_.withContentType(`Content-Type`(MediaType.application.json)))
@@ -71,10 +69,6 @@ final class SampleRoutes[F[_]: Sync: ContextShift](blocker: Blocker, i18ns: NonE
 }
 
 object SampleRoutes {
-  def apply[F[_]: Sync: ContextShift](
-      blocker: Blocker,
-      i18ns: NonEmptyTranslations[I18n],
-      locale: Locale
-  ): HttpRoutes[F] =
-    new SampleRoutes[F](blocker, i18ns).routes(locale)
+  def apply[F[_]: Sync](i18ns: NonEmptyTranslations[I18n], locale: Locale): HttpRoutes[F] =
+    new SampleRoutes[F](i18ns).routes(locale)
 }

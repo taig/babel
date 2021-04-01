@@ -2,12 +2,12 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 val Version = new {
   val Cats = "2.5.0"
-  val CatsEffect = "2.4.0"
+  val CatsEffect = "3.0.1"
   val Circe = "0.13.0"
   val DisciplineMunit = "1.0.7"
-  val Http4s = "0.21.20"
+  val Http4s = "1.0.0-M20"
   val Munit = "0.7.23"
-  val MunitCatsEffect = "0.13.1"
+  val MunitCatsEffect = "1.0.1"
   val ScalajsDom = "1.1.0"
   val Sconfig = "1.4.1"
   val Shapeless = "2.3.3"
@@ -68,7 +68,7 @@ lazy val loader = crossProject(JSPlatform, JVMPlatform)
   .settings(
     libraryDependencies ++=
       "org.ekrich" %%% "sconfig" % Version.Sconfig ::
-        "org.typelevel" %%% "cats-effect" % Version.CatsEffect ::
+        "org.typelevel" %%% "cats-effect-kernel" % Version.CatsEffect ::
         Nil,
     name := "babel-loader"
   )
@@ -104,6 +104,9 @@ lazy val documentation = project
     libraryDependencies ++=
       "org.http4s" %% "http4s-blaze-server" % Version.Http4s ::
         Nil,
+    libraryDependencySchemes ++=
+      "org.typelevel" %% "cats-effect" % "always" ::
+        Nil,
     mdocIn := sourceDirectory.value,
     mdocVariables := Map(
       "ORGANIZATION" -> organization.value,
@@ -127,7 +130,7 @@ lazy val tests = crossProject(JSPlatform, JVMPlatform)
       "org.scalameta" %%% "munit" % Version.Munit % "test" ::
         "org.typelevel" %%% "cats-laws" % Version.Cats % "test" ::
         "org.typelevel" %%% "discipline-munit" % Version.DisciplineMunit % "test" ::
-        "org.typelevel" %%% "munit-cats-effect-2" % Version.MunitCatsEffect % "test" ::
+        "org.typelevel" %%% "munit-cats-effect-3" % Version.MunitCatsEffect % "test" ::
         "org.scalameta" %%% "munit-scalacheck" % Version.Munit % "test" ::
         Nil,
     name := "babel-tests",
@@ -157,6 +160,9 @@ lazy val sampleBackend = project
       "org.http4s" %% "http4s-dsl" % Version.Http4s ::
         "org.http4s" %% "http4s-blaze-server" % Version.Http4s ::
         "org.slf4j" % "slf4j-simple" % Version.Slf4j ::
+        Nil,
+    libraryDependencySchemes ++=
+      "org.typelevel" %% "cats-effect" % "always" ::
         Nil,
     name := "babel-sample-backend",
     Runtime / managedClasspath += (Assets / packageBin).value,

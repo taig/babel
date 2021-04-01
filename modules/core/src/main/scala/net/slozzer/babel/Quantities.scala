@@ -35,7 +35,7 @@ object Quantities {
 
   implicit def encoder[A: Encoder]: Encoder[Quantities[A]] = Encoder[Map[String, A]].contramap { quantities =>
     Map(Wildcard -> quantities.default) ++
-      quantities.quantities.map(element => element.toString -> element.value).toMap
+      quantities.quantities.map(element => element.quantity.toString -> element.value).toMap
   }
 
   implicit def decoder[A: Decoder]: Decoder[Quantities[A]] = Decoder[Map[String, A]].emap { (values, path) =>

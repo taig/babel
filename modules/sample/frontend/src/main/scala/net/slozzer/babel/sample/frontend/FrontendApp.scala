@@ -1,12 +1,12 @@
 package net.slozzer.babel.sample.frontend
 
-import cats.effect.{Async, ContextShift, ExitCode, IO, IOApp, Sync}
+import cats.effect._
 import cats.syntax.all._
 import net.slozzer.babel.Decoder
 import net.slozzer.babel.circe.parser
 import net.slozzer.sample.I18n
-import org.scalajs.dom.{document, Event}
 import org.scalajs.dom.ext.Ajax
+import org.scalajs.dom.{document, Event}
 
 object FrontendApp extends IOApp {
   override def run(args: List[String]): IO[ExitCode] =
@@ -29,8 +29,8 @@ object FrontendApp extends IOApp {
     )
   }
 
-  def request[F[_]: ContextShift](implicit F: Async[F]): F[I18n] =
-    Async
+  def request[F[_]](implicit F: Async[F]): F[I18n] =
+    F
       .fromFuture(F.delay(Ajax.get("http://localhost:8080/i18n.json")))
       .map(_.responseText)
       .map(parser.parse)
