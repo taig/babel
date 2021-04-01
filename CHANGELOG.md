@@ -1,6 +1,6 @@
 # Changelog
 
-# 0.3.0
+# 0.3.1
 
 _2021-04-01_
 
@@ -13,6 +13,12 @@ _2021-04-01_
  * Update sbt-scalajs to 1.5.1 (#146)
  * Update sbt-ci-release to 1.5.7 (#136)
  * Update sbt to 1.5.0-RC2 (#135)
+
+# 0.3.0
+
+_2021-04-01_
+
+Release failed, please use 0.3.0 instead
 
 # 0.2.1
 
