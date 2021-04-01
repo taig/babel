@@ -1,5 +1,19 @@
 # Changelog
 
+# 0.3.0
+
+_2021-04-01_
+
+ * Fix broken `Quantities` JSON encoder
+ * Upgrade to cats-effect 3
+ * Upgrade to discipline-munit 1.0.7
+ * Upgrade to munit 0.7.23
+ * Upgrade to cats 2.5.0
+ * Upgrade to sbt-mdoc 2.2.19
+ * Update sbt-scalajs to 1.5.1 (#146)
+ * Update sbt-ci-release to 1.5.7 (#136)
+ * Update sbt to 1.5.0-RC2 (#135)
+
 # 0.2.1
 
 _2021-03-22_
