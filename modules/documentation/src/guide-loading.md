@@ -16,20 +16,14 @@ de-AT.conf
 
 ## Loading translations into a `Babel`
 
-```scala mdoc:invisible
-import cats.effect.{ContextShift, IO}
-import scala.concurrent.ExecutionContext.global
-
-implicit val contextShift: ContextShift[IO] = IO.contextShift(global)
-```
-
 ```scala mdoc:to-string
 import cats.effect._
+import cats.effect.unsafe.implicits.global
 import net.slozzer.babel._
 
-val babels = Blocker[IO].use { blocker =>
-  Loader.default[IO](blocker).load("babel", Set(Locales.en, Locales.de, Locales.de_AT))
-}.unsafeRunSync()
+val babels = Loader.default[IO]
+  .load("babel", Set(Locales.en, Locales.de, Locales.de_AT))
+  .unsafeRunSync()
 ```
 
 ## Decoding the `Babel` into a data class
@@ -37,7 +31,6 @@ val babels = Blocker[IO].use { blocker =>
 ```scala mdoc:to-string
 import cats.syntax.all._
 import net.slozzer.babel.generic.auto._
-import net.slozzer.babel.{Decoder, Encoder, Quantities, StringFormat1}
 
 final case class I18n(greeting: String)
 

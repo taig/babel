@@ -23,30 +23,23 @@ In the German version, the parameters are called in swapped order.
 
 @@@
 
-```scala mdoc:invisible
-import cats.effect.{ContextShift, IO}
-import scala.concurrent.ExecutionContext.global
-
-implicit val contextShift: ContextShift[IO] = IO.contextShift(global)
-```
-
 ```scala mdoc:to-string
 import cats.effect._
+import cats.effect.unsafe.implicits.global
 import cats.syntax.all._
 import net.slozzer.babel._
 import net.slozzer.babel.generic.auto._
 
 final case class I18n(weather: StringFormat2)
 
-val i18ns = Blocker[IO].use { blocker =>
-  Loader
-    .default[IO](blocker)
-    .load("arguments", Set(Locales.en, Locales.de))
-    .map(Decoder[I18n].decodeAll)
-    .rethrow
-    .map(_.withFallback(Locales.en))
-    .flatMap(_.liftTo[IO](new IllegalStateException("Translations for en missing")))
-}.unsafeRunSync()
+val i18ns = Loader
+  .default[IO]
+  .load("arguments", Set(Locales.en, Locales.de))
+  .map(Decoder[I18n].decodeAll)
+  .rethrow
+  .map(_.withFallback(Locales.en))
+  .flatMap(_.liftTo[IO](new IllegalStateException("Translations for en missing")))
+  .unsafeRunSync()
 ```
 
 ```scala mdoc

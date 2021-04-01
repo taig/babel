@@ -5,31 +5,24 @@ Babel provides first class support for plurals with the `Quantities` class.
 en.conf
 : @@snip [en.conf](/modules/documentation/resources/plurals/en.conf)
 
-```scala mdoc:invisible
-import cats.effect.{ContextShift, IO}
-import scala.concurrent.ExecutionContext.global
-
-implicit val contextShift: ContextShift[IO] = IO.contextShift(global)
-```
-
 ```scala mdoc
 import cats.effect._
+import cats.effect.unsafe.implicits.global
 import cats.syntax.all._
 import net.slozzer.babel._
 import net.slozzer.babel.generic.auto._
 
 final case class I18n(bicycles: Quantities[String])
 
-val i18n = Blocker[IO].use { blocker =>
-  Loader
-    .default[IO](blocker)
-    .load("plurals", Set(Locales.en))
-    .map(Decoder[I18n].decodeAll)
-    .rethrow
-    .map(_.withFallback(Locales.en))
-    .flatMap(_.liftTo[IO](new IllegalStateException("Translations for en missing")))
-    .map(_.apply(Locales.en))
-}.unsafeRunSync()
+val i18n = Loader
+  .default[IO]
+  .load("plurals", Set(Locales.en))
+  .map(Decoder[I18n].decodeAll)
+  .rethrow
+  .map(_.withFallback(Locales.en))
+  .flatMap(_.liftTo[IO](new IllegalStateException("Translations for en missing")))
+  .map(_.apply(Locales.en))
+  .unsafeRunSync()
 ```
 
 ```scala mdoc
@@ -51,31 +44,24 @@ Of course, you will most likely want to reference the given quantity in your tra
 en.conf
 : @@snip [en.conf](/modules/documentation/resources/plurals-arguments/en.conf)
 
-```scala mdoc:invisible:reset
-import cats.effect.{ContextShift, IO}
-import scala.concurrent.ExecutionContext.global
-
-implicit val contextShift: ContextShift[IO] = IO.contextShift(global)
-```
-
-```scala mdoc:to-string
+```scala mdoc:to-string:reset
 import cats.effect._
+import cats.effect.unsafe.implicits.global
 import cats.syntax.all._
 import net.slozzer.babel._
 import net.slozzer.babel.generic.auto._
 
 final case class I18n(bicycles: Quantities[StringFormat1])
 
-val i18n = Blocker[IO].use { blocker =>
-  Loader
-    .default[IO](blocker)
-    .load("plurals-arguments", Set(Locales.en))
-    .map(Decoder[I18n].decodeAll)
-    .rethrow
-    .map(_.withFallback(Locales.en))
-    .flatMap(_.liftTo[IO](new IllegalStateException("Translations for en missing")))
-    .map(_.apply(Locales.en))
-}.unsafeRunSync()
+val i18n = Loader
+  .default[IO]
+  .load("plurals-arguments", Set(Locales.en))
+  .map(Decoder[I18n].decodeAll)
+  .rethrow
+  .map(_.withFallback(Locales.en))
+  .flatMap(_.liftTo[IO](new IllegalStateException("Translations for en missing")))
+  .map(_.apply(Locales.en))
+  .unsafeRunSync()
 ```
 
 ```scala mdoc
@@ -97,31 +83,24 @@ Some languages have very complex plural rules. These can be mapped with quantity
 en.conf
 : @@snip [en.conf](/modules/documentation/resources/plurals-ranges/en.conf)
 
-```scala mdoc:invisible:reset
-import cats.effect.{ContextShift, IO}
-import scala.concurrent.ExecutionContext.global
-
-implicit val contextShift: ContextShift[IO] = IO.contextShift(global)
-```
-
-```scala mdoc:to-string
+```scala mdoc:to-string:reset
 import cats.effect._
+import cats.effect.unsafe.implicits.global
 import cats.syntax.all._
 import net.slozzer.babel._
 import net.slozzer.babel.generic.auto._
 
 final case class I18n(ranges: Quantities[String])
 
-val i18n = Blocker[IO].use { blocker =>
-  Loader
-    .default[IO](blocker)
-    .load("plurals-ranges", Set(Locales.en))
-    .map(Decoder[I18n].decodeAll)
-    .rethrow
-    .map(_.withFallback(Locales.en))
-    .flatMap(_.liftTo[IO](new IllegalStateException("Translations for en missing")))
-    .map(_.apply(Locales.en))
-}.unsafeRunSync()
+val i18n = Loader
+  .default[IO]
+  .load("plurals-ranges", Set(Locales.en))
+  .map(Decoder[I18n].decodeAll)
+  .rethrow
+  .map(_.withFallback(Locales.en))
+  .flatMap(_.liftTo[IO](new IllegalStateException("Translations for en missing")))
+  .map(_.apply(Locales.en))
+  .unsafeRunSync()
 ```
 
 ```scala mdoc
