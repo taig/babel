@@ -10,7 +10,7 @@ val Version = new {
   val MunitCatsEffect = "1.0.3"
   val ScalajsDom = "1.1.0"
   val Sconfig = "1.4.4"
-  val Shapeless = "2.3.6"
+  val Shapeless = "2.3.7"
   val Slf4j = "1.7.30"
 }
 
