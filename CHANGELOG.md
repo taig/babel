@@ -1,22 +1,22 @@
 # Changelog
 
-# 0.3.2
+# 0.3.3
 
 _2021-05-28_
 
-* Update cats-core, cats-laws to 2.6.1 (#165)
-* Update cats-effect, cats-effect-kernel to 3.1.1 (#166)
-* Update circe-parser to 0.14.1 (#178)
-* Update discipline-munit to 1.0.9 (#167)
-* Update http4s-blaze-server, http4s-dsl to 1.0.0-M23 (#179)
-* Update mdoc, sbt-mdoc to 2.2.21 (#171)
-* Update munit, munit-scalacheck to 0.7.26 (#164)
-* Update munit-cats-effect-3 to 1.0.3 (#168)
-* Update sbt to 1.5.2 (#162)
-* Update sbt-houserules to 0.3.10 (#175)
-* Update scala-library to 2.13.6 (#174)
-* Update sconfig to 1.4.4 (#169)
-* Update shapeless to 2.3.7 (#173)
+ * Update cats-core, cats-laws to 2.6.1 (#165)
+ * Update cats-effect, cats-effect-kernel to 3.1.1 (#166)
+ * Update circe-parser to 0.14.1 (#178)
+ * Update discipline-munit to 1.0.9 (#167)
+ * Update http4s-blaze-server, http4s-dsl to 1.0.0-M23 (#179)
+ * Update mdoc, sbt-mdoc to 2.2.21 (#171)
+ * Update munit, munit-scalacheck to 0.7.26 (#164)
+ * Update munit-cats-effect-3 to 1.0.3 (#168)
+ * Update sbt to 1.5.2 (#162)
+ * Update sbt-houserules to 0.3.10 (#175)
+ * Update scala-library to 2.13.6 (#174)
+ * Update sconfig to 1.4.4 (#169)
+ * Update shapeless to 2.3.7 (#173)
 
 # 0.3.1
 
