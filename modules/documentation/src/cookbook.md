@@ -9,13 +9,13 @@ import java.util.{Locale => JavaLocale}
 
 import scala.jdk.CollectionConverters._
 
-import cats.Defer
+import cats.Monad
 import net.slozzer.babel.Locale
 import org.http4s.HttpRoutes
 import org.http4s.headers.`Accept-Language`
 import org.http4s.implicits._
 
-final class LocalesMiddleware[F[_]: Defer](locales: Set[Locale], fallback: Locale) {
+final class LocalesMiddleware[F[_]: Monad](locales: Set[Locale], fallback: Locale) {
   def apply(routes: Locale => HttpRoutes[F]): HttpRoutes[F] =
     HttpRoutes[F] { request =>
       val locale = request.headers
