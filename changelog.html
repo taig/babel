@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+<title>Changelog · Babel</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content='babel-documentation'/>
+<link rel="canonical" href="https://github.com/taig/babel/changelog.html"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:100normal,100italic,300normal,300italic,400normal,400italic,500normal,500italic,700normal,700italic,900normal,900italicc" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="js/page.js"></script>
+<script type="text/javascript" src="js/warnOldVersion.js"></script>
+<script type="text/javascript" src="js/groups.js"></script>
+<script type="text/javascript" src="js/snippets.js"></script>
+<link rel="stylesheet" type="text/css" href="lib/foundation/dist/foundation.min.css"/>
+<link rel="stylesheet" type="text/css" href="css/page.css"/>
+
+<!--
+<link rel="shortcut icon" href="images/favicon.ico" />
+-->
+</head>
+
+<body>
+<div class="off-canvas-wrapper">
+<div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
+
+<div class="off-canvas position-left" id="off-canvas-menu" data-off-canvas>
+<nav class="off-canvas-nav">
+<div class="nav-home">
+<a href="index.html" >
+<span class="home-icon">⌂</span>Babel
+</a>
+<div class="version-number">
+0.0.0+1-ab26e24d*
+</div>
+</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="installation.html" class="page">Installation</a></li>
+  <li><a href="guide.html" class="page">Guide</a>
+  <ul>
+    <li><a href="guide-loading.html" class="page">Loading translations</a></li>
+    <li><a href="guide-arguments.html" class="page">Argument passing</a></li>
+    <li><a href="guide-plurals.html" class="page">Plurals</a></li>
+  </ul></li>
+  <li><a href="sample.html" class="page">Sample application</a></li>
+  <li><a href="cookbook.html" class="page">Cookbook</a></li>
+  <li><a href="changelog.html" class="active page">Changelog</a></li>
+</ul>
+</div>
+
+</nav>
+</div>
+
+<div class="off-canvas-content" data-off-canvas-content>
+
+<header class="site-header expanded row">
+<div class="small-12 column">
+<a href="#" class="off-canvas-toggle hide-for-medium" data-toggle="off-canvas-menu"><svg class="svg-icon svg-icon-menu" version="1.1" id="Menu" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve"> <path class="svg-icon-menu-path" fill="#53CDEC" d="M16.4,9H3.6C3.048,9,3,9.447,3,10c0,0.553,0.048,1,0.6,1H16.4c0.552,0,0.6-0.447,0.6-1C17,9.447,16.952,9,16.4,9z M16.4,13
+H3.6C3.048,13,3,13.447,3,14c0,0.553,0.048,1,0.6,1H16.4c0.552,0,0.6-0.447,0.6-1C17,13.447,16.952,13,16.4,13z M3.6,7H16.4
+C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.048,7,3.6,7z"/></svg>
+</a>
+<div class="title"><a href="index.html">Babel</a></div>
+
+<!--
+<a href="https://www.example.com" class="logo show-for-medium">logo</a>
+-->
+</div>
+</header>
+
+<div class="expanded row">
+
+<div class="medium-3 large-2 show-for-medium column">
+<nav class="site-nav">
+<div class="nav-home">
+<a href="index.html" >
+<span class="home-icon">⌂</span>Babel
+</a>
+<div class="version-number">
+0.0.0+1-ab26e24d*
+</div>
+</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="installation.html" class="page">Installation</a></li>
+  <li><a href="guide.html" class="page">Guide</a>
+  <ul>
+    <li><a href="guide-loading.html" class="page">Loading translations</a></li>
+    <li><a href="guide-arguments.html" class="page">Argument passing</a></li>
+    <li><a href="guide-plurals.html" class="page">Plurals</a></li>
+  </ul></li>
+  <li><a href="sample.html" class="page">Sample application</a></li>
+  <li><a href="cookbook.html" class="page">Cookbook</a></li>
+  <li><a href="changelog.html" class="active page">Changelog</a></li>
+</ul>
+</div>
+
+</nav>
+</div>
+
+<div class="small-12 medium-9 large-10 column">
+<section class="site-content">
+
+<span id="version-warning"></span>
+
+<div class="page-header row">
+<div class="medium-12 show-for-medium column">
+<div class="nav-breadcrumbs">
+<ul>
+  <li><a href="index.html">Babel</a></li>
+  <li>Changelog</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="page-content row">
+<div class="small-12 large-9 column" id="docs">
+<h1><a href="#changelog" name="changelog" class="anchor"><span class="anchor-link"></span></a>Changelog</h1>
+<h1><a href="#0-3-3" name="0-3-3" class="anchor"><span class="anchor-link"></span></a>0.3.3</h1>
+<p><em>2021-05-28</em></p>
+<ul>
+  <li>Update cats-core, cats-laws to 2.6.1 (#165)</li>
+  <li>Update cats-effect, cats-effect-kernel to 3.1.1 (#166)</li>
+  <li>Update circe-parser to 0.14.1 (#178)</li>
+  <li>Update discipline-munit to 1.0.9 (#167)</li>
+  <li>Update http4s-blaze-server, http4s-dsl to 1.0.0-M23 (#179)</li>
+  <li>Update mdoc, sbt-mdoc to 2.2.21 (#171)</li>
+  <li>Update munit, munit-scalacheck to 0.7.26 (#164)</li>
+  <li>Update munit-cats-effect-3 to 1.0.3 (#168)</li>
+  <li>Update sbt to 1.5.2 (#162)</li>
+  <li>Update sbt-houserules to 0.3.10 (#175)</li>
+  <li>Update scala-library to 2.13.6 (#174)</li>
+  <li>Update sconfig to 1.4.4 (#169)</li>
+  <li>Update shapeless to 2.3.7 (#173)</li>
+</ul>
+<h1><a href="#0-3-1" name="0-3-1" class="anchor"><span class="anchor-link"></span></a>0.3.1</h1>
+<p><em>2021-04-01</em></p>
+<ul>
+  <li>Fix broken <code>Quantities</code> JSON encoder</li>
+  <li>Upgrade to cats-effect 3</li>
+  <li>Upgrade to discipline-munit 1.0.7</li>
+  <li>Upgrade to munit 0.7.23</li>
+  <li>Upgrade to cats 2.5.0</li>
+  <li>Upgrade to sbt-mdoc 2.2.19</li>
+  <li>Update sbt-scalajs to 1.5.1 (#146)</li>
+  <li>Update sbt-ci-release to 1.5.7 (#136)</li>
+  <li>Update sbt to 1.5.0-RC2 (#135)</li>
+</ul>
+<h1><a href="#0-3-0" name="0-3-0" class="anchor"><span class="anchor-link"></span></a>0.3.0</h1>
+<p><em>2021-04-01</em></p>
+<p>Release failed, please use 0.3.0 instead</p>
+<h1><a href="#0-2-1" name="0-2-1" class="anchor"><span class="anchor-link"></span></a>0.2.1</h1>
+<p><em>2021-03-22</em></p>
+<ul>
+  <li>Plural ranges (#107)</li>
+  <li>Fix StringFormatN source generator to start at index 0</li>
+  <li>Don&rsquo;t publish documentation artifacts</li>
+  <li>Update cats-core, cats-laws to 2.4.2 (#120)</li>
+  <li>Update cats-effect to 2.4.0 (#134)</li>
+  <li>Update discipline-munit to 1.0.6 (#119)</li>
+  <li>Update http4s-blaze-server, http4s-dsl to 0.21.20 (#129)</li>
+  <li>Update mdoc_2.13, sbt-mdoc to 2.2.18 (#122)</li>
+  <li>Update munit, munit-scalacheck to 0.7.22 (#118)</li>
+  <li>Update munit-cats-effect-2 to 0.13.1 (#124)</li>
+  <li>Update paradox-theme-generic, sbt-paradox to 0.9.2 (#126)</li>
+  <li>Update sbt to 1.5.0-RC1 (#133)</li>
+  <li>Update sbt-ci-release to 1.5.6 (#132)</li>
+  <li>Update sbt-houserules to 0.3.6 (#130)</li>
+  <li>Update sbt-scalajs, scalajs-compiler, &hellip; to 1.5.0 (#114)</li>
+  <li>Update scala-library to 2.13.5 (#128)</li>
+  <li>Update sconfig to 1.4.1 (#127)</li>
+  <li>Upgrade to sbt 1.5.0-M2</li>
+</ul>
+<h1><a href="#0-2-0" name="0-2-0" class="anchor"><span class="anchor-link"></span></a>0.2.0</h1>
+<p><em>2021-01-29</em></p>
+<ul>
+  <li>Add <code>MonoidK</code> instance for <code>Translations</code></li>
+  <li>Add <code>SemigroupK</code> instance for <code>NonEmptyTranslations</code></li>
+  <li>Rename <code>Dictionaty</code> to <code>NonEmptyTranslations</code></li>
+  <li>Rename <code>Translations.toDictionary</code> to <code>.withFallback</code></li>
+  <li>Streamline collection APIs</li>
+  <li>Improve docs</li>
+</ul>
+<h1><a href="#0-1-6" name="0-1-6" class="anchor"><span class="anchor-link"></span></a>0.1.6</h1>
+<p><em>2021-01-29</em></p>
+<ul>
+  <li>Generate <code>StringFormatN</code> boilerplate up to n=22</li>
+  <li>Update munit-cats-effect-2 to 0.13.0 (#106)</li>
+  <li>Minor doc enhancements</li>
+</ul>
+<h1><a href="#0-1-5" name="0-1-5" class="anchor"><span class="anchor-link"></span></a>0.1.5</h1>
+<p><em>2021-01-28</em></p>
+<ul>
+  <li>Fix <code>StringFormat.toString</code> to use 0-based-indices</li>
+  <li>Fix plurals example in docs</li>
+</ul>
+<h1><a href="#0-1-4" name="0-1-4" class="anchor"><span class="anchor-link"></span></a>0.1.4</h1>
+<p><em>2021-01-28</em></p>
+<ul>
+  <li>Change <code>StringFormat</code> encoding to <code>MessageFormat</code> style</li>
+  <li>Add plurals section to docs</li>
+  <li>Add argument section to docs</li>
+</ul>
+<h1><a href="#0-1-3" name="0-1-3" class="anchor"><span class="anchor-link"></span></a>0.1.3</h1>
+<p><em>2021-01-28</em></p>
+<ul>
+  <li>Create paradox documentation microsite</li>
+  <li>Update sconfig to 1.4.0 (#104)</li>
+</ul>
+<h1><a href="#0-1-2" name="0-1-2" class="anchor"><span class="anchor-link"></span></a>0.1.2</h1>
+<p><em>2021-01-26</em></p>
+<ul>
+  <li>Add cats module</li>
+  <li>Improve sample app</li>
+</ul>
+<h1><a href="#0-1-1" name="0-1-1" class="anchor"><span class="anchor-link"></span></a>0.1.1</h1>
+<p><em>2021-01-26</em></p>
+<ul>
+  <li>Allow <code>Option</code> decoding for missing fields</li>
+  <li>Fix <code>DerivedDecoder</code> giving wrong path in error message</li>
+  <li>Fix hocon loader <code>null</code> handling</li>
+  <li>Add numeric <code>Encoder</code> instances</li>
+  <li>Add support for <code>Option</code> in codecs</li>
+  <li>Add <code>Dictionary</code> and <code>Translations.toMap</code></li>
+  <li>Add <code>Dictionary</code> collection operations</li>
+  <li>Improve <code>Translations.toDictionary</code></li>
+  <li>Add <code>Dictionary.of</code></li>
+  <li>Add StringFormat tests</li>
+</ul>
+<h1><a href="#0-1-0" name="0-1-0" class="anchor"><span class="anchor-link"></span></a>0.1.0</h1>
+<p><em>2021-01-26</em></p>
+<ul>
+  <li>Ditch collection types and go all in on data classes</li>
+  <li>Introduce <code>StringFormat</code> for <code>String</code> argument injection</li>
+</ul>
+<h1><a href="#0-0-1" name="0-0-1" class="anchor"><span class="anchor-link"></span></a>0.0.1</h1>
+<p><em>2021-01-01</em></p>
+<ul>
+  <li>Initial release</li>
+</ul>
+<div class="source-github">
+The source code for this page can be found <a href="https://github.com/taig/babel/tree/master/modules/documentation/target/mdoc/changelog.md">here</a>.
+</div>
+
+</div>
+<div class="large-3 show-for-large column" data-sticky-container>
+<nav class="sidebar sticky" data-sticky data-anchor="docs" data-sticky-on="large">
+<div class="page-nav">
+<div class="nav-title">On this page:</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="changelog.html#changelog" class="header">Changelog</a>
+  <ul>
+    <li><a href="changelog.html#0-3-3" class="header">0.3.3</a></li>
+    <li><a href="changelog.html#0-3-1" class="header">0.3.1</a></li>
+    <li><a href="changelog.html#0-3-0" class="header">0.3.0</a></li>
+    <li><a href="changelog.html#0-2-1" class="header">0.2.1</a></li>
+    <li><a href="changelog.html#0-2-0" class="header">0.2.0</a></li>
+    <li><a href="changelog.html#0-1-6" class="header">0.1.6</a></li>
+    <li><a href="changelog.html#0-1-5" class="header">0.1.5</a></li>
+    <li><a href="changelog.html#0-1-4" class="header">0.1.4</a></li>
+    <li><a href="changelog.html#0-1-3" class="header">0.1.3</a></li>
+    <li><a href="changelog.html#0-1-2" class="header">0.1.2</a></li>
+    <li><a href="changelog.html#0-1-1" class="header">0.1.1</a></li>
+    <li><a href="changelog.html#0-1-0" class="header">0.1.0</a></li>
+    <li><a href="changelog.html#0-0-1" class="header">0.0.1</a></li>
+  </ul></li>
+</ul>
+</div>
+</div>
+</nav>
+</div>
+</div>
+
+</section>
+</div>
+
+</div>
+
+<footer class="site-footer">
+
+<section class="site-footer-nav">
+<div class="expanded row">
+<div class="small-12 large-offset-2 large-10 column">
+<div class="row site-footer-content">
+
+<div class="small-12 medium-4 large-3 text-center column">
+<div class="nav-links">
+<ul>
+<!-- <li><a href="https://www.example.com/products/">Products</a> -->
+</ul>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+<section class="site-footer-base">
+<div class="expanded row">
+<div class="small-12 large-offset-2 large-10 column">
+<div class="row site-footer-content">
+
+<div class="small-12 text-center large-9 column">
+
+<!--
+<div class="copyright">
+<span class="text">&copy; 2022</span>
+<a href="https://www.example.com" class="logo">logo</a>
+</div>
+-->
+</div>
+
+</div>
+</div>
+</div>
+</section>
+</footer>
+
+</div>
+</div>
+</div>
+</body>
+
+<script type="text/javascript" src="lib/foundation/dist/foundation.min.js"></script>
+<script type="text/javascript">jQuery(document).foundation();</script>
+<script type="text/javascript" src="js/magellan.js"></script>
+
+<style type="text/css">@import "lib/prettify/prettify.css";</style>
+<script type="text/javascript" src="lib/prettify/prettify.js"></script>
+<script type="text/javascript" src="lib/prettify/lang-scala.js"></script>
+<script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.0.0+1-ab26e24d-SNAPSHOT', 'https://github.com/taig/babel/')});</script>
+
+
+</html>
