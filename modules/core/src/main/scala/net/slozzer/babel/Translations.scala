@@ -25,7 +25,8 @@ final case class Translations[+A] private (values: Map[Locale, A]) extends AnyVa
 
   /** Convert to `NonEmptyTranslations` using the given `Locale` as the fallback
     *
-    * @return `None` if the given `Locale` is not present in this collection, `Some` of `NonEmptyTranslations` otherwise
+    * @return
+    *   `None` if the given `Locale` is not present in this collection, `Some` of `NonEmptyTranslations` otherwise
     */
   def withFallback[B >: A](locale: Locale): Option[NonEmptyTranslations[B]] =
     get(locale).map(NonEmptyTranslations(_, this - locale))

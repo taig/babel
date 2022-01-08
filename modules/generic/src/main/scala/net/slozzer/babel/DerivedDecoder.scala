@@ -24,7 +24,7 @@ object DerivedDecoder {
 
       val left = values.get(segment) match {
         case Some(value) => head.decode(value, step)
-        case None        => head.decode(Babel.Null, step).left.map(_ => Decoder.Error("Missing key", step, cause = None))
+        case None => head.decode(Babel.Null, step).left.map(_ => Decoder.Error("Missing key", step, cause = None))
       }
 
       for {
