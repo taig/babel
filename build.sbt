@@ -6,6 +6,7 @@ val Version = new {
   val Circe = "0.14.1"
   val DisciplineMunit = "1.0.9"
   val Http4s = "1.0.0-M30"
+  val Java = "11"
   val Munit = "0.7.29"
   val MunitCatsEffect = "1.0.7"
   val ScalajsDom = "2.1.0"
@@ -18,19 +19,23 @@ noPublishSettings
 
 ThisBuild / scalaVersion := "2.13.7"
 
+ThisBuild / developers := List(Developer("taig", "Niklas Klein", "mail@taig.io", url("https://taig.io/")))
 ThisBuild / dynverVTagPrefix := false
 ThisBuild / homepage := Some(url("https://github.com/taig/babel/"))
 ThisBuild / licenses := List("MIT" -> url("https://raw.githubusercontent.com/taig/babel/master/LICENSE"))
 ThisBuild / organization := "io.taig"
 ThisBuild / organizationHomepage := Some(url("https://taig.io/"))
-ThisBuild / developers := List(
-  Developer(
-    "taig",
-    "Niklas Klein",
-    "mail@taig.io",
-    url("https://taig.io/")
-  )
-)
+ThisBuild / versionScheme := Some("early-semver")
+
+enablePlugins(BlowoutYamlPlugin)
+
+blowoutGenerators ++= {
+  val workflows = baseDirectory.value / ".github" / "workflows"
+
+  BlowoutYamlGenerator(workflows / "master.yml", () => GithubActionsGenerator.master(Version.Java)) ::
+    BlowoutYamlGenerator(workflows / "pull-request.yml", () => GithubActionsGenerator.pullRequest(Version.Java)) ::
+    Nil
+}
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
@@ -39,13 +44,13 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
     Compile / sourceGenerators += Def.task {
       val pkg = s"${organization.value}.babel"
       val languages = (Compile / sourceManaged).value / "Languages.scala"
-      IO.write(languages, SourceGenerator.languages(pkg))
+      IO.write(languages, JavaLocalesGenerator.languages(pkg))
       val countries = (Compile / sourceManaged).value / "Countries.scala"
-      IO.write(countries, SourceGenerator.countries(pkg))
+      IO.write(countries, JavaLocalesGenerator.countries(pkg))
       val locales = (Compile / sourceManaged).value / "Locales.scala"
-      IO.write(locales, SourceGenerator.locales(pkg))
+      IO.write(locales, JavaLocalesGenerator.locales(pkg))
       val stringFormatN = (Compile / sourceManaged).value / "StringFormatN.scala"
-      IO.write(stringFormatN, SourceGenerator.stringFormatN(pkg))
+      IO.write(stringFormatN, JavaLocalesGenerator.stringFormatN(pkg))
       Seq(languages, countries, locales, stringFormatN)
     }.taskValue,
     name := "babel-core"
