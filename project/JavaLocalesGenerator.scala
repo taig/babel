@@ -1,6 +1,6 @@
 import java.util.Locale
 
-object SourceGenerator {
+object JavaLocalesGenerator {
   val locales: Array[Locale] = Locale.getAvailableLocales
     .filter { locale =>
       val label = locale.toString
