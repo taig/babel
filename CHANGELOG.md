@@ -1,5 +1,28 @@
 # Changelog
 
+# 0.4.0
+
+_2022-01-08_
+
+ * Change organization to `io.taig`
+ * Migrate CI to github actions
+ * Rename `master` branch to `main`
+ * Upgrade to cats 2.7.0
+ * Upgrade to cats-effect 3.3.3
+ * Upgrade to http4s 1.0.0-M30
+ * Upgrade to munit 0.7.29
+ * Upgrade to munit-cats-effect 1.0.7
+ * Upgrade to sbt 1.6.1
+ * Upgrade to sbt-houserules 0.3.18
+ * Upgrade to sbt-mdoc 2.2.24
+ * Upgrade to sbt-scalajs 1.8.0
+ * Upgrade to sbt-scalajs-crossproject 1.1.0
+ * Upgrade to sbt-web-scalajs 1.2.0
+ * Upgrade to scala 2.13.7
+ * Upgrade to scalajs-dom 2.1.0
+ * Upgrade to sconfig 1.4.7
+ * Upgrade to slf4j-simple 1.7.32
+
 # 0.3.3
 
 _2021-05-28_
