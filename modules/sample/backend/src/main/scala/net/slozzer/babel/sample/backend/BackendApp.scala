@@ -12,11 +12,9 @@ import org.http4s.implicits._
 import org.http4s.server.Server
 import org.http4s.{HttpApp, HttpRoutes, MediaType, StaticFile}
 
-import scala.concurrent.ExecutionContext
-
 object SampleApp extends IOApp {
-  def server[F[_]: Async](context: ExecutionContext, app: HttpApp[F]): Resource[F, Server] =
-    BlazeServerBuilder[F](context).bindHttp(host = "0.0.0.0").withHttpApp(app).resource
+  def server[F[_]: Async](app: HttpApp[F]): Resource[F, Server] =
+    BlazeServerBuilder[F].bindHttp(host = "0.0.0.0").withHttpApp(app).resource
 
   val locales = Set(Locales.en)
 
@@ -33,7 +31,7 @@ object SampleApp extends IOApp {
       i18ns <- Resource.eval(i18n[IO])
       middleware = new LocalesMiddleware[IO](locales, fallback = Locales.en)
       app = middleware(SampleRoutes[IO](i18ns, _)).orNotFound
-      _ <- server[IO](ExecutionContext.global, app)
+      _ <- server[IO](app)
     } yield ExitCode.Success).use(_ => IO.never)
 }
 
