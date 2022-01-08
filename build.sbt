@@ -22,7 +22,7 @@ ThisBuild / scalaVersion := "2.13.7"
 ThisBuild / developers := List(Developer("taig", "Niklas Klein", "mail@taig.io", url("https://taig.io/")))
 ThisBuild / dynverVTagPrefix := false
 ThisBuild / homepage := Some(url("https://github.com/taig/babel/"))
-ThisBuild / licenses := List("MIT" -> url("https://raw.githubusercontent.com/taig/babel/master/LICENSE"))
+ThisBuild / licenses := List("MIT" -> url("https://raw.githubusercontent.com/taig/babel/main/LICENSE"))
 ThisBuild / organization := "io.taig"
 ThisBuild / organizationHomepage := Some(url("https://taig.io/"))
 ThisBuild / versionScheme := Some("early-semver")
@@ -32,7 +32,7 @@ enablePlugins(BlowoutYamlPlugin)
 blowoutGenerators ++= {
   val workflows = baseDirectory.value / ".github" / "workflows"
 
-  BlowoutYamlGenerator(workflows / "master.yml", () => GithubActionsGenerator.master(Version.Java)) ::
+  BlowoutYamlGenerator(workflows / "main.yml", () => GithubActionsGenerator.main(Version.Java)) ::
     BlowoutYamlGenerator(workflows / "pull-request.yml", () => GithubActionsGenerator.pullRequest(Version.Java)) ::
     Nil
 }

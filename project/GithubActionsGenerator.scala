@@ -73,11 +73,11 @@ object GithubActionsGenerator {
     )
   }
 
-  def master(javaVersion: String): Json = Json.obj(
+  def main(javaVersion: String): Json = Json.obj(
     "name" := "CI & CD",
     "on" := Json.obj(
       "push" := Json.obj(
-        "branches" := List("master"),
+        "branches" := List("main"),
         "tags" := List("*.*.*")
       )
     ),
@@ -131,7 +131,7 @@ object GithubActionsGenerator {
     "name" := "CI",
     "on" := Json.obj(
       "pull_request" := Json.obj(
-        "branches" := List("master")
+        "branches" := List("main")
       )
     ),
     "jobs" := Json.obj(
