@@ -19,7 +19,7 @@ de-AT.conf
 ```scala mdoc:to-string
 import cats.effect._
 import cats.effect.unsafe.implicits.global
-import net.slozzer.babel._
+import io.taig.babel._
 
 val babels = Loader.default[IO]
   .load("babel", Set(Locales.en, Locales.de, Locales.de_AT))
@@ -30,7 +30,7 @@ val babels = Loader.default[IO]
 
 ```scala mdoc:to-string
 import cats.syntax.all._
-import net.slozzer.babel.generic.auto._
+import io.taig.babel.generic.auto._
 
 final case class I18n(greeting: String)
 

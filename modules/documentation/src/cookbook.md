@@ -10,7 +10,7 @@ import java.util.{Locale => JavaLocale}
 import scala.jdk.CollectionConverters._
 
 import cats.Monad
-import net.slozzer.babel.Locale
+import io.taig.babel.Locale
 import org.http4s.HttpRoutes
 import org.http4s.headers.`Accept-Language`
 import org.http4s.implicits._
@@ -45,8 +45,8 @@ Add simple helper methods to your data classes to make them easier to use. This 
 import cats.effect._
 import cats.effect.unsafe.implicits.global
 import cats.syntax.all._
-import net.slozzer.babel._
-import net.slozzer.babel.generic.auto._
+import io.taig.babel._
+import io.taig.babel.generic.auto._
 
 sealed abstract class Country extends Product with Serializable
 

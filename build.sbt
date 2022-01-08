@@ -19,10 +19,10 @@ noPublishSettings
 ThisBuild / scalaVersion := "2.13.7"
 
 ThisBuild / dynverVTagPrefix := false
-ThisBuild / homepage := Some(url("https://github.com/slozzer/babel/"))
-ThisBuild / licenses := List("MIT" -> url("https://raw.githubusercontent.com/slozzer/babel/master/LICENSE"))
-ThisBuild / organization := "net.slozzer"
-ThisBuild / organizationHomepage := Some(url("https://slozzer.net/"))
+ThisBuild / homepage := Some(url("https://github.com/taig/babel/"))
+ThisBuild / licenses := List("MIT" -> url("https://raw.githubusercontent.com/taig/babel/master/LICENSE"))
+ThisBuild / organization := "io.taig"
+ThisBuild / organizationHomepage := Some(url("https://taig.io/"))
 ThisBuild / developers := List(
   Developer(
     "taig",

@@ -9,8 +9,8 @@ en.conf
 import cats.effect._
 import cats.effect.unsafe.implicits.global
 import cats.syntax.all._
-import net.slozzer.babel._
-import net.slozzer.babel.generic.auto._
+import io.taig.babel._
+import io.taig.babel.generic.auto._
 
 final case class I18n(bicycles: Quantities[String])
 
@@ -48,8 +48,8 @@ en.conf
 import cats.effect._
 import cats.effect.unsafe.implicits.global
 import cats.syntax.all._
-import net.slozzer.babel._
-import net.slozzer.babel.generic.auto._
+import io.taig.babel._
+import io.taig.babel.generic.auto._
 
 final case class I18n(bicycles: Quantities[StringFormat1])
 
@@ -87,8 +87,8 @@ en.conf
 import cats.effect._
 import cats.effect.unsafe.implicits.global
 import cats.syntax.all._
-import net.slozzer.babel._
-import net.slozzer.babel.generic.auto._
+import io.taig.babel._
+import io.taig.babel.generic.auto._
 
 final case class I18n(ranges: Quantities[String])
 

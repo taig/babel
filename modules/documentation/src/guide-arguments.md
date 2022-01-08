@@ -27,8 +27,8 @@ In the German version, the parameters are called in swapped order.
 import cats.effect._
 import cats.effect.unsafe.implicits.global
 import cats.syntax.all._
-import net.slozzer.babel._
-import net.slozzer.babel.generic.auto._
+import io.taig.babel._
+import io.taig.babel.generic.auto._
 
 final case class I18n(weather: StringFormat2)
 
