@@ -18,6 +18,8 @@ jobs:
         distribution: temurin
     - name: Checkout
       uses: actions/checkout@v2.4.0
+      with:
+        fetch-depth: 0
     - name: Cache
       uses: coursier/cache-action@v6.3
     - run: sbt blowoutCheck
@@ -35,6 +37,8 @@ jobs:
         distribution: temurin
     - name: Checkout
       uses: actions/checkout@v2.4.0
+      with:
+        fetch-depth: 0
     - name: Cache
       uses: coursier/cache-action@v6.3
     - run: sbt test
@@ -50,6 +54,8 @@ jobs:
         distribution: temurin
     - name: Checkout
       uses: actions/checkout@v2.4.0
+      with:
+        fetch-depth: 0
     - name: Cache
       uses: coursier/cache-action@v6.3
     - run: sbt documentation/paradox
