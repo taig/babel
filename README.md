@@ -20,4 +20,4 @@
 - Dependency-free `core` module
 <!--- #main --->
 
-Please proceed to [taig.io/babel](https://taig.github.io/babel/) for more information.
+Please proceed to [taig.github.io/babel](https://taig.github.io/babel/) for more information.
