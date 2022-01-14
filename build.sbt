@@ -17,7 +17,7 @@ val Version = new {
 
 noPublishSettings
 
-ThisBuild / scalaVersion := "2.13.7"
+ThisBuild / scalaVersion := "2.13.8"
 
 ThisBuild / developers := List(Developer("taig", "Niklas Klein", "mail@taig.io", url("https://taig.io/")))
 ThisBuild / dynverVTagPrefix := false
