@@ -12,7 +12,7 @@ val Version = new {
   val ScalajsDom = "2.1.0"
   val Sconfig = "1.4.7"
   val Shapeless = "2.3.7"
-  val Slf4j = "1.7.32"
+  val Slf4j = "1.7.33"
 }
 
 noPublishSettings
