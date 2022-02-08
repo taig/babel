@@ -13,17 +13,17 @@ sealed abstract class Quantity extends Product with Serializable {
 }
 
 object Quantity {
-  final case class Exact private (value: Int) extends Quantity
+  sealed abstract case class Exact(value: Int) extends Quantity
 
-  final case class Range private (start: Int, end: Int) extends Quantity
+  sealed abstract case class Range(start: Int, end: Int) extends Quantity
 
   val Zero: Quantity = exact(0)
 
   val One: Quantity = exact(1)
 
-  def exact(value: Int): Quantity = Exact(value)
+  def exact(value: Int): Quantity = new Exact(value) {}
 
-  def unsafeRange(start: Int, end: Int): Quantity = Range(start, end)
+  def unsafeRange(start: Int, end: Int): Quantity = new Range(start, end) {}
 
   def range(start: Int, end: Int): Option[Quantity] = if (start == end) Some(exact(start))
   else if (end >= start) Some(unsafeRange(start, end))

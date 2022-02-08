@@ -24,7 +24,7 @@ final class HoconLoader[F[_]](implicit F: Sync[F]) extends Loader[F] {
       .foldLeftM(Map.empty[String, Babel]) { case (result, (key, value)) =>
         toBabel(value.unwrapped, Path.one(key)).map(babel => result + (key -> babel))
       }
-      .map(Babel.Object)
+      .map(Babel.Object.apply)
 
   def toBabel(value: AnyRef, path: Path): Either[Throwable, Babel] = value match {
     case value: String => Babel.Value(value).asRight
