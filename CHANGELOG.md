@@ -4,7 +4,7 @@
 
 _2022-02-12_
 
-* Add support for Scala 3 (#196) [@bardurdam]
+* Add support for Scala 3 (#196) [@bardurdam](https://github.com/bardurdam)
 * Update cats-effect to 3.3.5 (#192)
 * Update http4s to 1.0.0-M31 (#194)
 * Update mdoc to 2.3.0 (#191)
