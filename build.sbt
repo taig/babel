@@ -13,11 +13,15 @@ val Version = new {
   val Sconfig = "1.4.9"
   val Shapeless = "2.3.7"
   val Slf4j = "1.7.36"
+
+  val Scala213 = "2.13.8"
+  val Scala3 = "3.1.1"
 }
 
 noPublishSettings
 
-ThisBuild / scalaVersion := "2.13.8"
+ThisBuild / scalaVersion := Version.Scala3
+ThisBuild / crossScalaVersions := Version.Scala213 :: Version.Scala3 :: Nil
 
 ThisBuild / developers := List(Developer("taig", "Niklas Klein", "mail@taig.io", url("https://taig.io/")))
 ThisBuild / dynverVTagPrefix := false
@@ -84,8 +88,7 @@ lazy val generic = crossProject(JSPlatform, JVMPlatform)
   .in(file("modules/generic"))
   .settings(
     libraryDependencies ++=
-      "com.chuusai" %%% "shapeless" % Version.Shapeless ::
-        Nil,
+      (if (scalaVersion.value == Version.Scala3) Nil else "com.chuusai" %%% "shapeless" % Version.Shapeless :: Nil),
     name := "babel-generic"
   )
   .dependsOn(core)

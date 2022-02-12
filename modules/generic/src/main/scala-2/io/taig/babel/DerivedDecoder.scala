@@ -2,12 +2,7 @@ package io.taig.babel
 
 import shapeless.labelled.{field, FieldType}
 import shapeless.{::, HList, HNil, LabelledGeneric, Witness}
-import simulacrum.typeclass
 
-import scala.annotation.nowarn
-
-@nowarn("msg=Unused import")
-@typeclass
 trait DerivedDecoder[A] extends Decoder[A]
 
 object DerivedDecoder {

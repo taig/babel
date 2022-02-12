@@ -1,12 +1,7 @@
 package io.taig.babel
 
-import simulacrum.typeclass
-
-import scala.annotation.nowarn
 import scala.util.Try
 
-@nowarn("msg=Unused import")
-@typeclass
 trait Decoder[A] {
   final def decode(babel: Babel): Either[Decoder.Error, A] = decode(babel, Path.Root)
 
@@ -29,6 +24,8 @@ trait Decoder[A] {
 }
 
 object Decoder {
+  @inline def apply[A](implicit instance: Decoder[A]): Decoder[A] = instance
+
   final case class Error(message: String, path: Path, cause: Option[Throwable])
       extends Exception(s"Failed to decode: $message ${path.printPlaceholder}", cause.orNull)
 
@@ -77,4 +74,5 @@ object Decoder {
   implicit val long: Decoder[Long] = numeric(value => Try(value.toLong), "Long")
 
   implicit val short: Decoder[Short] = numeric(value => Try(value.toShort), "Short")
+
 }

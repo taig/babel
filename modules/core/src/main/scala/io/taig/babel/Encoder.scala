@@ -1,11 +1,5 @@
 package io.taig.babel
 
-import simulacrum.typeclass
-
-import scala.annotation.nowarn
-
-@nowarn("msg=Unused import")
-@typeclass
 trait Encoder[A] {
   def encode(value: A): Babel
 
@@ -13,6 +7,8 @@ trait Encoder[A] {
 }
 
 object Encoder {
+  @inline def apply[A](implicit instance: Encoder[A]): Encoder[A] = instance
+
   implicit val string: Encoder[String] = Babel.Value(_)
 
   implicit def map[A](implicit encoder: Encoder[A]): Encoder[Map[String, A]] = values =>

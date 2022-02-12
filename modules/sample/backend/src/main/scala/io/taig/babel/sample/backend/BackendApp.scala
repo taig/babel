@@ -16,7 +16,7 @@ object SampleApp extends IOApp {
   def server[F[_]: Async](app: HttpApp[F]): Resource[F, Server] =
     BlazeServerBuilder[F].bindHttp(host = "0.0.0.0").withHttpApp(app).resource
 
-  val locales = Set(Locales.en)
+  val locales = Set(Locales.en, Locales.de)
 
   def i18n[F[_]: Sync]: F[NonEmptyTranslations[I18n]] =
     Loader
