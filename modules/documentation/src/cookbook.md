@@ -51,8 +51,8 @@ import io.taig.babel.generic.auto._
 sealed abstract class Country extends Product with Serializable
 
 object Country {
-  final case object France extends Country
-  final case object Italy extends Country
+  case object France extends Country
+  case object Italy extends Country
 }
 
 final case class CountryI18n(france: String, italy: String) {
