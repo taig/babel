@@ -41,7 +41,7 @@ jobs:
         fetch-depth: 0
     - name: Cache
       uses: coursier/cache-action@v6.3
-    - run: sbt test
+    - run: sbt +test
   documentation:
     name: Documentation
     runs-on: ubuntu-latest

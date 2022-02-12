@@ -51,7 +51,7 @@ object GithubActionsGenerator {
     def test(javaVersion: String): Json = Job(
       name = "Unit tests",
       javaVersion,
-      steps = List(Json.obj("run" := "sbt test"))
+      steps = List(Json.obj("run" := "sbt +test"))
     )
 
     def documentation(javaVersion: String, uploadArtifact: Boolean): Json = Job(
