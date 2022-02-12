@@ -32,7 +32,7 @@
 <span class="home-icon">⌂</span>Babel
 </a>
 <div class="version-number">
-0.4.0+18-0365ecb9*
+0.4.0+19-9513671b*
 </div>
 </div>
 <div class="nav-toc">
@@ -78,7 +78,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Babel
 </a>
 <div class="version-number">
-0.4.0+18-0365ecb9*
+0.4.0+19-9513671b*
 </div>
 </div>
 <div class="nav-toc">
@@ -167,8 +167,8 @@ val i18ns = Loader
 <h2><a href="#compile-time-guarantees" name="compile-time-guarantees" class="anchor"><span class="anchor-link"></span></a>Compile-time guarantees</h2>
 <p>In the above example we have used <code>StringFormat2</code>, which means that exactly 2 arguments must be passed. Otherwise a compile error will occur.</p>
 <pre class="prettyprint"><code class="language-scala">i18ns(Locales.en).weather(&quot;Stockholm&quot;)
-// error: not enough arguments for method apply: (v0: String, v1: String): String in class StringFormat2.
-// Unspecified value parameter v1.
+// error:
+// missing argument for parameter v1 of method apply in class StringFormat2: (v0: String, v1: String): String
 // i18ns(Locales.en).weather(&quot;Stockholm&quot;)
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 </code></pre>
@@ -176,9 +176,7 @@ val i18ns = Loader
 <pre class="prettyprint"><code class="language-scala">Decoder[StringFormat2]
   .decode(Babel.text(&quot;It&#39;s always rainy in {0}&quot;))
   .map(_.apply(&quot;London&quot;, &quot;3&quot;))
-// res3: Either[Decoder.Error, String] = Right(
-//   value = &quot;It&#39;s always rainy in London&quot;
-// )
+// res3: Either[Error, String] = Right(value = &quot;It&#39;s always rainy in London&quot;)
 </code></pre>
 <div class="source-github">
 The source code for this page can be found <a href="https://github.com/taig/babel/tree/master/modules/documentation/target/mdoc/guide-arguments.md">here</a>.
@@ -264,7 +262,7 @@ The source code for this page can be found <a href="https://github.com/taig/babe
 <script type="text/javascript" src="lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.4.0+18-0365ecb9-SNAPSHOT', 'https://github.com/taig/babel/')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.4.0+19-9513671b-SNAPSHOT', 'https://github.com/taig/babel/')});</script>
 
 
 </html>
