@@ -9,7 +9,7 @@ Babel's `StringFormat` does not automatically render arbitrary types (as `String
 - The order of the placeholders may vary across translations (e.g. `"The {0} {1} is fast"` and `"El {1} {0} es rapido"`)
 - There can not be more placeholders than arguments (e.g. `StringFormat1` can not be decoded when there is `{0}` and `{1}` as there is only 1 parameter)
 - It is a decoding error to define placeholder indices that exceed the `StringFormatN` arity (e.g. `StringFormat2` may only use `{0}` and `{1}`, but not `{2}`)
-- Not all placeholders must be uses (e.g. `"Good afternoon, {0}. Today it's {1} degrees."` and `"Guten Tag, sehr geehrte Damen und Herren. Heute sind es {1} Grad."`)
+- Not all placeholders must be used (e.g. `"Good afternoon, {0}. Today it's {1} degrees."` and `"Guten Tag, sehr geehrte Damen und Herren. Heute sind es {1} Grad."`)
 
 en.conf
 : @@snip [en.conf](/modules/documentation/resources/arguments/en.conf)
