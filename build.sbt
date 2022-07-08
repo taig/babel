@@ -15,7 +15,7 @@ val Version = new {
   val Slf4j = "1.7.36"
 
   val Scala213 = "2.13.8"
-  val Scala3 = "3.1.2"
+  val Scala3 = "3.1.3"
 }
 
 noPublishSettings
