@@ -66,7 +66,7 @@ object GithubActionsGenerator {
             "uses" := "actions/upload-artifact@v2.3.1",
             "with" := Json.obj(
               "name" := "documentation",
-              "path" := "./modules/documentation/target/paradox/site/main/",
+              "path" := "./modules/documentation/.jvm/target/paradox/site/main/",
               "if-no-files-found" := "error",
               "retention-days" := 3
             )
