@@ -59,7 +59,7 @@ final class SampleRoutes[F[_]: Sync](i18ns: NonEmptyTranslations[I18n]) extends 
            |</html>""".stripMargin
       ).map(_.withContentType(`Content-Type`(MediaType.text.html)))
     case GET -> Root / "main.js" =>
-      StaticFile.fromResource[F]("public/babel-sample-frontend-fastopt.js").getOrElseF(NotFound())
+      StaticFile.fromResource[F]("babel-sample-frontend-fastopt/main.js").getOrElseF(NotFound())
     case GET -> Root / "i18n.json" =>
       Ok(printer.print(Encoder[I18n].encode(i18ns(locale))))
         .map(_.withContentType(`Content-Type`(MediaType.application.json)))

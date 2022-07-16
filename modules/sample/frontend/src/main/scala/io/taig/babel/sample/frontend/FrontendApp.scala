@@ -10,11 +10,11 @@ import org.scalajs.dom.{document, Event}
 
 import scala.concurrent.{Future, Promise}
 
-object FrontendApp extends IOApp {
-  override def run(args: List[String]): IO[ExitCode] = for {
+object FrontendApp extends IOApp.Simple {
+  override def run: IO[Unit] = for {
     i18n <- request[IO]
     _ <- listen[IO](i18n)
-  } yield ExitCode.Success
+  } yield ()
 
   def listen[F[_]](i18n: I18n)(implicit F: Sync[F]): F[Unit] = F.delay {
     val message = document.getElementById("message")
