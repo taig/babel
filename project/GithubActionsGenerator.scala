@@ -122,7 +122,7 @@ object GithubActionsGenerator {
           ),
           Json.obj(
             "name" := "Deploy",
-            "uses" := "JamesIves/github-pages-deploy-action@4.4.0",
+            "uses" := "JamesIves/github-pages-deploy-action@v4.4.0",
             "with" := Json.obj(
               "branch" := "gh-pages",
               "folder" := "documentation"
