@@ -42,9 +42,9 @@ object GithubActionsGenerator {
       name = "Fatal warnings and code formatting",
       javaVersion,
       steps = List(
-        Json.obj("run" := "sbt blowoutCheck"),
-        Json.obj("run" := "sbt scalafmtCheckAll"),
-        Json.obj("run" := "sbt -Dmode=strict compile")
+        Json.obj("run" := "sbt -Dmode=ci blowoutCheck"),
+        Json.obj("run" := "sbt -Dmode=ci scalafmtCheckAll"),
+        Json.obj("run" := "sbt -Dmode=ci compile")
       )
     )
 
@@ -94,7 +94,7 @@ object GithubActionsGenerator {
         needs = List("test", "lint", "documentation"),
         steps = List(
           Json.obj(
-            "run" := "sbt ci-release",
+            "run" := "sbt -Dmode=release ci-release",
             "env" := Json.obj(
               "PGP_PASSPHRASE" := "${{secrets.PGP_PASSPHRASE}}",
               "PGP_SECRET" := "${{secrets.PGP_SECRET}}",

@@ -22,9 +22,9 @@ jobs:
         fetch-depth: 0
     - name: Cache
       uses: coursier/cache-action@v6.3
-    - run: sbt blowoutCheck
-    - run: sbt scalafmtCheckAll
-    - run: sbt -Dmode=strict compile
+    - run: sbt -Dmode=ci blowoutCheck
+    - run: sbt -Dmode=ci scalafmtCheckAll
+    - run: sbt -Dmode=ci compile
   test:
     name: Unit tests
     runs-on: ubuntu-latest
