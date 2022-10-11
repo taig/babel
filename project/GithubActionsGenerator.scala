@@ -29,7 +29,7 @@ object GithubActionsGenerator {
       "needs" := needs,
       "steps" := List(
         Step.Checkout,
-        Step.setupJava(javaVersion),
+        Step.setupJava(javaVersion)
       ) ++ steps
     )
 
