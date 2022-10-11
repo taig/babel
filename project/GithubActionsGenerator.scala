@@ -5,7 +5,7 @@ object GithubActionsGenerator {
   object Step {
     val Checkout: Json = Json.obj(
       "name" := "Checkout",
-      "uses" := "actions/checkout@v2.4.0",
+      "uses" := "actions/checkout@v3.1.0",
       "with" := Json.obj(
         "fetch-depth" := 0
       )
