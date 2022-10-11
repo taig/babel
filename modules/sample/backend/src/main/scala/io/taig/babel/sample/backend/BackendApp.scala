@@ -2,11 +2,12 @@ package io.taig.babel.sample.backend
 
 import cats.effect._
 import cats.syntax.all._
+import com.comcast.ip4s._
 import io.taig.babel._
 import io.taig.babel.circe._
 import io.taig.sample.I18n
-import org.http4s.blaze.server.BlazeServerBuilder
 import org.http4s.dsl.Http4sDsl
+import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.headers.`Content-Type`
 import org.http4s.implicits._
 import org.http4s.server.Server
@@ -14,7 +15,7 @@ import org.http4s.{HttpApp, HttpRoutes, MediaType, StaticFile}
 
 object SampleApp extends IOApp {
   def server[F[_]: Async](app: HttpApp[F]): Resource[F, Server] =
-    BlazeServerBuilder[F].bindHttp(host = "0.0.0.0").withHttpApp(app).resource
+    EmberServerBuilder.default[F].withHost(host"0.0.0.0").withHttpApp(app).build
 
   val locales = Set(Locales.en, Locales.de)
 

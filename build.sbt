@@ -6,7 +6,7 @@ val Version = new {
   val CatsEffect = "3.3.14"
   val Circe = "0.14.3"
   val DisciplineMunit = "1.0.9"
-  val Http4s = "1.0.0-M36"
+  val Http4s = "1.0.0-M37"
   val Java = "11"
   val Munit = "0.7.29"
   val MunitCatsEffect = "1.0.7"
@@ -121,7 +121,7 @@ lazy val documentation = module(identifier = Some("documentation"), platforms = 
     Compile / paradox / sourceDirectory := mdocOut.value,
     Compile / unmanagedResourceDirectories += baseDirectory.value / ".." / "resources",
     libraryDependencies ++=
-      "org.http4s" %% "http4s-blaze-server" % Version.Http4s ::
+      "org.http4s" %% "http4s-ember-server" % Version.Http4s ::
         Nil,
     libraryDependencySchemes ++=
       "org.typelevel" %% "cats-effect" % "always" ::
@@ -164,7 +164,7 @@ lazy val sampleBackend = module(identifier = Some("sample-backend"), platforms =
     Runtime / managedClasspath += (Assets / packageBin).value,
     libraryDependencies ++=
       "org.http4s" %% "http4s-dsl" % Version.Http4s ::
-        "org.http4s" %% "http4s-blaze-server" % Version.Http4s ::
+        "org.http4s" %% "http4s-ember-server" % Version.Http4s ::
         "org.slf4j" % "slf4j-simple" % Version.Slf4j ::
         Nil,
     scalaJSProjects := Seq(sampleFrontend.js)
