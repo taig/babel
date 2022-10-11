@@ -11,17 +11,16 @@ jobs:
     runs-on: ubuntu-latest
     needs: []
     steps:
-    - name: JDK
-      uses: actions/setup-java@v2.4.0
-      with:
-        java-version: '11'
-        distribution: temurin
     - name: Checkout
       uses: actions/checkout@v2.4.0
       with:
         fetch-depth: 0
-    - name: Cache
-      uses: coursier/cache-action@v6.3
+    - name: JDK
+      uses: actions/setup-java@v3.5.1
+      with:
+        java-version: '11'
+        distribution: temurin
+        cache: sbt
     - run: sbt -Dmode=ci blowoutCheck
     - run: sbt -Dmode=ci scalafmtCheckAll
     - run: sbt -Dmode=ci compile
@@ -30,32 +29,30 @@ jobs:
     runs-on: ubuntu-latest
     needs: []
     steps:
-    - name: JDK
-      uses: actions/setup-java@v2.4.0
-      with:
-        java-version: '11'
-        distribution: temurin
     - name: Checkout
       uses: actions/checkout@v2.4.0
       with:
         fetch-depth: 0
-    - name: Cache
-      uses: coursier/cache-action@v6.3
+    - name: JDK
+      uses: actions/setup-java@v3.5.1
+      with:
+        java-version: '11'
+        distribution: temurin
+        cache: sbt
     - run: sbt +test
   documentation:
     name: Documentation
     runs-on: ubuntu-latest
     needs: []
     steps:
-    - name: JDK
-      uses: actions/setup-java@v2.4.0
-      with:
-        java-version: '11'
-        distribution: temurin
     - name: Checkout
       uses: actions/checkout@v2.4.0
       with:
         fetch-depth: 0
-    - name: Cache
-      uses: coursier/cache-action@v6.3
+    - name: JDK
+      uses: actions/setup-java@v3.5.1
+      with:
+        java-version: '11'
+        distribution: temurin
+        cache: sbt
     - run: sbt documentation/paradox

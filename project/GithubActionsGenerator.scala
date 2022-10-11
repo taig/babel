@@ -11,17 +11,13 @@ object GithubActionsGenerator {
       )
     )
 
-    val Cache: Json = Json.obj(
-      "name" := "Cache",
-      "uses" := "coursier/cache-action@v6.3"
-    )
-
-    def jdk(javaVersion: String): Json = Json.obj(
+    def setupJava(javaVersion: String): Json = Json.obj(
       "name" := "JDK",
-      "uses" := "actions/setup-java@v2.4.0",
+      "uses" := "actions/setup-java@v3.5.1",
       "with" := Json.obj(
         "java-version" := javaVersion,
-        "distribution" := "temurin"
+        "distribution" := "temurin",
+        "cache" := "sbt"
       )
     )
   }
@@ -32,9 +28,8 @@ object GithubActionsGenerator {
       "runs-on" := "ubuntu-latest",
       "needs" := needs,
       "steps" := List(
-        Step.jdk(javaVersion),
         Step.Checkout,
-        Step.Cache
+        Step.setupJava(javaVersion),
       ) ++ steps
     )
 
