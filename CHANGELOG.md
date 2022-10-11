@@ -1,5 +1,31 @@
 # Changelog
 
+# 0.5.1
+
+_2022-10-11_
+
+* Only deploy documentation on release
+* Update cats-core, cats-laws to 2.8.0 (#222)
+* Update cats-effect, cats-effect-kernel to 3.3.14 (#226)
+* Update mdoc, sbt-mdoc to 2.3.3 (#229)
+* Update paradox-theme-generic, sbt-paradox to 0.10.2 (#218)
+* Update sbt-scalajs-crossproject to 1.2.0 (#204)
+* Update scala3-library, ... to 3.2.0 (#236)
+* Update scalajs-dom to 2.3.0 (#235)
+* Update shapeless to 2.3.10 (#237)
+* Upgrade to JamesIves/github-pages-deploy-action@4.4.0
+* Upgrade to actions/checkout@v3.1.0
+* Upgrade to actions/download-artifact@v3.0.0
+* Upgrade to actions/setup-java@v3.5.1
+* Upgrade to actions/upload-artifact@v3.1.0
+* Upgrade to circe 0.14.3
+* Upgrade to http4s 1.0.0-M37
+* Upgrade to sbt 1.7.2
+* Upgrade to sbt-houserules 0.5.2
+* Upgrade to sbt-mdoc 2.3.6
+* Upgrade to sbt-scalajs 1.11.0
+* Upgrade to sconfig 1.5.0
+
 # 0.5.0
 
 _2022-02-12_
