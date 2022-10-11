@@ -23,7 +23,13 @@ object GithubActionsGenerator {
   }
 
   object Job {
-    def apply(name: String, javaVersion: String, steps: List[Json], needs: List[String] = Nil, condition: Option[String] = None): Json = Json.obj(
+    def apply(
+        name: String,
+        javaVersion: String,
+        steps: List[Json],
+        needs: List[String] = Nil,
+        condition: Option[String] = None
+    ): Json = Json.obj(
       "name" := name,
       "runs-on" := "ubuntu-latest",
       "needs" := needs,
