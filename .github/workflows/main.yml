@@ -118,7 +118,7 @@ jobs:
         name: documentation
         path: ./documentation
     - name: Deploy
-      uses: JamesIves/github-pages-deploy-action@4.2.0
+      uses: JamesIves/github-pages-deploy-action@4.4.0
       with:
         branch: gh-pages
         folder: documentation
