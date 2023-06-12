@@ -3,14 +3,14 @@ import scala.util.chaining._
 
 val Version = new {
   val Cats = "2.9.0"
-  val CatsEffect = "3.4.11"
+  val CatsEffect = "3.5.0"
   val Circe = "0.14.5"
   val DisciplineMunit = "1.0.9"
   val Http4s = "1.0.0-M39"
   val Java = "11"
   val Munit = "0.7.29"
   val MunitCatsEffect = "1.0.7"
-  val Scala213 = "2.13.10"
+  val Scala213 = "2.13.11"
   val Scala3 = "3.2.2"
   val ScalajsDom = "2.6.0"
   val Sconfig = "1.5.0"
