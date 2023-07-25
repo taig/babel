@@ -5,7 +5,7 @@ object GithubActionsGenerator {
   object Step {
     val Checkout: Json = Json.obj(
       "name" := "Checkout",
-      "uses" := "actions/checkout@v3.1.0",
+      "uses" := "actions/checkout@v3",
       "with" := Json.obj(
         "fetch-depth" := 0
       )
@@ -13,7 +13,7 @@ object GithubActionsGenerator {
 
     def setupJava(javaVersion: String): Json = Json.obj(
       "name" := "JDK",
-      "uses" := "actions/setup-java@v3.5.1",
+      "uses" := "actions/setup-java@v3",
       "with" := Json.obj(
         "java-version" := javaVersion,
         "distribution" := "temurin",
@@ -65,7 +65,7 @@ object GithubActionsGenerator {
         if (uploadArtifact)
           Json.obj(
             "name" := "Upload",
-            "uses" := "actions/upload-artifact@v3.1.0",
+            "uses" := "actions/upload-artifact@v3",
             "with" := Json.obj(
               "name" := "documentation",
               "path" := "./modules/documentation/.jvm/target/paradox/site/main/",
@@ -114,7 +114,7 @@ object GithubActionsGenerator {
         steps = List(
           Json.obj(
             "name" := "Download artifact",
-            "uses" := "actions/download-artifact@v3.0.0",
+            "uses" := "actions/download-artifact@v3",
             "with" := Json.obj(
               "name" := "documentation",
               "path" := "./documentation"
@@ -122,7 +122,7 @@ object GithubActionsGenerator {
           ),
           Json.obj(
             "name" := "Deploy",
-            "uses" := "JamesIves/github-pages-deploy-action@v4.4.0",
+            "uses" := "JamesIves/github-pages-deploy-action@v4",
             "with" := Json.obj(
               "branch" := "gh-pages",
               "folder" := "documentation"
