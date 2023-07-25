@@ -34,11 +34,7 @@ def module(
     }
     .build()
     .settings(
-      name := "babel" + identifier.fold("")("-" + _),
-      scalacOptions ++= {
-        if (scalaVersion.value == Version.Scala3 && crossProjectPlatform.value == JSPlatform) "-scalajs" :: Nil
-        else Nil
-      }
+      name := "babel" + identifier.fold("")("-" + _)
     )
 }
 
