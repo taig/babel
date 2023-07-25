@@ -23,8 +23,8 @@ final class StringFormatTest extends FunSuite {
   }
 
   test("decoder") {
-    val Right(format) = Decoder[StringFormat2].decode(Babel.Value("lorem {1} dolar {0} amet"))
-    assertEquals(obtained = format("sit", "ipsum"), "lorem ipsum dolar sit amet")
+    val format = Decoder[StringFormat2].decode(Babel.Value("lorem {1} dolar {0} amet"))
+    assertEquals(obtained = format.map(_.apply("sit", "ipsum")), Right("lorem ipsum dolar sit amet"))
   }
 
   test("decoder has too many placeholders") {
