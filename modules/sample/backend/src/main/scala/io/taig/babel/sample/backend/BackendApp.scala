@@ -3,6 +3,7 @@ package io.taig.babel.sample.backend
 import cats.effect._
 import cats.syntax.all._
 import com.comcast.ip4s._
+import fs2.io.net.Network
 import io.taig.babel._
 import io.taig.babel.circe._
 import io.taig.sample.I18n
@@ -12,28 +13,32 @@ import org.http4s.headers.`Content-Type`
 import org.http4s.implicits._
 import org.http4s.server.Server
 import org.http4s.{HttpApp, HttpRoutes, MediaType, StaticFile}
+import org.typelevel.log4cats.LoggerFactory
+import org.typelevel.log4cats.slf4j.Slf4jFactory
 
-object SampleApp extends IOApp {
-  def server[F[_]: Async](app: HttpApp[F]): Resource[F, Server] =
-    EmberServerBuilder.default[F].withHost(host"0.0.0.0").withHttpApp(app).build
+import scala.concurrent.duration.*
+
+object SampleApp extends ResourceApp.Forever {
+  def server[F[_]: Async: Network](app: HttpApp[F]): Resource[F, Server] = {
+    given LoggerFactory[F] = Slf4jFactory.create[F]
+    EmberServerBuilder.default[F].withHost(host"0.0.0.0").withHttpApp(app).withShutdownTimeout(1.second).build
+  }
 
   val locales = Set(Locales.en, Locales.de)
 
-  def i18n[F[_]: Sync]: F[NonEmptyTranslations[I18n]] =
-    Loader
-      .default[F]
-      .load("i18n", locales)
-      .map(Decoder[I18n].decodeAll)
-      .rethrow
-      .flatMap(_.withFallback(Locales.en).liftTo[F](new IllegalStateException("Translations for en missing")))
+  def i18n[F[_]: Sync]: F[NonEmptyTranslations[I18n]] = Loader
+    .default[F]
+    .load("i18n", locales)
+    .map(Decoder[I18n].decodeAll)
+    .rethrow
+    .flatMap(_.withFallback(Locales.en).liftTo[F](new IllegalStateException("Translations for en missing")))
 
-  override def run(args: List[String]): IO[ExitCode] =
-    (for {
-      i18ns <- Resource.eval(i18n[IO])
-      middleware = new LocalesMiddleware[IO](locales, fallback = Locales.en)
-      app = middleware(SampleRoutes[IO](i18ns, _)).orNotFound
-      _ <- server[IO](app)
-    } yield ExitCode.Success).use(_ => IO.never)
+  override def run(args: List[String]): Resource[IO, Unit] = for {
+    i18ns <- Resource.eval(i18n[IO])
+    middleware = new LocalesMiddleware[IO](locales, fallback = Locales.en)
+    app = middleware(SampleRoutes[IO](i18ns, _)).orNotFound
+    _ <- server[IO](app)
+  } yield ()
 }
 
 final class SampleRoutes[F[_]: Sync](i18ns: NonEmptyTranslations[I18n]) extends Http4sDsl[F] {

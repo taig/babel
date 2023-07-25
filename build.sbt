@@ -6,8 +6,9 @@ val Version = new {
   val CatsEffect = "3.5.1"
   val Circe = "0.14.5"
   val DisciplineMunit = "1.0.9"
-  val Http4s = "1.0.0-M39"
+  val Http4s = "1.0.0-M40"
   val Java = "17"
+  val Log4Cats = "2.6.0"
   val Munit = "0.7.29"
   val MunitCatsEffect = "1.0.7"
   val Scala213 = "2.13.11"
@@ -159,6 +160,7 @@ lazy val sampleBackend = module(identifier = Some("sample-backend"), platforms =
       "org.http4s" %% "http4s-dsl" % Version.Http4s ::
         "org.http4s" %% "http4s-ember-server" % Version.Http4s ::
         "org.slf4j" % "slf4j-simple" % Version.Slf4j ::
+        "org.typelevel" %% "log4cats-slf4j" % Version.Log4Cats ::
         Nil,
     scalaJSProjects := Seq(sampleFrontend.js)
   )
