@@ -16,11 +16,11 @@ import org.http4s.{HttpApp, HttpRoutes, MediaType, StaticFile}
 import org.typelevel.log4cats.LoggerFactory
 import org.typelevel.log4cats.slf4j.Slf4jFactory
 
-import scala.concurrent.duration.*
+import scala.concurrent.duration._
 
 object SampleApp extends ResourceApp.Forever {
   def server[F[_]: Async: Network](app: HttpApp[F]): Resource[F, Server] = {
-    given LoggerFactory[F] = Slf4jFactory.create[F]
+    implicit val logger: LoggerFactory[F] = Slf4jFactory.create[F]
     EmberServerBuilder.default[F].withHost(host"0.0.0.0").withHttpApp(app).withShutdownTimeout(1.second).build
   }
 
