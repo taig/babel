@@ -1,5 +1,30 @@
 # Changelog
 
+# 0.5.2
+
+_2023-07-25_
+
+* Relax GitHub Actions dependency versions
+* Remove outdated libraryDependencySchemes
+* Fix JamesIves/github-pages-deploy-action version
+* Upgrade to http4s 1.0.0-M40
+* Upgrade to java 17
+* Upgrade to sbt-houserules 0.7.1
+* Upgrade to scala 3.3.0
+* Update cats-core, cats-laws to 2.9.0 (#245)
+* Update cats-effect, cats-effect-kernel to 3.5.1 (#288)
+* Update circe-parser to 0.14.5 (#269)
+* Update mdoc, sbt-mdoc to 2.3.7 (#261)
+* Update paradox-theme-generic, sbt-paradox to 0.10.5 (#292)
+* Update sbt to 1.9.3 (#294)
+* Update sbt-ci-release to 1.5.12 (#277)
+* Update sbt-revolver to 0.10.0 (#272)
+* Update sbt-scalajs, scalajs-compiler, ... to 1.13.2 (#286)
+* Update sbt-scalajs-crossproject to 1.3.2 (#289)
+* Update scala-library to 2.13.11 (#285)
+* Update scalajs-dom to 2.6.0 (#278)
+* Update slf4j-simple to 2.0.7 (#270)
+
 # 0.5.1
 
 _2022-10-11_
