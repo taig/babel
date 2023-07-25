@@ -119,9 +119,6 @@ lazy val documentation = module(identifier = Some("documentation"), platforms = 
     libraryDependencies ++=
       "org.http4s" %% "http4s-ember-server" % Version.Http4s ::
         Nil,
-    libraryDependencySchemes ++=
-      "org.typelevel" %% "cats-effect" % "always" ::
-        Nil,
     mdocIn := baseDirectory.value / ".." / "src",
     mdocVariables := Map(
       "ORGANIZATION" -> organization.value,
