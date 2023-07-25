@@ -19,7 +19,7 @@ jobs:
     - name: JDK
       uses: actions/setup-java@v3.5.1
       with:
-        java-version: '11'
+        java-version: '17'
         distribution: temurin
         cache: sbt
     - run: sbt -Dmode=ci blowoutCheck
@@ -38,7 +38,7 @@ jobs:
     - name: JDK
       uses: actions/setup-java@v3.5.1
       with:
-        java-version: '11'
+        java-version: '17'
         distribution: temurin
         cache: sbt
     - run: sbt +test
@@ -55,7 +55,7 @@ jobs:
     - name: JDK
       uses: actions/setup-java@v3.5.1
       with:
-        java-version: '11'
+        java-version: '17'
         distribution: temurin
         cache: sbt
     - run: sbt documentation/paradox
