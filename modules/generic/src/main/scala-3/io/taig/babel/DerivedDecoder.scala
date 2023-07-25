@@ -2,6 +2,7 @@ package io.taig.babel
 
 import scala.compiletime.*
 import scala.deriving.Mirror
+import scala.annotation.nowarn
 
 trait DerivedDecoder[A] extends Decoder[A]
 
@@ -35,6 +36,7 @@ object DerivedDecoder {
       case (_: EmptyTuple, _) => Right(widen[EmptyTuple, T](EmptyTuple))
     }
 
+  @nowarn("msg=An inline given alias with a function value")
   inline given derivedProduct[A](using m: Mirror.ProductOf[A]): DerivedDecoder[A] =
     (babel: Babel, path: Path) => recurse[m.MirroredElemLabels, m.MirroredElemTypes](babel, path).map(m.fromProduct)
 }

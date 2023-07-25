@@ -2,6 +2,7 @@ package io.taig.babel
 
 import scala.compiletime.*
 import scala.deriving.Mirror
+import scala.annotation.nowarn
 
 trait DerivedEncoder[A] extends Encoder[A] {
   override def encode(value: A): Babel
@@ -24,6 +25,7 @@ object DerivedEncoder {
       case (_: EmptyTuple, _) => Babel.Null
     }
 
+  @nowarn("msg=An inline given alias with a function value")
   inline given derivedProduct[T](using m: Mirror.ProductOf[T]): DerivedEncoder[T] =
     (value: T) => recurse[m.MirroredElemLabels, m.MirroredElemTypes](value.asInstanceOf[Product], 0)
 }

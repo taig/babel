@@ -16,8 +16,6 @@ object JavaLocalesGenerator {
 
     s"""package $pkg
        |
-       |import $pkg.Language
-       |
        |object Languages {
        |  // $$COVERAGE-OFF$$
        |  ${vals.mkString("\n\n  ")}
@@ -33,8 +31,6 @@ object JavaLocalesGenerator {
     val all = countries.map(identifier).mkString(", ")
 
     s"""package $pkg
-       |
-       |import $pkg.Country
        |
        |object Countries {
        |  // $$COVERAGE-OFF$$
@@ -61,8 +57,6 @@ object JavaLocalesGenerator {
     val all = locales.map(_.toString).mkString(", ")
 
     s"""package $pkg
-       |
-       |import $pkg.Locale
        |
        |object Locales {
        |  // $$COVERAGE-OFF$$
