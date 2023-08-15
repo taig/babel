@@ -2,7 +2,7 @@ import sbtcrossproject.{CrossProject, CrossType, Platform}
 import scala.util.chaining._
 
 val Version = new {
-  val Cats = "2.9.0"
+  val Cats = "2.10.0"
   val CatsEffect = "3.5.1"
   val Circe = "0.14.5"
   val DisciplineMunit = "1.0.9"
