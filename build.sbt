@@ -10,7 +10,7 @@ val Version = new {
   val Java = "17"
   val Log4Cats = "2.7.0"
   val Munit = "0.7.29"
-  val MunitCatsEffect = "1.0.7"
+  val MunitCatsEffect = "2.0.0"
   val Scala213 = "2.13.13"
   val Scala3 = "3.3.3"
   val ScalajsDom = "2.8.0"
@@ -138,7 +138,7 @@ lazy val tests = module(identifier = Some("tests"), crossType = CrossType.Full)
       "org.scalameta" %%% "munit" % Version.Munit % "test" ::
         "org.typelevel" %%% "cats-laws" % Version.Cats % "test" ::
         "org.typelevel" %%% "discipline-munit" % Version.DisciplineMunit % "test" ::
-        "org.typelevel" %%% "munit-cats-effect-3" % Version.MunitCatsEffect % "test" ::
+        "org.typelevel" %%% "munit-cats-effect" % Version.MunitCatsEffect % "test" ::
         "org.scalameta" %%% "munit-scalacheck" % Version.Munit % "test" ::
         Nil,
     testFrameworks += new TestFramework("munit.Framework")
