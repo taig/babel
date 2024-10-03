@@ -44,9 +44,9 @@ object GithubActionsGenerator {
       name = "Fatal warnings and code formatting",
       javaVersion,
       steps = List(
-        Json.obj("run" := "sbt -Dmode=ci blowoutCheck"),
-        Json.obj("run" := "sbt -Dmode=ci scalafmtCheckAll"),
-        Json.obj("run" := "sbt -Dmode=ci compile")
+        Json.obj("run" := "sbt blowoutCheck"),
+        Json.obj("run" := "sbt scalafmtCheckAll"),
+        Json.obj("run" := "sbt compile")
       )
     )
 
@@ -76,60 +76,85 @@ object GithubActionsGenerator {
         else Nil
       }
     )
+
+    def deployArtifacts(javaVersion: String): Json = Job(
+      name = "Deploy artifacts",
+      javaVersion,
+      needs = List("test", "lint", "documentation"),
+      steps = List(
+        Json.obj(
+          "run" := "sbt ci-release",
+          "env" := Json.obj(
+            "PGP_PASSPHRASE" := "${{secrets.PGP_PASSPHRASE}}",
+            "PGP_SECRET" := "${{secrets.PGP_SECRET}}",
+            "SONATYPE_PASSWORD" := "${{secrets.SONATYPE_PASSWORD}}",
+            "SONATYPE_USERNAME" := "${{secrets.SONATYPE_USERNAME}}"
+          )
+        )
+      )
+    )
+
+    def deployDocumentation(javaVersion: String): Json = Job(
+      name = "Deploy documentation",
+      javaVersion,
+      needs = List("test", "lint", "documentation"),
+      steps = List(
+        Json.obj(
+          "name" := "Download artifact",
+          "uses" := "actions/download-artifact@v3",
+          "with" := Json.obj(
+            "name" := "documentation",
+            "path" := "./documentation"
+          )
+        ),
+        Json.obj(
+          "name" := "Deploy",
+          "uses" := "JamesIves/github-pages-deploy-action@v4",
+          "with" := Json.obj(
+            "branch" := "gh-pages",
+            "folder" := "documentation"
+          )
+        )
+      )
+    )
   }
 
   def main(javaVersion: String): Json = Json.obj(
-    "name" := "CI & CD",
+    "name" := "CI",
     "on" := Json.obj(
       "push" := Json.obj(
         "branches" := List("main"),
         "tags" := List("*.*.*")
       )
     ),
+    "env" := Json.obj(
+      "SBT_TPOLECAT_CI" := "true"
+    ),
+    "jobs" := Json.obj(
+      "lint" := Job.lint(javaVersion),
+      "test" := Job.test(javaVersion),
+      "documentation" := Job.documentation(javaVersion, uploadArtifact = false),
+      "deploy-artifacts" := Job.deployArtifacts(javaVersion)
+    )
+  )
+
+  def tag(javaVersion: String): Json = Json.obj(
+    "name" := "CD",
+    "on" := Json.obj(
+      "push" := Json.obj(
+        "branches" := List("main"),
+        "tags" := List("*.*.*")
+      )
+    ),
+    "env" := Json.obj(
+      "SBT_TPOLECAT_RELEASE" := "true"
+    ),
     "jobs" := Json.obj(
       "lint" := Job.lint(javaVersion),
       "test" := Job.test(javaVersion),
       "documentation" := Job.documentation(javaVersion, uploadArtifact = true),
-      "deploy-artifacts" := Job(
-        name = "Deploy artifacts",
-        javaVersion = javaVersion,
-        needs = List("test", "lint", "documentation"),
-        steps = List(
-          Json.obj(
-            "run" := "sbt -Dmode=release ci-release",
-            "env" := Json.obj(
-              "PGP_PASSPHRASE" := "${{secrets.PGP_PASSPHRASE}}",
-              "PGP_SECRET" := "${{secrets.PGP_SECRET}}",
-              "SONATYPE_PASSWORD" := "${{secrets.SONATYPE_PASSWORD}}",
-              "SONATYPE_USERNAME" := "${{secrets.SONATYPE_USERNAME}}"
-            )
-          )
-        )
-      ),
-      "deploy-documentation" := Job(
-        name = "Deploy documentation",
-        javaVersion,
-        needs = List("test", "lint", "documentation"),
-        condition = Some("startsWith(github.ref, 'refs/tags/')"),
-        steps = List(
-          Json.obj(
-            "name" := "Download artifact",
-            "uses" := "actions/download-artifact@v3",
-            "with" := Json.obj(
-              "name" := "documentation",
-              "path" := "./documentation"
-            )
-          ),
-          Json.obj(
-            "name" := "Deploy",
-            "uses" := "JamesIves/github-pages-deploy-action@v4",
-            "with" := Json.obj(
-              "branch" := "gh-pages",
-              "folder" := "documentation"
-            )
-          )
-        )
-      )
+      "deploy-artifacts" := Job.deployArtifacts(javaVersion),
+      "deploy-documentation" := Job.deployDocumentation(javaVersion)
     )
   )
 
@@ -139,6 +164,9 @@ object GithubActionsGenerator {
       "pull_request" := Json.obj(
         "branches" := List("main")
       )
+    ),
+    "env" := Json.obj(
+      "SBT_TPOLECAT_CI" := "true"
     ),
     "jobs" := Json.obj(
       "lint" := Job.lint(javaVersion),
