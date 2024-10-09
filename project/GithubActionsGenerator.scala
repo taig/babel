@@ -101,7 +101,7 @@ object GithubActionsGenerator {
       steps = List(
         Json.obj(
           "name" := "Download artifact",
-          "uses" := "actions/download-artifact@v3",
+          "uses" := "actions/download-artifact@v4",
           "with" := Json.obj(
             "name" := "documentation",
             "path" := "./documentation"
