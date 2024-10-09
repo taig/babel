@@ -114,7 +114,7 @@ lazy val circe = module(identifier = Some("circe"))
   .dependsOn(core)
 
 lazy val documentation = module(identifier = Some("documentation"), platforms = List(JVMPlatform))
-  .enablePlugins(MdocPlugin, ParadoxPlugin)
+  .enablePlugins(MdocPlugin, ParadoxPlugin, ParadoxMaterialThemePlugin)
   .settings(noPublishSettings)
   .settings(
     Compile / paradox / sourceDirectory := mdocOut.value,
@@ -128,8 +128,7 @@ lazy val documentation = module(identifier = Some("documentation"), platforms = 
       "ARTIFACT" -> "babel",
       "VERSION" -> version.value
     ),
-    paradox := (Compile / paradox).dependsOn(mdoc.toTask("")).value,
-    paradoxTheme := Some(builtinParadoxTheme("generic"))
+    paradox := (Compile / paradox).dependsOn(mdoc.toTask("")).value
   )
   .dependsOn(core, loader, generic)
 
