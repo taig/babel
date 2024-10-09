@@ -27,13 +27,11 @@ object GithubActionsGenerator {
         name: String,
         javaVersion: String,
         steps: List[Json],
-        needs: List[String] = Nil,
-        condition: Option[String] = None
+        needs: List[String] = Nil
     ): Json = Json.obj(
       "name" := name,
       "runs-on" := "ubuntu-latest",
       "needs" := needs,
-      "if" := condition,
       "steps" := List(
         Step.Checkout,
         Step.setupJava(javaVersion)
@@ -60,7 +58,9 @@ object GithubActionsGenerator {
       name = "Documentation",
       javaVersion,
       steps = List(
-        Json.obj("run" := "sbt documentation/paradox")
+        Json.obj(
+          "run" := "sbt 'set ThisBuild / tpolecatOptionsMode := org.typelevel.sbt.tpolecat.DevMode' documentation/paradox"
+        )
       ) ++ {
         if (uploadArtifact)
           Json.obj(
