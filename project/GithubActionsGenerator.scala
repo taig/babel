@@ -65,7 +65,7 @@ object GithubActionsGenerator {
         if (uploadArtifact)
           Json.obj(
             "name" := "Upload",
-            "uses" := "actions/upload-artifact@v3",
+            "uses" := "actions/upload-artifact@v4",
             "with" := Json.obj(
               "name" := "documentation",
               "path" := "./modules/documentation/.jvm/target/paradox/site/main/",
