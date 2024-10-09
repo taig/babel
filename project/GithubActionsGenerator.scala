@@ -122,10 +122,7 @@ object GithubActionsGenerator {
   def main(javaVersion: String): Json = Json.obj(
     "name" := "CI",
     "on" := Json.obj(
-      "push" := Json.obj(
-        "branches" := List("main"),
-        "tags" := List("*.*.*")
-      )
+      "push" := Json.obj("branches" := List("main"))
     ),
     "env" := Json.obj(
       "SBT_TPOLECAT_CI" := "true"
@@ -141,10 +138,7 @@ object GithubActionsGenerator {
   def tag(javaVersion: String): Json = Json.obj(
     "name" := "CD",
     "on" := Json.obj(
-      "push" := Json.obj(
-        "branches" := List("main"),
-        "tags" := List("*.*.*")
-      )
+      "push" := Json.obj("tags" := List("*.*.*"))
     ),
     "env" := Json.obj(
       "SBT_TPOLECAT_RELEASE" := "true"
