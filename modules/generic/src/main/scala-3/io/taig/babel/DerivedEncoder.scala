@@ -2,16 +2,15 @@ package io.taig.babel
 
 import scala.compiletime.*
 import scala.deriving.Mirror
-import scala.annotation.nowarn
 
-trait DerivedEncoder[A] extends Encoder[A] {
-  override def encode(value: A): Babel
-}
+trait DerivedEncoder[A] extends Encoder[A]
 
-object DerivedEncoder {
+object DerivedEncoder:
+  private def apply[A](f: A => Babel): DerivedEncoder[A] = new DerivedEncoder[A]:
+    override def encode(a: A): Babel = f(a)
 
   private inline def recurse[Names, Types](element: Product, idx: Int): Babel =
-    inline erasedValue[(Names, Types)] match {
+    inline erasedValue[(Names, Types)] match
       case (_: (name *: names), _: (tpe *: types)) =>
         val key = constValue[name].toString
         val value = element.productElement(idx).asInstanceOf[tpe]
@@ -23,9 +22,6 @@ object DerivedEncoder {
         }
 
       case (_: EmptyTuple, _) => Babel.Null
-    }
 
-  @nowarn("msg=An inline given alias with a function value")
-  inline given derivedProduct[T](using m: Mirror.ProductOf[T]): DerivedEncoder[T] =
-    (value: T) => recurse[m.MirroredElemLabels, m.MirroredElemTypes](value.asInstanceOf[Product], 0)
-}
+  inline given derivedProduct[T](using m: Mirror.ProductOf[T]): DerivedEncoder[T] = DerivedEncoder: a =>
+    recurse[m.MirroredElemLabels, m.MirroredElemTypes](a.asInstanceOf[Product], 0)
