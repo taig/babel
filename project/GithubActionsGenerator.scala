@@ -12,13 +12,18 @@ object GithubActionsGenerator {
     )
 
     def setupJava(javaVersion: String): Json = Json.obj(
-      "name" := "JDK",
+      "name" := "Setup Java",
       "uses" := "actions/setup-java@v4",
       "with" := Json.obj(
         "java-version" := javaVersion,
         "distribution" := "temurin",
         "cache" := "sbt"
       )
+    )
+
+    val setupSbt: Json = Json.obj(
+      "name" := "Setup sbt",
+      "uses" := "sbt/setup-sbt@v1"
     )
   }
 
@@ -34,7 +39,8 @@ object GithubActionsGenerator {
       "needs" := needs,
       "steps" := List(
         Step.Checkout,
-        Step.setupJava(javaVersion)
+        Step.setupJava(javaVersion),
+        Step.setupSbt
       ) ++ steps
     )
 

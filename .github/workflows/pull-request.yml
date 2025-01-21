@@ -17,12 +17,14 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
-    - name: JDK
+    - name: Setup Java
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: temurin
         cache: sbt
+    - name: Setup sbt
+      uses: sbt/setup-sbt@v1
     - run: sbt blowoutCheck
     - run: sbt scalafmtCheckAll
     - run: sbt compile
@@ -35,12 +37,14 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
-    - name: JDK
+    - name: Setup Java
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: temurin
         cache: sbt
+    - name: Setup sbt
+      uses: sbt/setup-sbt@v1
     - run: sbt +test
   documentation:
     name: Documentation
@@ -51,10 +55,12 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
-    - name: JDK
+    - name: Setup Java
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: temurin
         cache: sbt
+    - name: Setup sbt
+      uses: sbt/setup-sbt@v1
     - run: sbt 'set ThisBuild / tpolecatOptionsMode := org.typelevel.sbt.tpolecat.DevMode' documentation/paradox
