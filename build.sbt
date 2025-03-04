@@ -16,7 +16,7 @@ val Version = new {
   val Scala3 = "3.3.5"
   val ScalajsDom = "2.8.0"
   val Sconfig = "1.8.1"
-  val Shapeless = "2.3.12"
+  val Shapeless = "2.3.13"
   val Slf4j = "2.0.17"
 }
 
