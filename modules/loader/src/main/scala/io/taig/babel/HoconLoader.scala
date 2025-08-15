@@ -27,7 +27,7 @@ final class HoconLoader[F[_]](implicit F: Sync[F]) extends Loader[F] {
       .map(Babel.Object.apply)
 
   def toBabel(value: AnyRef, path: Path): Either[Throwable, Babel] = value match {
-    case value: String => Babel.Value(value).asRight
+    case value: String            => Babel.Value(value).asRight
     case obj: java.util.Map[_, _] =>
       obj.asScala.toList
         .traverse { case (a, b) =>
@@ -36,7 +36,7 @@ final class HoconLoader[F[_]](implicit F: Sync[F]) extends Loader[F] {
           toBabel(value, path / key).tupleLeft(key)
         }
         .map(Babel.from)
-    case null => Right(Babel.Null)
+    case null  => Right(Babel.Null)
     case value =>
       val message = s"Unsupported type: ${value.getClass.getSimpleName} ${path.printPlaceholder}"
       Left(new IllegalArgumentException(message))

@@ -26,7 +26,7 @@ object Locale {
   def apply(language: Language, country: Country): Locale = Locale(language, Some(country))
 
   def parse(value: String, separator: Char): Option[Locale] = value.split(separator) match {
-    case Array(language) => Language.parse(language).map(Locale(_))
+    case Array(language)          => Language.parse(language).map(Locale(_))
     case Array(language, country) =>
       for {
         language <- Language.parse(language)
