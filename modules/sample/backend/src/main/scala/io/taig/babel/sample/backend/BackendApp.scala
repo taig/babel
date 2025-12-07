@@ -7,12 +7,15 @@ import fs2.io.net.Network
 import io.taig.babel._
 import io.taig.babel.circe._
 import io.taig.sample.I18n
+import org.http4s.HttpApp
+import org.http4s.HttpRoutes
+import org.http4s.MediaType
+import org.http4s.StaticFile
 import org.http4s.dsl.Http4sDsl
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.headers.`Content-Type`
 import org.http4s.implicits._
 import org.http4s.server.Server
-import org.http4s.{HttpApp, HttpRoutes, MediaType, StaticFile}
 import org.typelevel.log4cats.LoggerFactory
 import org.typelevel.log4cats.slf4j.Slf4jFactory
 

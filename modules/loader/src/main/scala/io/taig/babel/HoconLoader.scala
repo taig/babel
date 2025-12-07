@@ -2,7 +2,8 @@ package io.taig.babel
 
 import cats.effect.kernel.Sync
 import cats.syntax.all._
-import org.ekrich.config.{Config, ConfigFactory}
+import org.ekrich.config.Config
+import org.ekrich.config.ConfigFactory
 
 import scala.jdk.CollectionConverters._
 

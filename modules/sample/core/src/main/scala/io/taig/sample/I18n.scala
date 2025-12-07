@@ -1,7 +1,10 @@
 package io.taig.sample
 
+import io.taig.babel.Decoder
+import io.taig.babel.Encoder
+import io.taig.babel.Quantities
+import io.taig.babel.StringFormat1
 import io.taig.babel.generic.auto._
-import io.taig.babel.{Decoder, Encoder, Quantities, StringFormat1}
 
 final case class I18n(app: I18n.App, index: I18n.Index)
 

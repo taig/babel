@@ -1,6 +1,6 @@
 package io.taig.babel
 
-import scala.compiletime.*
+import scala.compiletime._
 import scala.deriving.Mirror
 
 trait DerivedDecoder[A] extends Decoder[A]

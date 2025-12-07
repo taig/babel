@@ -6,9 +6,11 @@ import io.taig.babel.Decoder
 import io.taig.babel.circe.parser
 import io.taig.sample.I18n
 import org.scalajs.dom
-import org.scalajs.dom.{document, Event}
+import org.scalajs.dom.Event
+import org.scalajs.dom.document
 
-import scala.concurrent.{Future, Promise}
+import scala.concurrent.Future
+import scala.concurrent.Promise
 
 object FrontendApp extends IOApp.Simple {
   override def run: IO[Unit] = for {

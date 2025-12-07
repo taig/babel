@@ -1,7 +1,12 @@
 package io.taig.babel
 
-import shapeless.labelled.{field, FieldType}
-import shapeless.{::, HList, HNil, LabelledGeneric, Witness}
+import shapeless.::
+import shapeless.HList
+import shapeless.HNil
+import shapeless.LabelledGeneric
+import shapeless.Witness
+import shapeless.labelled.FieldType
+import shapeless.labelled.field
 
 trait DerivedDecoder[A] extends Decoder[A]
 
