@@ -14,7 +14,7 @@ final class HoconLoader[F[_]](implicit F: Sync[F]) extends Loader[F] {
         val resource = if (base.isEmpty) locale.printLanguageTag else s"$base/${locale.printLanguageTag}"
         F.blocking(ConfigFactory.parseResourcesAnySyntax(resource)).tupleLeft(locale)
       }
-      .map(configs => configs.traverse { case (locale, config) => toBabel(config).map(Translation(locale, _)) })
+      .map(configs => configs.traverse { case (locale, config) => toBabel(config.resolve()).map(Translation(locale, _)) })
       .rethrow
       .map(Translations.from)
 
