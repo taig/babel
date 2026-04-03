@@ -31,7 +31,7 @@ object StringFormat {
     }
   }
 
-  private[babel] def decoder[A](n: Int)(f: (String, Map[Int, String]) => A): Decoder[A] = Decoder[String].emap {
+  private[babel] def decoder[A](n: Int)(f: (String, List[(Int, String)]) => A): Decoder[A] = Decoder[String].emap {
     (value, path) =>
       val format = parse(value)
       val indices = format.segments.map { case (index, _) => index }
@@ -48,10 +48,10 @@ object StringFormat {
         val offenders = duplicates.mkString(", ")
         val message = s"StringFormat$n may not have duplicate indices, found duplicates for $offenders"
         Left(Decoder.Error(message, path, cause = None))
-      } else Right(f(format.head, format.segments.toMap))
+      } else Right(f(format.head, format.segments))
   }
 
-  private[babel] def build(head: String, segments: Map[Int, String], values: Vector[String]): String = {
+  private[babel] def build(head: String, segments: List[(Int, String)], values: Vector[String]): String = {
     val builder = new StringBuilder(head)
 
     segments.foreach { case (index, segment) =>

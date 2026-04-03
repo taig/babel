@@ -16,8 +16,8 @@ final class DerivationTest extends FunSuite {
     val foo: Foo = {
 
       val messages: Quantities[StringFormat1] = {
-        val sfOne: StringFormat1 = (v0: String) => StringFormat.build("You clicked ", Map(0 -> " time"), Vector(v0))
-        val sfMany: StringFormat1 = (v0: String) => StringFormat.build("You clicked ", Map(0 -> " times"), Vector(v0))
+        val sfOne: StringFormat1 = (v0: String) => StringFormat.build("You clicked ", List(0 -> " time"), Vector(v0))
+        val sfMany: StringFormat1 = (v0: String) => StringFormat.build("You clicked ", List(0 -> " times"), Vector(v0))
         Quantities.from[StringFormat1](sfMany, List(Quantities.Element(Quantity.One, sfOne)))
       }
 
