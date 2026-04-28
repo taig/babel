@@ -19,16 +19,22 @@ abstract class LoaderTest extends CatsEffectSuite {
     loader
       .use(_.load("loader-substitutions", Set(Locales.en, Locales.de)))
       .map { obtained =>
-        val expected = Translations(Map(
-            Locales.en -> Babel.Object(Map(
-              "app" -> Babel.Object(Map("name" -> Babel.Value("App name"))),
-              "label" -> Babel.Object(Map("title" -> Babel.Value("App name")))
-            )),
-            Locales.de -> Babel.Object(Map(
-              "app" -> Babel.Object(Map("name" -> Babel.Value("Applikationsname"))),
-              "label" -> Babel.Object(Map("title" -> Babel.Value("Applikationsname")))
-            ))
-        ))
+        val expected = Translations(
+          Map(
+            Locales.en -> Babel.Object(
+              Map(
+                "app" -> Babel.Object(Map("name" -> Babel.Value("App name"))),
+                "label" -> Babel.Object(Map("title" -> Babel.Value("App name")))
+              )
+            ),
+            Locales.de -> Babel.Object(
+              Map(
+                "app" -> Babel.Object(Map("name" -> Babel.Value("Applikationsname"))),
+                "label" -> Babel.Object(Map("title" -> Babel.Value("Applikationsname")))
+              )
+            )
+          )
+        )
         assertEquals(obtained, expected)
       }
   }
