@@ -130,7 +130,7 @@ Babel
 <ul style="display: none">
 <li class="md-nav__item md-version" id="project.version">
 <label class="md-nav__link" for="__version">
-<i class="md-icon" title="Version">label_outline</i> 0.5.3
+<i class="md-icon" title="Version">label_outline</i> 0.6.0
 </label>
 </li>
 </ul>
@@ -171,11 +171,11 @@ Babel
   <dt>en.conf
   </dt>
   <dd>
-  <pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/taig/babel/tree/v0.5.3/modules/documentation/resources/arguments/en.conf" target="_blank" title="Go to snippet source">source</a><code class="language-conf">weather = &quot;The temperature in {0} is {1} degrees Celsius.&quot;</code></pre></dd>
+  <pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/taig/babel/tree/v0.6.0/modules/documentation/resources/arguments/en.conf" target="_blank" title="Go to snippet source">source</a><code class="language-conf">weather = &quot;The temperature in {0} is {1} degrees Celsius.&quot;</code></pre></dd>
   <dt>de.conf
   </dt>
   <dd>
-  <pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/taig/babel/tree/v0.5.3/modules/documentation/resources/arguments/de.conf" target="_blank" title="Go to snippet source">source</a><code class="language-conf">weather = &quot;Es sind {1} Grad Celsius in {0}.&quot;</code></pre></dd>
+  <pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/taig/babel/tree/v0.6.0/modules/documentation/resources/arguments/de.conf" target="_blank" title="Go to snippet source">source</a><code class="language-conf">weather = &quot;Es sind {1} Grad Celsius in {0}.&quot;</code></pre></dd>
 </dl><div class="callout note "><div class="callout-title">Note</div>
 <p>In the German version, the parameters are called in swapped order.</p></div>
 <pre class="prettyprint"><code class="language-scala">import cats.effect._
@@ -207,22 +207,26 @@ val i18ns = Loader
 <pre class="prettyprint"><code class="language-scala">i18ns(Locales.en).weather(&quot;Stockholm&quot;)
 // error: 
 // missing argument for parameter v1 of method apply in class StringFormat2: (v0: String, v1: String): String
+// warn:
+// unused value of type String
+// i18ns(Locales.en).weather(&quot;Stockholm&quot;)
+//                   ^^^^^^^
 </code></pre>
 <p>However, it is allowed to omit parameters.</p>
 <pre class="prettyprint"><code class="language-scala">Decoder[StringFormat2]
   .decode(Babel.text(&quot;It&#39;s always rainy in {0}&quot;))
   .map(_.apply(&quot;London&quot;, &quot;3&quot;))
-// res3: Either[Error, String] = Right(value = &quot;It&#39;s always rainy in London&quot;)
+// res3: Either[Error, String] = Right(&quot;It&#39;s always rainy in London&quot;)
 </code></pre>
 </div>
 <div>
-<a href="https://github.com/taig/babel/tree/v0.5.3/modules/documentation/.jvm/target/mdoc/guide-arguments.md" title="Edit this page" class="md-source-file md-edit">
+<a href="https://github.com/taig/babel/tree/v0.6.0/modules/documentation/.jvm/target/mdoc/guide-arguments.md" title="Edit this page" class="md-source-file md-edit">
 Edit this page
 </a>
 </div>
 <div class="print-only">
 <span class="md-source-file md-version">
-0.5.3
+0.6.0
 </span>
 </div>
 </article>

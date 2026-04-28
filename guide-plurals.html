@@ -131,7 +131,7 @@ Babel
 <ul style="display: none">
 <li class="md-nav__item md-version" id="project.version">
 <label class="md-nav__link" for="__version">
-<i class="md-icon" title="Version">label_outline</i> 0.5.3
+<i class="md-icon" title="Version">label_outline</i> 0.6.0
 </label>
 </li>
 </ul>
@@ -164,7 +164,7 @@ Babel
   <dt>en.conf
   </dt>
   <dd>
-  <pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/taig/babel/tree/v0.5.3/modules/documentation/resources/plurals/en.conf" target="_blank" title="Go to snippet source">source</a><code class="language-conf">bicycles = {
+  <pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/taig/babel/tree/v0.6.0/modules/documentation/resources/plurals/en.conf" target="_blank" title="Go to snippet source">source</a><code class="language-conf">bicycles = {
   0 = &quot;There are no bicycles in Beijing&quot;
   1 = &quot;There is one bicycle in Beijing&quot;
   &quot;*&quot; = &quot;There are 9 million bicycles in Beijing&quot;
@@ -188,17 +188,11 @@ val i18n = Loader
   .map(_.apply(Locales.en))
   .unsafeRunSync()
 // i18n: I18n = I18n(
-//   bicycles = Quantities(
+//   Quantities(
 //     default = &quot;There are 9 million bicycles in Beijing&quot;,
 //     quantities = List(
-//       Element(
-//         quantity = Exact(value = 0),
-//         value = &quot;There are no bicycles in Beijing&quot;
-//       ),
-//       Element(
-//         quantity = Exact(value = 1),
-//         value = &quot;There is one bicycle in Beijing&quot;
-//       )
+//       Element(quantity = Exact(0), value = &quot;There are no bicycles in Beijing&quot;),
+//       Element(quantity = Exact(1), value = &quot;There is one bicycle in Beijing&quot;)
 //     )
 //   )
 // )
@@ -218,7 +212,7 @@ val i18n = Loader
   <dt>en.conf
   </dt>
   <dd>
-  <pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/taig/babel/tree/v0.5.3/modules/documentation/resources/plurals-arguments/en.conf" target="_blank" title="Go to snippet source">source</a><code class="language-conf">bicycles = {
+  <pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/taig/babel/tree/v0.6.0/modules/documentation/resources/plurals-arguments/en.conf" target="_blank" title="Go to snippet source">source</a><code class="language-conf">bicycles = {
   0 = &quot;There are no bicycles in Beijing&quot;
   1 = &quot;There is one bicycle in Beijing&quot;
   &quot;*&quot; = &quot;There are {0} bicycles in Beijing&quot;
@@ -258,7 +252,7 @@ val i18n = Loader
   <dt>en.conf
   </dt>
   <dd>
-  <pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/taig/babel/tree/v0.5.3/modules/documentation/resources/plurals-ranges/en.conf" target="_blank" title="Go to snippet source">source</a><code class="language-conf">ranges = {
+  <pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/taig/babel/tree/v0.6.0/modules/documentation/resources/plurals-ranges/en.conf" target="_blank" title="Go to snippet source">source</a><code class="language-conf">ranges = {
   1 = &quot;Exact&quot;
   &quot;10-20&quot; = &quot;Range 10 to 20&quot;
   &quot;*&quot; = &quot;Fallback&quot;
@@ -302,13 +296,13 @@ i18n.ranges(21)
 </code></pre>
 </div>
 <div>
-<a href="https://github.com/taig/babel/tree/v0.5.3/modules/documentation/.jvm/target/mdoc/guide-plurals.md" title="Edit this page" class="md-source-file md-edit">
+<a href="https://github.com/taig/babel/tree/v0.6.0/modules/documentation/.jvm/target/mdoc/guide-plurals.md" title="Edit this page" class="md-source-file md-edit">
 Edit this page
 </a>
 </div>
 <div class="print-only">
 <span class="md-source-file md-version">
-0.5.3
+0.6.0
 </span>
 </div>
 </article>
