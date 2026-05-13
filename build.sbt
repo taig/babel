@@ -17,7 +17,7 @@ val Version = new {
   val ScalajsDom = "2.8.1"
   val Sconfig = "1.12.4"
   val Shapeless = "2.3.13"
-  val Slf4j = "2.0.17"
+  val Slf4j = "2.0.18"
 }
 
 def module(
