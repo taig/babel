@@ -1,4 +1,4 @@
-addSbtPlugin("com.github.sbt" % "sbt-ci-release" % "1.12.0")
+addSbtPlugin("com.github.sbt" % "sbt-ci-release" % "1.12.1")
 addSbtPlugin("com.github.sbt" % "sbt-paradox-material-theme" % "0.7.0")
 addSbtPlugin("com.lightbend.paradox" % "sbt-paradox" % "0.11.0")
 addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % "1.4.0")
