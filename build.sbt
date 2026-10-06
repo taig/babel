@@ -4,7 +4,7 @@ import scala.util.chaining._
 val Version = new {
   val Cats = "2.13.0"
   val CatsEffect = "3.7.1"
-  val Circe = "0.14.16"
+  val Circe = "0.14.17"
   val DisciplineMunit = "2.0.0"
   val Http4s = "1.0.0-M48"
   val Java = "17"
