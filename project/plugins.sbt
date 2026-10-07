@@ -1,5 +1,5 @@
 addSbtPlugin("com.github.sbt" % "sbt-ci-release" % "1.12.1")
-addSbtPlugin("com.github.sbt" % "sbt-paradox-material-theme" % "0.7.0")
+addSbtPlugin("com.github.sbt" % "sbt-paradox-material-theme" % "0.8.0")
 addSbtPlugin("com.lightbend.paradox" % "sbt-paradox" % "0.11.1")
 addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % "1.4.0")
 addSbtPlugin("io.spray" % "sbt-revolver" % "0.10.0")
